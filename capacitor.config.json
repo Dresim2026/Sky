@@ -1,0 +1,6 @@
+{
+  "appId": "com.simregistry.app",
+  "appName": "سجل الشرائح",
+  "webDir": "www",
+  "android": { "allowMixedContent": false }
+}
