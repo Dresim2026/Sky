@@ -23,11 +23,21 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Prepare web folder
+        run: |
+          mkdir -p www
+          cp index.html seed.js www/
+
       - name: Install dependencies
         run: npm install
 
       - name: Add Android platform
         run: npx cap add android
+
+      - name: Add permissions
+        run: |
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i 's#<application#<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>\n    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>\n    <application#' "$M"
 
       - name: Sync
         run: npx cap sync android
