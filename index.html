@@ -13,6 +13,7 @@
   --danger: #b3261e; --shadow: 0 10px 40px rgba(10,30,45,.22);
   --font: system-ui, "Segoe UI", Roboto, Tahoma, sans-serif;
   --mono: ui-monospace, Consolas, "Roboto Mono", monospace;
+  --sidebar-width: 250px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -25,7 +26,7 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { color-scheme: light dark; }
 body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5;
-  padding-inline: 14px; padding-block: env(safe-area-inset-top, 0px) calc(40px + env(safe-area-inset-bottom, 0px)); }
+  padding-inline: 14px; padding-block: env(safe-area-inset-top, 0px) calc(40px + env(safe-area-inset-bottom, 0px)); transition: margin-right 0.3s ease; }
 .wrap { max-width: 1040px; margin-inline: auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
@@ -107,9 +108,34 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
 .actions .spacer { flex: 1; }
 .hint { color: var(--muted); font-size: .8rem; margin: 0; }
 .toast { position: fixed; inset-inline: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); margin-inline: auto; width: fit-content; max-width: 100%; background: var(--fg); color: var(--bg); padding: 10px 18px; border-radius: 8px; z-index: 30; font-size: .9rem; }
+
+/* القائمة الجانبية المحدثة */
+.sidebar-toggle { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; font-weight: 500; }
+.sidebar { position: fixed; inset-block: 0; right: calc(var(--sidebar-width) * -1); width: var(--sidebar-width); background: var(--surface); box-shadow: var(--shadow); z-index: 25; transition: right 0.3s ease; padding: 20px; display: grid; gap: 20px; border-inline-start: 1px solid var(--line); padding-block-end: env(safe-area-inset-bottom, 20px); }
+.sidebar.open { right: 0; }
+.sidebar-overlay { position: fixed; inset: 0; z-index: 22; background: rgba(8,18,26,.3); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+.sidebar h2 { margin: 0; font-size: 1.1rem; }
+.sidebar .menu-list { display: grid; gap: 10px; }
+.sidebar .menu-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; background: var(--bg); color: var(--fg); font-weight: 500; border: 1px solid var(--line); width: 100%; text-align: start; }
+.sidebar .menu-item:hover { background: var(--accent-soft); border-color: var(--accent); }
 </style>
 </head>
 <body>
+
+<div class="sidebar-overlay" id="sbOverlay"></div>
+<div class="sidebar" id="sidebar">
+  <div class="titlebar">
+    <h2>الخيارات</h2>
+    <button class="btn" type="button" id="sbClose">إغلاق</button>
+  </div>
+  <div class="menu-list">
+    <button class="menu-item" type="button" data-type="all-sims">جميع الشرائح</button>
+    <button class="menu-item" type="button" data-type="clear-sim">الشرائح النظيفة</button>
+    <button class="menu-item" type="button" data-type="used-sim">الشرائح المستعملة</button>
+  </div>
+</div>
+
 <div class="wrap">
   <header class="top">
     <div class="titlebar">
@@ -118,6 +144,7 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
         <div class="sub" id="summary"></div>
       </div>
       <div class="btns">
+        <button class="sidebar-toggle" id="sbToggle" type="button" aria-label="القائمة الجانبية">القائمة</button>
         <button class="btn" id="setBtn" type="button" aria-label="الإعدادات">الإعدادات</button>
         <button class="btn primary" id="addBtn" type="button">+ إضافة</button>
       </div>
@@ -136,17 +163,20 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     <div class="two">
       <div class="field"><label for="f-phone">رقم الهاتف</label><input id="f-phone" class="ltr" type="text" inputmode="numeric" autocomplete="off" placeholder="05XXXXXXXX"></div>
       <div class="field"><label for="f-company">الشركة</label>
-        <select id="f-company"><option value="">غير محددة</option><option>سلكوم</option><option>هوت</option><option>بلفون</option><option>بارتنر</option><option>رامي ليفي</option><option>019</option><option>وي</option></select>
+        <select id="f-company"><option value="">غير محددة</option><option>سلكوم</option><option>هوت موبايل</option><option>بلفون</option><option>بارتنر</option><option>رامي ليفي</option><option>019</option><option>ألوها</option><option>أخرى</option></select>
       </div>
     </div>
-    <div class="field"><label for="f-sim">رقم الشريحة</label><input id="f-sim" class="ltr" type="text" inputmode="numeric" autocomplete="off" placeholder="8997…"></div>
-    <div class="field"><label for="f-place">مكان التفعيل</label><input id="f-place" type="text" autocomplete="off" placeholder="مثال: المحل، البيت، اسم الشخص أو المنطقة"></div>
-    <div class="field"><label for="f-wa">رقم التواصل واتساب</label><input id="f-wa" class="ltr" type="text" inputmode="tel" autocomplete="off" placeholder="05XXXXXXXX أو 972XXXXXXXXX"></div>
     <div class="two">
-      <div class="field"><label for="f-status">الحالة</label>
-        <select id="f-status"><option value="active">مفعل</option><option value="suspended">معلق</option><option value="disconnected">مفصول</option></select>
+      <div class="field"><label for="f-sim">رقم الشريحة</label><input id="f-sim" class="ltr" type="text" inputmode="numeric" autocomplete="off" placeholder="8997…"></div>
+      <div class="field"><label for="f-activation">مكان التفعيل</label>
+        <select id="f-activation"><option value="">غير محددة</option><option>ألوها</option><option>كويك لاين</option><option>أرين</option><option>سكاي</option><option>توب أب</option><option>مسار</option><option>أخرى</option></select>
       </div>
-      <div class="field"><label for="f-date">تاريخ الفصل / القطع</label><input id="f-date" type="date"></div>
+    </div>
+    <div class="two">
+      <div class="field"><label for="f-sim-state">حالة الشريحة</label>
+        <select id="f-sim-state"><option value="used-sim">مستعملة</option><option value="clear-sim">نظيفة</option></select>
+      </div>
+      <div class="field"><label for="f-wa">رقم التواصل واتساب</label><input id="f-wa" class="ltr" type="text" inputmode="tel" autocomplete="off" placeholder="05XXXXXXXXة / القطع</label><input id="f-date" type="date"></div>
     </div>
     <div class="alarmbox">
       <label class="chk" for="f-alarm-on"><input id="f-alarm-on" type="checkbox"> تفعيل المنبه</label>
@@ -177,41 +207,53 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     <div class="field">
       <label>مشاركة البيانات مع جهاز آخر</label>
       <div class="btns">
-        <button class="btn" type="button" id="expBtn">تصدير نسخة</button>
-        <button class="btn" type="button" id="impBtn">استيراد ودمج</button>
+        <button class="btn" type="button" id="expBtnCSV">تصدير CSV (لـ Excel)</button>
+        <button class="btn" type="button" id="expBtn">تصدير نسخة احتياطية</button>
+        <button class="btn" type="button" id="impBtn">استيراد ودمج النسخة</button>
       </div>
       <input id="impFile" type="file" accept=".json,application/json" hidden>
       <p class="hint">صدّر النسخة وأرسلها لجهاز آخر (واتساب أو غيره) ثم استوردها هناك. يؤخذ الأحدث تعديلًا لكل سجل.</p>
-    </div>
-    <div class="field">
-      <label>الإشعارات والمنبه</label>
-      <button class="btn" type="button" id="testBtn">تفعيل الإشعارات واختبارها</button>
-      <p class="hint">اضغط الزر ثم اخرج من التطبيق. يجب أن يصلك إشعار خلال 10 ثوانٍ. إن لم يصل، اسمح للتطبيق بالإشعارات والمنبهات، وأوقف توفير البطارية له من إعدادات الهاتف.</p>
     </div>
     <div class="err" id="setMsg" role="status"></div>
     <div class="actions"><button class="btn primary" type="button" id="setClose">إغلاق</button></div>
   </div>
 </div>
 
-<script src="seed.js"></script>
+<script>window.SEED_VERSION="2026-10-15-a";window.SEED=[{"phone":"0548374631","sim":"89972010221031127933","name":"","cutDate":"2026-11-01","status":"active","company":"بارتنر","activation":"سكاي","simState":"used-sim","_id":"s0001","updatedAt":"2026-10-15T10:00:00+03:00"}];</script>
 <script>
 (function () {
   var STATUS = { active: "مفعل", suspended: "معلق", disconnected: "مفصول" };
   var ORDER = ["active", "suspended", "disconnected"];
-  var PAGE = 80, KEY = "sims_v1", TOMB = "sims_deleted_v1", SET = "sims_settings_v1";
+  var PAGE = 80, KEY = "sims_v2", TOMB = "sims_deleted_v2", SET = "sims_settings_v2";
   var Cap = window.Capacitor, P = (Cap && Cap.Plugins) || {};
   var LN = P.LocalNotifications, FS = P.Filesystem, SH = P.Share;
 
   var docs = new Map(), tomb = {}, settings = { hour: 9 };
   var filter = "all", query = "", shown = PAGE, editingId = null, delArmed = false;
+  var simStateFilter = "all-sims";
   var $ = function (id) { return document.getElementById(id); };
   var listEl = $("list"), tabsEl = $("tabs"), summaryEl = $("summary");
+  var sidebar = $("sidebar"), sbOverlay = $("sbOverlay");
 
   // ---------- helpers
   function toLatin(s) { return String(s || "").replace(/[٠-٩]/g, function (d) { return d.charCodeAt(0) - 0x660; }).replace(/[۰-۹]/g, function (d) { return d.charCodeAt(0) - 0x6f0; }); }
   function digits(s) { return toLatin(s).replace(/\D/g, ""); }
   function pad(n) { return String(n).padStart(2, "0"); }
   function fmtDate(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); return m ? m[3] + "/" + m[2] + "/" + m[1] : "—"; }
+  
+  function updateAutoStatuses() {
+    var today = new Date().toISOString().slice(0, 10);
+    var modified = false;
+    docs.forEach(function (r) {
+      if (r.status === "active" && r.cutDate && r.cutDate <= today) {
+        r.status = "disconnected";
+        r.updatedAt = new Date().toISOString();
+        modified = true;
+      }
+    });
+    if (modified) persist();
+  }
+
   function daysFrom(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); if (!m) return null;
     var t = new Date(), a = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
@@ -232,15 +274,15 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
   function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
   function loadAll() {
     var arr = readJSON(KEY, null), sv = window.SEED_VERSION || "0", seen = null;
-    try { seen = localStorage.getItem("sims_seed_ver"); } catch (e) {}
+    try { seen = localStorage.getItem("sims_seed_ver_v2"); } catch (e) {}
     if (!arr || seen !== sv) {
-      // new built-in data set: replace everything stored on this device
       arr = (window.SEED || []).slice(); writeJSON(KEY, arr); writeJSON(TOMB, {});
-      try { localStorage.setItem("sims_seed_ver", sv); } catch (e) {}
+      try { localStorage.setItem("sims_seed_ver_v2", sv); } catch (e) {}
     }
     arr.forEach(function (r) { docs.set(r._id, r); });
     tomb = readJSON(TOMB, {});
     var s = readJSON(SET, null); if (s && typeof s.hour === "number") settings = s;
+    updateAutoStatuses();
   }
   function persist() {
     var ok = writeJSON(KEY, Array.from(docs.values())) && writeJSON(TOMB, tomb);
@@ -267,8 +309,12 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     var t = new Date(r.alarmAt).getTime(); return !isNaN(t) && Date.now() >= t;
   }
   function matches(r) {
+    if (simStateFilter === "clear-sim" && r.simState !== "clear-sim") return false;
+    if (simStateFilter === "used-sim" && r.simState !== "used-sim") return false;
+
     if (filter === "due") { if (dueDays(r) === null) return false; }
     else if (filter !== "all" && r.status !== filter) return false;
+    
     var raw = query.trim(); if (!raw) return true;
     var d = digits(raw), plain = /^[\d\s\-+()٠-٩۰-۹]+$/.test(raw);
     if (plain && d) {
@@ -276,7 +322,7 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
       if (d[0] === "0" && (r.phone || "").indexOf(d.slice(1)) !== -1) return true;
       return false;
     }
-    var hay = [r.name, r.phone, r.sim, r.company, r.place, r.notes].join(" ").toLowerCase();
+    var hay = [r.name, r.phone, r.sim, r.company, r.place, r.notes, r.activation].join(" ").toLowerCase();
     return hay.indexOf(raw.toLowerCase()) !== -1;
   }
   function waLink(r) {
@@ -290,8 +336,10 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     var today = all.filter(function (r) { return dueDays(r) === 0; }).length;
     var tmr = all.filter(function (r) { return dueDays(r) === 1; }).length, h = "";
     all.filter(alarmDue).forEach(function (r) {
+      if (!alarmDue(r)) return; 
       var p = r.alarmAt.split("T");
-      h += '<div class="alert alarm"><span>⏰ منبه: ' + esc(r.name || r.phone) + " · " + esc(r.phone) + " · " + fmtDate(p[0]) + " " + esc(p[1] || "") + '</span><button type="button" data-ack="' + esc(r._id) + '">تم</button></div>';
+      var noteText = r.notes ? " · " + esc(r.notes) : "";
+      h += '<div class="alert alarm"><span>⏰ منبه: ' + esc(r.name || r.phone) + " · " + esc(r.phone) + noteText + '</span><button type="button" data-ack="' + esc(r._id) + '">تم</button></div>';
     });
     if (today) h += '<div class="alert today"><span>تنبيه: ' + today + ' شريحة موعد فصلها اليوم</span><button type="button" data-due="1">عرض</button></div>';
     if (tmr) h += '<div class="alert tomorrow"><span>تنبيه: ' + tmr + ' شريحة موعد فصلها غدًا</span><button type="button" data-due="1">عرض</button></div>';
@@ -307,6 +355,7 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     summaryEl.textContent = all.length ? "إجمالي " + all.length + " شريحة · مرتبة: مفعل ثم معلق ثم مفصول" : "لا توجد شرائح بعد";
   }
   function render() {
+    updateAutoStatuses();
     var all = Array.from(docs.values());
     renderTabs(all); renderAlerts(all);
     var rows = sorted(all.filter(matches));
@@ -315,9 +364,10 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     var last = null, i = 0, counts = {};
     rows.forEach(function (r) { counts[r.status] = (counts[r.status] || 0) + 1; });
     rows.slice(0, shown).forEach(function (r) {
-      if (filter === "all" && r.status !== last) { last = r.status; out.push('<div class="row group"><span class="pill ' + r.status + '">' + STATUS[r.status] + '</span><span class="n">' + counts[r.status] + "</span></div>"); }
+      if (filter === "all" && simStateFilter === "all-sims" && r.status !== last) { last = r.status; out.push('<div class="row group"><span class="pill ' + r.status + '">' + STATUS[r.status] + '</span><span class="n">' + counts[r.status] + "</span></div>"); }
       i++;
-      var sub = [r.company, r.place ? "📍 " + r.place : "", r.alarmOn && r.alarmAt ? "⏰ " + fmtDate(r.alarmAt.split("T")[0]) + " " + (r.alarmAt.split("T")[1] || "") : ""].filter(Boolean).map(esc).join(" · ");
+      var stateLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
+      var sub = [r.company, r.activation ? "⚙️ " + r.activation : "", "💳 " + stateLabel, r.place ? "📍 " + r.place : "", r.alarmOn && r.alarmAt ? "⏰ " + fmtDate(r.alarmAt.split("T")[0]) + " " + (r.alarmAt.split("T")[1] || "") : ""].filter(Boolean).map(esc).join(" · ");
       out.push('<div class="row' + (dueDays(r) !== null ? " due" : "") + '">' +
         '<span class="idx num">' + i + "</span>" +
         '<span class="c-phone num">' + esc(r.phone) + "</span>" +
@@ -332,9 +382,6 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
   }
 
   // ---------- local notifications (phone fires them, no internet needed)
-  async function ensureChannel() {
-    try { await LN.createChannel({ id: "alarms", name: "تنبيهات الفصل والمنبه", description: "إشعارات موعد الفصل والمنبه", importance: 5, visibility: 1, vibration: true }); } catch (e) {}
-  }
   var schedTimer;
   function scheduleNotifs() { clearTimeout(schedTimer); schedTimer = setTimeout(doSchedule, 400); }
   async function doSchedule() {
@@ -343,7 +390,6 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
       var perm = await LN.checkPermissions();
       if (perm.display !== "granted") perm = await LN.requestPermissions();
       if (perm.display !== "granted") return;
-      await ensureChannel();
       var pend = await LN.getPending();
       if (pend.notifications && pend.notifications.length) await LN.cancel({ notifications: pend.notifications });
       var list = [], now = Date.now(), h = settings.hour;
@@ -357,10 +403,10 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
         }
         if (r.alarmOn && !r.alarmDone && r.alarmAt) {
           var at = new Date(r.alarmAt);
-          if (!isNaN(at) && at.getTime() > now) list.push({ id: hash(r._id + "a"), title: "منبه", body: who + (r.notes ? " — " + r.notes : ""), schedule: { at: at, allowWhileIdle: true } });
+          var noteText = r.notes ? " — " + r.notes : "";
+          if (!isNaN(at) && at.getTime() > now) list.push({ id: hash(r._id + "a"), title: "منبه: " + (r.name || r.phone), body: r.phone + noteText, schedule: { at: at, allowWhileIdle: true } });
         }
       });
-      list.forEach(function (n) { n.channelId = "alarms"; });
       list.sort(function (a, b) { return a.schedule.at - b.schedule.at; });
       if (list.length) await LN.schedule({ notifications: list.slice(0, 450) });
     } catch (e) {}
@@ -373,6 +419,8 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     $("dlgTitle").textContent = r ? "تعديل الشريحة" : "إضافة شريحة";
     $("f-name").value = r ? r.name || "" : ""; $("f-phone").value = r ? r.phone || "" : "";
     $("f-sim").value = r ? r.sim || "" : ""; $("f-company").value = r ? r.company || "" : "";
+    $("f-activation").value = r ? r.activation || "" : "";
+    $("f-sim-state").value = r ? r.simState || "used-sim" : "used-sim";
     $("f-place").value = r ? r.place || "" : ""; $("f-wa").value = r ? r.wa || "" : "";
     $("f-status").value = r ? r.status : "active"; $("f-date").value = r ? r.cutDate || "" : "";
     $("f-notes").value = r ? r.notes || "" : "";
@@ -403,6 +451,7 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     var id = editingId || newId();
     var rec = Object.assign({}, docs.get(id) || {}, {
       _id: id, phone: phone, sim: digits($("f-sim").value), name: $("f-name").value.trim(), company: $("f-company").value,
+      activation: $("f-activation").value, simState: $("f-sim-state").value,
       place: $("f-place").value.trim(), wa: digits($("f-wa").value), notes: $("f-notes").value.trim(),
       status: $("f-status").value, cutDate: $("f-date").value,
       alarmOn: alarmOn, alarmAt: alarmOn ? adate + "T" + atime : "", alarmDone: false, updatedAt: new Date().toISOString()
@@ -432,7 +481,7 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
   $("addBtn").addEventListener("click", function () { openDlg(null); });
   $("cancelBtn").addEventListener("click", closeDlg);
   $("overlay").addEventListener("mousedown", function (e) { if (e.target === $("overlay")) closeDlg(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeDlg(); $("setOverlay").hidden = true; } });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeDlg(); $("setOverlay").hidden = true; sidebar.classList.remove("open"); sbOverlay.classList.remove("open"); } });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) render(); });
 
   // in-app alarm sound while the app is open
@@ -459,13 +508,46 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
 
   $("expBtn").addEventListener("click", async function () {
     var d = new Date(), name = "sims-" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + "-" + pad(d.getHours()) + pad(d.getMinutes()) + ".json";
-    var data = JSON.stringify({ v: 1, exportedAt: d.toISOString(), records: Array.from(docs.values()), deleted: tomb });
+    var data = JSON.stringify({ v: 2, exportedAt: d.toISOString(), records: Array.from(docs.values()), deleted: tomb });
     try {
       if (FS && SH) { var w = await FS.writeFile({ path: name, data: data, directory: "CACHE", encoding: "utf8" }); await SH.share({ title: name, url: w.uri }); }
       else { var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([data], { type: "application/json" })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
       $("setMsg").textContent = "تم تجهيز النسخة.";
     } catch (x) { $("setMsg").textContent = "تعذر التصدير."; }
   });
+
+  // تصدير بصيغة CSV لبرنامج Excel
+  $("expBtnCSV").addEventListener("click", async function () {
+    var d = new Date(), name = "sims-" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + ".csv";
+    var csvRows = [];
+    var headers = ["الاسم", "رقم الهاتف", "الشركة", "رقم الشريحة", "مكان التفعيل", "الحالة", "حالة الشريحة (نظيفة/مستعملة)", "تاريخ الفصل", "ملاحظات"];
+    csvRows.push(headers.join(","));
+
+    docs.forEach(function(r) {
+      var stateLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
+      var statusLabel = STATUS[r.status] || r.status;
+      var row = [
+        '"' + (r.name || "").replace(/"/g, '""') + '"',
+        '"' + (r.phone || "") + '"',
+        '"' + (r.company || "").replace(/"/g, '""') + '"',
+        '"' + (r.sim || "") + '"',
+        '"' + (r.activation || "").replace(/"/g, '""') + '"',
+        '"' + statusLabel + '"',
+        '"' + stateLabel + '"',
+        '"' + (r.cutDate || "") + '"',
+        '"' + (r.notes || "").replace(/"/g, '""') + '"'
+      ];
+      csvRows.push(row.join(","));
+    });
+
+    var csvString = "\ufeff" + csvRows.join("\n"); 
+    try {
+      if (FS && SH) { var w = await FS.writeFile({ path: name, data: csvString, directory: "CACHE", encoding: "utf8" }); await SH.share({ title: name, url: w.uri }); }
+      else { var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csvString], { type: "text/csv;charset=utf-8;" })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+      $("setMsg").textContent = "تم تجهيز ملف CSV.";
+    } catch (x) { $("setMsg").textContent = "تعذر تصدير CSV."; }
+  });
+
   $("impBtn").addEventListener("click", function () { $("impFile").click(); });
   $("impFile").addEventListener("change", function (e) {
     var f = e.target.files && e.target.files[0]; if (!f) return;
@@ -493,21 +575,19 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
     fr.readAsText(f);
   });
 
-  $("testBtn").addEventListener("click", async function () {
-    var m = $("setMsg");
-    if (!LN) { m.textContent = "الإشعارات تعمل داخل تطبيق الأندرويد فقط."; return; }
-    try {
-      var p = await LN.requestPermissions();
-      if (p.display !== "granted") { m.textContent = "الإشعارات مرفوضة. فعّلها من إعدادات الهاتف ← التطبيقات ← سجل الشرائح ← الإشعارات."; return; }
-      await ensureChannel();
-      var ex = null; try { ex = await LN.checkExactNotificationSetting(); } catch (e) {}
-      if (ex && ex.exact_alarm && ex.exact_alarm !== "granted") {
-        m.textContent = "اسمح بـ «المنبهات والتذكيرات» في الشاشة التي ستُفتح، ثم ارجع واضغط الزر مرة أخرى.";
-        await LN.changeExactNotificationSetting(); return;
-      }
-      await LN.schedule({ notifications: [{ id: 999999991, title: "اختبار المنبه", body: "إذا ظهر هذا الإشعار فالمنبه يعمل.", channelId: "alarms", schedule: { at: new Date(Date.now() + 10000), allowWhileIdle: true } }] });
-      m.textContent = "سيصلك إشعار خلال 10 ثوانٍ. اخرج من التطبيق وانتظر.";
-    } catch (e) { m.textContent = "تعذر الاختبار."; }
+  // ---------- sidebar events
+  $("sbToggle").addEventListener("click", function() { sidebar.classList.add("open"); sbOverlay.classList.add("open"); });
+  $("sbClose").addEventListener("click", function() { sidebar.classList.remove("open"); sbOverlay.classList.remove("open"); });
+  sbOverlay.addEventListener("click", function() { sidebar.classList.remove("open"); sbOverlay.classList.remove("open"); });
+  
+  sidebar.querySelectorAll(".menu-item").forEach(function(item) {
+    item.addEventListener("click", function() {
+      simStateFilter = this.dataset.type;
+      shown = PAGE;
+      render();
+      sidebar.classList.remove("open"); sbOverlay.classList.remove("open");
+      $("addBtn").hidden = (simStateFilter === "all-sims" ? false : true);
+    });
   });
 
   loadAll(); render(); scheduleNotifs();
@@ -515,3 +595,4 @@ h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
 </script>
 </body>
 </html>
+
