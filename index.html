@@ -4,595 +4,555 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>سجل الشرائح</title>
+<title>الاشتراكات - إدارة الشرائح</title>
 <style>
 :root {
-  --bg: #f3f5f7; --surface: #ffffff; --fg: #16202a; --muted: #5d6b79; --line: #dbe1e7;
-  --accent: #0b5f7a; --accent-fg: #ffffff; --accent-soft: #dcecf2;
-  --on: #136b3a; --on-bg: #dcf1e4; --hold: #8a5a00; --hold-bg: #fbecc8; --off: #a12b2b; --off-bg: #f9dede;
-  --danger: #b3261e; --shadow: 0 10px 40px rgba(10,30,45,.22);
+  --bg: #0f161c; --surface: #172029; --surface-card: #1e2936; --fg: #e6edf3; --muted: #93a2b1; --line: #263440;
+  --accent: #4fb3d1; --accent-fg: #062029; --accent-soft: #14323d;
+  --on: #6fd49a; --on-bg: #14341f; --hold: #f0c261; --hold-bg: #3a2c0c; --off: #f08a8a; --off-bg: #3d1a1a;
+  --danger: #f2877f; --shadow: 0 10px 30px rgba(0,0,0,.5);
   --font: system-ui, "Segoe UI", Roboto, Tahoma, sans-serif;
   --mono: ui-monospace, Consolas, "Roboto Mono", monospace;
-  --sidebar-width: 250px;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f161c; --surface: #172029; --fg: #e6edf3; --muted: #93a2b1; --line: #263440;
-    --accent: #4fb3d1; --accent-fg: #062029; --accent-soft: #14323d;
-    --on: #6fd49a; --on-bg: #14341f; --hold: #f0c261; --hold-bg: #3a2c0c; --off: #f08a8a; --off-bg: #3d1a1a;
-    --danger: #f2877f; --shadow: 0 10px 40px rgba(0,0,0,.6);
-  }
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html { color-scheme: light dark; }
-body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5;
-  padding-inline: 14px; padding-block: env(safe-area-inset-top, 0px) calc(40px + env(safe-area-inset-bottom, 0px)); transition: margin-right 0.3s ease; }
-.wrap { max-width: 1040px; margin-inline: auto; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5; padding: 14px; padding-bottom: calc(50px + env(safe-area-inset-bottom, 0px)); }
+.wrap { max-width: 720px; margin: 0 auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
-button { cursor: pointer; }
+button { cursor: pointer; border: none; background: none; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); padding-block: 14px 8px; display: grid; gap: 10px; }
-.titlebar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
-.sub { color: var(--muted); font-size: .82rem; }
-.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; font-weight: 500; }
+header.top { position: sticky; top: 0; z-index: 10; background: var(--bg); padding-block: 10px 12px; display: grid; gap: 12px; }
+.titlebar { display: flex; align-items: center; justify-content: space-between; }
+h1 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--fg); }
+.sub { color: var(--muted); font-size: .82rem; margin-top: 2px; }
+.btns { display: flex; gap: 8px; align-items: center; }
+.btn-icon { width: 44px; height: 44px; background: var(--accent); color: var(--accent-fg); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; box-shadow: 0 4px 12px rgba(79,179,209,.3); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 14px; font-weight: 500; font-size: .9rem; }
 .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
-.btn.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
-.btn.danger.armed { background: var(--danger); color: var(--surface); }
-.btns { display: flex; gap: 8px; }
-.search input { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 11px 14px; font-size: 1rem; }
+.btn.danger { color: var(--danger); border-color: var(--danger); }
+
+.search input { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 16px; font-size: 1rem; color: var(--fg); }
 .search input::placeholder { color: var(--muted); }
-.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
-.tab { flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; display: inline-flex; gap: 8px; align-items: baseline; font-size: .9rem; }
-.tab b { font-family: var(--mono); font-weight: 500; color: var(--muted); font-size: .8rem; }
+
+.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; display: inline-flex; gap: 6px; align-items: center; font-size: .88rem; color: var(--muted); }
+.tab b { font-family: var(--mono); font-weight: 600; font-size: .8rem; }
 .tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .tab[aria-pressed="true"] b { color: inherit; }
-.alerts { display: grid; gap: 6px; }
-.alert { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; border-radius: 8px; padding: 9px 14px; font-size: .9rem; font-weight: 500; }
-.alert.today { background: var(--off-bg); color: var(--off); }
-.alert.tomorrow { background: var(--hold-bg); color: var(--hold); }
-.alert.alarm { background: var(--accent-soft); color: var(--accent); }
-.alert button { margin-inline-start: auto; border: 1px solid currentColor; background: transparent; color: inherit; border-radius: 6px; padding: 3px 12px; font-size: .82rem; }
 
-.list { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 6px; }
-.row { display: grid; grid-template-columns: 44px 150px 190px minmax(0,1fr) 118px 112px 118px; gap: 12px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); }
-.row:first-child { border-top: 0; }
-.row.head { background: var(--accent-soft); color: var(--muted); font-size: .78rem; font-weight: 600; padding-block: 8px; }
-.row.group { display: flex; gap: 10px; align-items: center; background: var(--bg); font-weight: 600; font-size: .85rem; padding-block: 7px; }
-.row.group span.n { font-family: var(--mono); color: var(--muted); font-weight: 400; }
-.row.due { background: color-mix(in srgb, var(--hold-bg) 55%, transparent); }
-.num { font-family: var(--mono); direction: ltr; text-align: right; font-size: .9rem; }
-.idx { color: var(--muted); font-size: .8rem; }
-.sim { color: var(--muted); font-size: .78rem; overflow-wrap: anywhere; }
-.name { overflow-wrap: anywhere; }
-.name small { display: block; color: var(--muted); font-size: .75rem; }
-.note { display: block; color: var(--muted); font-size: .78rem; margin-top: 2px; overflow-wrap: anywhere; }
-.date { font-family: var(--mono); font-size: .85rem; direction: ltr; text-align: right; }
-.date small { display: block; color: var(--muted); font-family: var(--font); font-size: .72rem; direction: rtl; text-align: right; }
-.pill { display: inline-block; padding: 2px 11px; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }
-.pill.active { background: var(--on-bg); color: var(--on); }
-.pill.suspended { background: var(--hold-bg); color: var(--hold); }
-.pill.disconnected { background: var(--off-bg); color: var(--off); }
-.c-edit { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; row-gap: 4px; }
-.edit { border: 1px solid var(--line); background: transparent; border-radius: 6px; padding: 4px 10px; font-size: .82rem; color: var(--accent); }
-.wa { display: inline-block; border: 1px solid var(--on); color: var(--on); border-radius: 6px; padding: 4px 10px; font-size: .82rem; text-decoration: none; margin-inline-end: 6px; }
-.empty { padding: 36px 16px; text-align: center; color: var(--muted); }
-.more { display: flex; justify-content: center; padding: 14px; }
+.section-title { font-size: .85rem; color: var(--muted); font-weight: 600; margin-block: 10px 6px; display: flex; justify-content: space-between; }
 
-@media (max-width: 760px) {
-  .row.head { display: none; }
-  .row { grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "phone status" "name name" "sim sim" "date edit"; row-gap: 4px; padding: 12px 14px; }
-  .row .idx { display: none; }
-  .row .c-phone { grid-area: phone; } .row .c-status { grid-area: status; justify-self: end; }
-  .row .c-name { grid-area: name; } .row .c-sim { grid-area: sim; }
-  .row .c-date { grid-area: date; } .row .c-edit { grid-area: edit; justify-self: end; }
-}
+/* Cards list */
+.list { display: grid; gap: 12px; }
+.card { background: var(--surface-card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.2); position: relative; }
+.card.due { border-color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 20%, var(--surface-card)); }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.phone-lg { font-family: var(--mono); font-size: 1.25rem; font-weight: 700; direction: ltr; text-align: right; letter-spacing: 0.5px; }
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+.badge.active { background: var(--on-bg); color: var(--on); }
+.badge.suspended { background: var(--hold-bg); color: var(--hold); }
+.badge.disconnected { background: var(--off-bg); color: var(--off); }
+.badge.days { background: var(--accent-soft); color: var(--accent); margin-inline-end: auto; }
 
-.overlay { position: fixed; inset: 0; z-index: 20; background: rgba(8,18,26,.55); display: flex; align-items: center; justify-content: center; padding: 14px; }
+.card-body { display: grid; gap: 4px; font-size: .9rem; }
+.name-row { font-weight: 600; font-size: 1.05rem; display: flex; justify-content: space-between; }
+.sim-row { font-family: var(--mono); font-size: .85rem; color: var(--muted); direction: ltr; text-align: right; display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.meta-row { display: flex; gap: 12px; font-size: .82rem; color: var(--muted); flex-wrap: wrap; margin-top: 2px; }
+.date-row { font-size: .85rem; color: var(--fg); border-top: 1px solid var(--line); padding-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+.date-val { font-family: var(--mono); direction: ltr; color: var(--muted); }
+
+/* Card Actions */
+.card-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 4px; }
+.action-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 7px 4px; font-size: .82rem; font-weight: 500; text-align: center; color: var(--fg); display: flex; align-items: center; justify-content: center; gap: 4px; }
+.action-btn.wa { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 30%, transparent); }
+.action-btn.call { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 40%, transparent); }
+.action-btn.sms { border-color: var(--hold); color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 30%, transparent); }
+
+.empty { padding: 40px 20px; text-align: center; color: var(--muted); background: var(--surface); border-radius: 14px; border: 1px solid var(--line); }
+
+/* Modals */
+.overlay { position: fixed; inset: 0; z-index: 30; background: rgba(8,18,26,.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 14px; }
 .overlay[hidden] { display: none; }
-.dlg { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); width: 100%; max-width: 440px; max-height: 100%; overflow-y: auto; padding: 18px; display: grid; gap: 12px; }
-.dlg h2 { margin: 0; font-size: 1.1rem; }
-.field { display: grid; gap: 4px; }
+.dlg { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 20px; display: grid; gap: 14px; border: 1px solid var(--line); }
+.dlg h2 { margin: 0; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+.field { display: grid; gap: 5px; }
 .field label { font-size: .82rem; color: var(--muted); font-weight: 500; }
-.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 9px 12px; }
-.field textarea { min-height: 70px; resize: vertical; }
-.field input.ltr { direction: ltr; text-align: right; font-family: var(--mono); }
+.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 14px; color: var(--fg); font-size: .95rem; }
+.field textarea { min-height: 80px; resize: vertical; }
+.field input.ltr, .field textarea.ltr { direction: ltr; text-align: right; font-family: var(--mono); }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.two[hidden] { display: none; }
-.alarmbox { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 10px; background: var(--bg); }
-.chk { display: flex; gap: 8px; align-items: center; font-weight: 500; }
-.chk input { width: 18px; height: 18px; accent-color: var(--accent); }
-.err { color: var(--danger); font-size: .85rem; min-height: 1.2em; }
-.actions { display: flex; gap: 8px; align-items: center; }
+.actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
 .actions .spacer { flex: 1; }
-.hint { color: var(--muted); font-size: .8rem; margin: 0; }
-.toast { position: fixed; inset-inline: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); margin-inline: auto; width: fit-content; max-width: 100%; background: var(--fg); color: var(--bg); padding: 10px 18px; border-radius: 8px; z-index: 30; font-size: .9rem; }
-
-/* القائمة الجانبية المحدثة */
-.sidebar-toggle { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; font-weight: 500; }
-.sidebar { position: fixed; inset-block: 0; right: calc(var(--sidebar-width) * -1); width: var(--sidebar-width); background: var(--surface); box-shadow: var(--shadow); z-index: 25; transition: right 0.3s ease; padding: 20px; display: grid; gap: 20px; border-inline-start: 1px solid var(--line); padding-block-end: env(safe-area-inset-bottom, 20px); }
-.sidebar.open { right: 0; }
-.sidebar-overlay { position: fixed; inset: 0; z-index: 22; background: rgba(8,18,26,.3); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-.sidebar-overlay.open { opacity: 1; pointer-events: auto; }
-.sidebar h2 { margin: 0; font-size: 1.1rem; }
-.sidebar .menu-list { display: grid; gap: 10px; }
-.sidebar .menu-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; background: var(--bg); color: var(--fg); font-weight: 500; border: 1px solid var(--line); width: 100%; text-align: start; }
-.sidebar .menu-item:hover { background: var(--accent-soft); border-color: var(--accent); }
+.hint { color: var(--muted); font-size: .8rem; margin: 0; line-height: 1.4; }
+.toast { position: fixed; bottom: 20px; left: 50%变成了translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 20px; border-radius: 10px; z-index: 40; font-size: .9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(-50%); animation: fadeInOut 2.5s ease forwards; }
+@keyframes fadeInOut { 0%{opacity:0; transform:translate(-50%,20px);} 15%{opacity:1; transform:translate(-50%,0);} 85%{opacity:1; transform:translate(-50%,0);} 100%{opacity:0; transform:translate(-50%,20px);} }
 </style>
 </head>
 <body>
-
-<div class="sidebar-overlay" id="sbOverlay"></div>
-<div class="sidebar" id="sidebar">
-  <div class="titlebar">
-    <h2>الخيارات</h2>
-    <button class="btn" type="button" id="sbClose">إغلاق</button>
-  </div>
-  <div class="menu-list">
-    <button class="menu-item" type="button" data-type="all-sims">جميع الشرائح</button>
-    <button class="menu-item" type="button" data-type="clear-sim">الشرائح النظيفة</button>
-    <button class="menu-item" type="button" data-type="used-sim">الشرائح المستعملة</button>
-  </div>
-</div>
 
 <div class="wrap">
   <header class="top">
     <div class="titlebar">
       <div>
-        <h1>سجل الشرائح</h1>
-        <div class="sub" id="summary"></div>
+        <h1>الاشتراكات</h1>
+        <div class="sub" id="summary">جاري تحميل البيانات...</div>
       </div>
       <div class="btns">
-        <button class="sidebar-toggle" id="sbToggle" type="button" aria-label="القائمة الجانبية">القائمة</button>
-        <button class="btn" id="setBtn" type="button" aria-label="الإعدادات">الإعدادات</button>
-        <button class="btn primary" id="addBtn" type="button">+ إضافة</button>
+        <button class="btn" id="setBtn" type="button">الإعدادات</button>
+        <button class="btn-icon" id="addBtn" type="button" aria-label="إضافة شريحة">+</button>
       </div>
     </div>
-    <div class="alerts" id="alerts"></div>
-    <div class="search"><input id="q" type="search" inputmode="search" autocomplete="off" placeholder="ابحث برقم الهاتف أو رقم الشريحة أو جزء منهما، أو باسم الزبون" aria-label="بحث"></div>
-    <div class="tabs" id="tabs" role="group" aria-label="تصفية حسب الحالة"></div>
+    <div class="search">
+      <input id="q" type="search" placeholder="ابحث برقم الهاتف، رقم الشريحة، أو اسم الزبون..." autocomplete="off">
+    </div>
+    <div class="tabs" id="tabs"></div>
   </header>
-  <main><div class="list" id="list" aria-live="polite"></div></main>
+  <main>
+    <div class="list" id="list"></div>
+  </main>
 </div>
 
+<!-- Add / Edit Modal -->
 <div class="overlay" id="overlay" hidden>
   <form class="dlg" id="form" novalidate>
-    <h2 id="dlgTitle">إضافة شريحة</h2>
-    <div class="field"><label for="f-name">اسم الزبون</label><input id="f-name" type="text" autocomplete="off"></div>
-    <div class="two">
-      <div class="field"><label for="f-phone">رقم الهاتف</label><input id="f-phone" class="ltr" type="text" inputmode="numeric" autocomplete="off" placeholder="05XXXXXXXX"></div>
-      <div class="field"><label for="f-company">الشركة</label>
-        <select id="f-company"><option value="">غير محددة</option><option>سلكوم</option><option>هوت موبايل</option><option>بلفون</option><option>بارتنر</option><option>رامي ليفي</option><option>019</option><option>ألوها</option><option>أخرى</option></select>
-      </div>
+    <h2 id="dlgTitle">إضافة شريحة جديدة <button class="btn" type="button" id="closeDlg" style="padding:4px 10px;font-size:.8rem;">إغلاق</button></h2>
+    <div class="field">
+      <label for="f-name">اسم الزبون</label>
+      <input id="f-name" type="text" autocomplete="off" placeholder="مثال: أحمد محمد">
     </div>
     <div class="two">
-      <div class="field"><label for="f-sim">رقم الشريحة</label><input id="f-sim" class="ltr" type="text" inputmode="numeric" autocomplete="off" placeholder="8997…"></div>
-      <div class="field"><label for="f-activation">مكان التفعيل</label>
-        <select id="f-activation"><option value="">غير محددة</option><option>ألوها</option><option>كويك لاين</option><option>أرين</option><option>سكاي</option><option>توب أب</option><option>مسار</option><option>أخرى</option></select>
+      <div class="field">
+        <label for="f-phone">رقم الهاتف</label>
+        <input id="f-phone" class="ltr" type="text" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="f-company">شركة الاتصالات</label>
+        <select id="f-company">
+          <option value="">اختر الشركة</option>
+          <option>سلكوم</option>
+          <option>هوت موبايل</option>
+          <option>بلفون</option>
+          <option>بارتنر</option>
+          <option>رامي ليفي</option>
+          <option>019</option>
+          <option>ألوها</option>
+          <option>أخرى</option>
+        </select>
       </div>
     </div>
     <div class="two">
-      <div class="field"><label for="f-sim-state">حالة الشريحة</label>
-        <select id="f-sim-state"><option value="used-sim">مستعملة</option><option value="clear-sim">نظيفة</option></select>
+      <div class="field">
+        <label for="f-sim">رقم الشريحة (SIM)</label>
+        <input id="f-sim" class="ltr" type="text" inputmode="numeric" placeholder="8997..." autocomplete="off">
       </div>
-      <div class="field"><label for="f-wa">رقم التواصل واتساب</label><input id="f-wa" class="ltr" type="text" inputmode="tel" autocomplete="off" placeholder="05XXXXXXXXة / القطع</label><input id="f-date" type="date"></div>
-    </div>
-    <div class="alarmbox">
-      <label class="chk" for="f-alarm-on"><input id="f-alarm-on" type="checkbox"> تفعيل المنبه</label>
-      <div class="two" id="alarmRow" hidden>
-        <div class="field"><label for="f-alarm-date">تاريخ المنبه</label><input id="f-alarm-date" type="date"></div>
-        <div class="field"><label for="f-alarm-time">الساعة</label><input id="f-alarm-time" type="time" value="09:00"></div>
+      <div class="field">
+        <label for="f-activation">مكان التفعيل</label>
+        <select id="f-activation">
+          <option value="">اختر المكان</option>
+          <option>ألوها</option>
+          <option>كويك لاين</option>
+          <option>أرين</option>
+          <option>سكاي</option>
+          <option>توب أب</option>
+          <option>مسار</option>
+          <option>أخرى</option>
+        </select>
       </div>
     </div>
-    <div class="field"><label for="f-notes">ملاحظات</label><textarea id="f-notes" placeholder="أي ملاحظة عن الشريحة أو الزبون"></textarea></div>
-    <div class="err" id="err" role="alert"></div>
+    <div class="two">
+      <div class="field">
+        <label for="f-status">الحالة</label>
+        <select id="f-status">
+          <option value="active">مفعل</option>
+          <option value="suspended">معلق</option>
+          <option value="disconnected">مفصول</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-simstate">نوع الشريحة</label>
+        <select id="f-simstate">
+          <option value="used-sim">مستعملة</option>
+          <option value="clear-sim">نظيفة</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-date">موعد الفصل</label>
+      <input id="f-date" type="date">
+    </div>
+    <div class="field">
+      <label for="f-notes">ملاحظات</label>
+      <textarea id="f-notes" placeholder="ملاحظات إضافية عن العضو أو الاشتراك..."></textarea>
+    </div>
+    <div style="color:var(--danger);font-size:.85rem;" id="err"></div>
     <div class="actions">
-      <button class="btn primary" type="submit" id="saveBtn">حفظ</button>
-      <button class="btn" type="button" id="cancelBtn">إلغاء</button>
-      <span class="spacer"></span>
+      <button class="btn primary" type="submit" style="flex:2;">حفظ البيانات</button>
       <button class="btn danger" type="button" id="delBtn" hidden>حذف</button>
     </div>
   </form>
 </div>
 
+<!-- Settings Modal -->
 <div class="overlay" id="setOverlay" hidden>
   <div class="dlg">
-    <h2>الإعدادات</h2>
+    <h2>الإعدادات العامة <button class="btn" type="button" id="setClose" style="padding:4px 10px;font-size:.8rem;">إغلاق</button></h2>
+    
     <div class="field">
-      <label for="s-hour">ساعة إشعارات الفصل (قبل الفصل بيوم ويوم الفصل)</label>
-      <select id="s-hour"></select>
+      <label for="s-template">قالب رسالة التذكير (SMS)</label>
+      <textarea id="s-template" class="ltr" style="direction:rtl; text-align:right;">مرحباً {name}، نذّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.</textarea>
+      <p class="hint">المتغيرات المتاحة: <code>{name}</code> للاسم، <code>{phone}</code> للرقم، <code>{date}</code> لموعد الفصل.</p>
     </div>
-    <p class="hint">الإشعارات تصل من الهاتف نفسه حتى لو كان التطبيق مغلقًا ولا تحتاج إنترنت.</p>
-    <div class="field">
-      <label>مشاركة البيانات مع جهاز آخر</label>
-      <div class="btns">
-        <button class="btn" type="button" id="expBtnCSV">تصدير CSV (لـ Excel)</button>
-        <button class="btn" type="button" id="expBtn">تصدير نسخة احتياطية</button>
-        <button class="btn" type="button" id="impBtn">استيراد ودمج النسخة</button>
+
+    <div class="field" style="margin-top: 10px;">
+      <label>إدارة النسخ الاحتياطي والملفات</label>
+      <div style="display: grid; gap: 8px; margin-top: 6px;">
+        <button class="btn" type="button" id="expCSV">تصدير ملف Excel / CSV</button>
+        <button class="btn" type="button" id="expJSON">تصدير نسخة احتياطية كاملة (JSON)</button>
+        <button class="btn" type="button" id="impBtn">استيراد بيانات ودمجها</button>
+        <input id="impFile" type="file" accept=".json,.csv" hidden>
       </div>
-      <input id="impFile" type="file" accept=".json,application/json" hidden>
-      <p class="hint">صدّر النسخة وأرسلها لجهاز آخر (واتساب أو غيره) ثم استوردها هناك. يؤخذ الأحدث تعديلًا لكل سجل.</p>
+      <p class="hint" style="margin-top:4px;">يمكنك تصدير ملف الـ CSV وفتحه مباشرة عبر برنامج Excel على جهازك.</p>
     </div>
-    <div class="err" id="setMsg" role="status"></div>
-    <div class="actions"><button class="btn primary" type="button" id="setClose">إغلاق</button></div>
+
+    <div style="text-align:center; color:var(--muted); font-size:.8rem; margin-top:10px;">
+      البيانات محفوظة محلياً على هاتفك بأمان تام وتعمل بدون إنترنت.
+    </div>
   </div>
 </div>
 
-<script>window.SEED_VERSION="2026-10-15-a";window.SEED=[{"phone":"0548374631","sim":"89972010221031127933","name":"","cutDate":"2026-11-01","status":"active","company":"بارتنر","activation":"سكاي","simState":"used-sim","_id":"s0001","updatedAt":"2026-10-15T10:00:00+03:00"}];</script>
 <script>
-(function () {
+(function() {
+  var STORAGE_KEY = "sim_subscriptions_v3";
   var STATUS = { active: "مفعل", suspended: "معلق", disconnected: "مفصول" };
   var ORDER = ["active", "suspended", "disconnected"];
-  var PAGE = 80, KEY = "sims_v2", TOMB = "sims_deleted_v2", SET = "sims_settings_v2";
-  var Cap = window.Capacitor, P = (Cap && Cap.Plugins) || {};
-  var LN = P.LocalNotifications, FS = P.Filesystem, SH = P.Share;
-
-  var docs = new Map(), tomb = {}, settings = { hour: 9 };
-  var filter = "all", query = "", shown = PAGE, editingId = null, delArmed = false;
-  var simStateFilter = "all-sims";
-  var $ = function (id) { return document.getElementById(id); };
-  var listEl = $("list"), tabsEl = $("tabs"), summaryEl = $("summary");
-  var sidebar = $("sidebar"), sbOverlay = $("sbOverlay");
-
-  // ---------- helpers
-  function toLatin(s) { return String(s || "").replace(/[٠-٩]/g, function (d) { return d.charCodeAt(0) - 0x660; }).replace(/[۰-۹]/g, function (d) { return d.charCodeAt(0) - 0x6f0; }); }
-  function digits(s) { return toLatin(s).replace(/\D/g, ""); }
-  function pad(n) { return String(n).padStart(2, "0"); }
-  function fmtDate(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); return m ? m[3] + "/" + m[2] + "/" + m[1] : "—"; }
   
-  function updateAutoStatuses() {
+  var docs = new Map();
+  var filter = "all", query = "", editingId = null, delArmed = false;
+  
+  var defaultSMSTemplate = "مرحباً {name}، نذّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.";
+  var smsTemplate = localStorage.getItem("sim_sms_tmpl") || defaultSMSTemplate;
+
+  var $ = function(id) { return document.getElementById(id); };
+
+  function loadData() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        JSON.parse(raw).forEach(function(r) { docs.set(r._id, r); });
+      } else {
+        // بيانات تجريبية أولية مطابقة للمواصفات
+        var sample = [
+          { _id: "s1", phone: "0524392489", sim: "899700224989972020", name: "أحمد علي", company: "سلكوم", activation: "ألوها", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
+          { _id: "s2", phone: "0535673845", sim: "8997207105106265389", name: "ضبة هوت", company: "هوت موبايل", activation: "كويك لاين", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
+          { _id: "s3", phone: "0507485352", sim: "8997250400047527708", name: "محمد خالد", company: "بلفون", activation: "سكاي", status: "active", simState: "used-sim", cutDate: "2026-10-19", notes: "" }
+        ];
+        sample.forEach(function(r) { docs.set(r._id, r); });
+        saveData();
+      }
+    } catch(e) { docs = new Map(); }
+    checkAutoDisconnect();
+  }
+
+  function saveData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(docs.values())));
+    } catch(e) { toast("تعذر الحفظ، مساحة التخزين ممتلئة!"); }
+  }
+
+  function toast(msg) {
+    var t = document.createElement("div");
+    t.className = "toast";
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function() { t.remove(); }, 2500);
+  }
+
+  function checkAutoDisconnect() {
     var today = new Date().toISOString().slice(0, 10);
-    var modified = false;
-    docs.forEach(function (r) {
+    var changed = false;
+    docs.forEach(function(r) {
       if (r.status === "active" && r.cutDate && r.cutDate <= today) {
         r.status = "disconnected";
-        r.updatedAt = new Date().toISOString();
-        modified = true;
+        changed = true;
       }
     });
-    if (modified) persist();
+    if (changed) saveData();
   }
 
   function daysFrom(iso) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); if (!m) return null;
-    var t = new Date(), a = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
-    return Math.round((Date.UTC(+m[1], +m[2] - 1, +m[3]) - a) / 86400000);
-  }
-  function dayNote(r) {
-    var d = daysFrom(r.cutDate); if (d === null) return "";
-    if (r.status === "active") return d > 0 ? "باقي " + d + " يوم" : d === 0 ? "ينتهي اليوم" : "انتهى منذ " + (-d) + " يوم";
-    return "منذ " + Math.abs(d) + " يوم";
-  }
-  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function toast(msg) { var t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600); }
-  function hash(s) { var h = 7; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return Math.abs(h % 2000000000) + 1; }
-  function newId() { return "n" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
-
-  // ---------- storage (works with no internet)
-  function readJSON(k, fb) { try { var s = localStorage.getItem(k); return s ? JSON.parse(s) : fb; } catch (e) { return fb; } }
-  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
-  function loadAll() {
-    var arr = readJSON(KEY, null), sv = window.SEED_VERSION || "0", seen = null;
-    try { seen = localStorage.getItem("sims_seed_ver_v2"); } catch (e) {}
-    if (!arr || seen !== sv) {
-      arr = (window.SEED || []).slice(); writeJSON(KEY, arr); writeJSON(TOMB, {});
-      try { localStorage.setItem("sims_seed_ver_v2", sv); } catch (e) {}
-    }
-    arr.forEach(function (r) { docs.set(r._id, r); });
-    tomb = readJSON(TOMB, {});
-    var s = readJSON(SET, null); if (s && typeof s.hour === "number") settings = s;
-    updateAutoStatuses();
-  }
-  function persist() {
-    var ok = writeJSON(KEY, Array.from(docs.values())) && writeJSON(TOMB, tomb);
-    if (!ok) toast("تعذر الحفظ على الجهاز. المساحة ممتلئة.");
-    scheduleNotifs();
+    if (!iso) return null;
+    var t = new Date(), nowUTC = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
+    var p = iso.split("-").map(Number);
+    if (p.length < 3) return null;
+    var targetUTC = Date.UTC(p[0], p[1]-1, p[2]);
+    return Math.round((targetUTC - nowUTC) / 86400000);
   }
 
-  // ---------- sorting / search
-  function sorted(arr) {
-    return arr.sort(function (a, b) {
+  function fmtDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+    return m ? m[3] + "/" + m[2] + "/" + m[1] : "—";
+  }
+
+  function formatDaysBadge(r) {
+    if (r.status === "disconnected") return '<span class="badge disconnected">مفصول</span>';
+    var d = daysFrom(r.cutDate);
+    if (d === null) return '';
+    if (d < 0) return '<span class="badge disconnected">متأخر ' + Math.abs(d) + ' أيام</span>';
+    if (d === 0) return '<span class="badge days" style="background:var(--off-bg); color:var(--off);">ينتهي اليوم</span>';
+    if (d === 1) return '<span class="badge days" style="background:var(--hold-bg); color:var(--hold);">باقي يوم واحد</span>';
+    return '<span class="badge days">باقي ' + d + ' أيام</span>';
+  }
+
+  function renderTabs(all) {
+    var counts = { all: all.length, active: 0, suspended: 0, disconnected: 0 };
+    all.forEach(function(r) { if (counts[r.status] !== undefined) counts[r.status]++; });
+    
+    var defs = [
+      ["all", "الكل", counts.all],
+      ["active", "مفعل", counts.active],
+      ["suspended", "معلق", counts.suspended],
+      ["disconnected", "مفصول", counts.disconnected]
+    ];
+
+    $("tabs").innerHTML = defs.map(function(t) {
+      return '<button type="button" class="tab" data-f="' + t[0] + '" aria-pressed="' + (filter === t[0]) + '">' + t[1] + ' <b>' + t[2] + '</b></button>';
+    }).join("");
+
+    $("summary").textContent = "إجمالي " + all.length + " شريحة · مرتبة حسب الحالة والتاريخ";
+  }
+
+  function matches(r) {
+    if (filter !== "all" && r.status !== filter) return false;
+    var q = query.trim().toLowerCase();
+    if (!q) return true;
+    var combined = [r.name, r.phone, r.sim, r.company, r.activation, r.notes].join(" ").toLowerCase();
+    return combined.indexOf(q) !== -1;
+  }
+
+  function render() {
+    checkAutoDisconnect();
+    var all = Array.from(docs.values());
+    renderTabs(all);
+
+    var filtered = all.filter(matches).sort(function(a, b) {
       var sa = ORDER.indexOf(a.status), sb = ORDER.indexOf(b.status);
       if (sa !== sb) return sa - sb;
-      var da = a.cutDate || "", db = b.cutDate || "";
-      if (a.status === "disconnected") return da < db ? 1 : da > db ? -1 : 0;
-      return da < db ? -1 : da > db ? 1 : 0;
+      return (a.cutDate || "") < (b.cutDate || "") ? -1 : 1;
     });
-  }
-  function dueDays(r) {
-    if (r.status === "disconnected") return null;
-    var d = daysFrom(r.cutDate); return d === 0 || d === 1 ? d : null;
-  }
-  function alarmDue(r) {
-    if (!r.alarmOn || r.alarmDone || !r.alarmAt) return false;
-    var t = new Date(r.alarmAt).getTime(); return !isNaN(t) && Date.now() >= t;
-  }
-  function matches(r) {
-    if (simStateFilter === "clear-sim" && r.simState !== "clear-sim") return false;
-    if (simStateFilter === "used-sim" && r.simState !== "used-sim") return false;
 
-    if (filter === "due") { if (dueDays(r) === null) return false; }
-    else if (filter !== "all" && r.status !== filter) return false;
-    
-    var raw = query.trim(); if (!raw) return true;
-    var d = digits(raw), plain = /^[\d\s\-+()٠-٩۰-۹]+$/.test(raw);
-    if (plain && d) {
-      if ((r.phone || "").indexOf(d) !== -1 || (r.sim || "").indexOf(d) !== -1) return true;
-      if (d[0] === "0" && (r.phone || "").indexOf(d.slice(1)) !== -1) return true;
-      return false;
+    if (!filtered.length) {
+      $("list").innerHTML = '<div class="empty">لا توجد سجلات مطابقة للبحث أو التصفية الحالية.</div>';
+      return;
     }
-    var hay = [r.name, r.phone, r.sim, r.company, r.place, r.notes, r.activation].join(" ").toLowerCase();
-    return hay.indexOf(raw.toLowerCase()) !== -1;
-  }
-  function waLink(r) {
-    var n = digits(r.wa); if (!n) return "";
-    if (n.charAt(0) === "0") n = "972" + n.slice(1);
-    return '<a class="wa" href="https://wa.me/' + n + '" target="_blank" rel="noopener">واتساب</a>';
-  }
 
-  // ---------- render
-  function renderAlerts(all) {
-    var today = all.filter(function (r) { return dueDays(r) === 0; }).length;
-    var tmr = all.filter(function (r) { return dueDays(r) === 1; }).length, h = "";
-    all.filter(alarmDue).forEach(function (r) {
-      if (!alarmDue(r)) return; 
-      var p = r.alarmAt.split("T");
-      var noteText = r.notes ? " · " + esc(r.notes) : "";
-      h += '<div class="alert alarm"><span>⏰ منبه: ' + esc(r.name || r.phone) + " · " + esc(r.phone) + noteText + '</span><button type="button" data-ack="' + esc(r._id) + '">تم</button></div>';
+    var html = "";
+    filtered.forEach(function(r) {
+      var isDue = daysFrom(r.cutDate) !== null && daysFrom(r.cutDate) <= 1 && r.status === "active";
+      var cleanLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
+      var subInfo = [r.company, r.activation ? "التفعيل: " + r.activation : "", cleanLabel].filter(Boolean).join(" · ");
+
+      // رسالة SMS الجاهزة للإرسال
+      var smsBody = encodeURIComponent(
+        smsTemplate
+          .replace("{name}", r.name || "العزيز")
+          .replace("{phone}", r.phone || "")
+          .replace("{date}", fmtDate(r.cutDate))
+      );
+
+      html += '<div class="card' + (isDue ? ' due' : '') + '">' +
+        '<div class="card-header">' +
+          '<div class="phone-lg">' + r.phone + '</div>' +
+          formatDaysBadge(r) +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div class="name-row"><span>' + (r.name || "بدون اسم") + '</span></div>' +
+          (r.sim ? '<div class="sim-row"><span>💳 ' + r.sim + '</span></div>' : '') +
+          '<div class="meta-row"><span>🏢 ' + subInfo + '</span></div>' +
+          (r.notes ? '<div style="font-size:.82rem; color:var(--muted); margin-top:2px;">📝 ' + r.notes + '</div>' : '') +
+        '</div>' +
+        '<div class="date-row">' +
+          '<span>موعد الفصل: <span class="date-val">' + fmtDate(r.cutDate) + '</span></span>' +
+          '<span class="badge ' + r.status + '">' + STATUS[r.status] + '</span>' +
+        '</div>' +
+        '<div class="card-actions">' +
+          '<a class="action-btn sms" href="sms:' + r.phone + '?body=' + smsBody + '">رسالة</a>' +
+          '<a class="action-btn call" href="tel:' + r.phone + '">اتصال</a>' +
+          '<a class="action-btn wa" href="https://wa.me/972' + (r.phone.startsWith("0") ? r.phone.slice(1) : r.phone) + '?text=' + smsBody + '" target="_blank">واتساب</a>' +
+          '<button class="action-btn edit-btn" type="button" data-id="' + r._id + '">تعديل</button>' +
+        '</div>' +
+      '</div>';
     });
-    if (today) h += '<div class="alert today"><span>تنبيه: ' + today + ' شريحة موعد فصلها اليوم</span><button type="button" data-due="1">عرض</button></div>';
-    if (tmr) h += '<div class="alert tomorrow"><span>تنبيه: ' + tmr + ' شريحة موعد فصلها غدًا</span><button type="button" data-due="1">عرض</button></div>';
-    $("alerts").innerHTML = h;
-  }
-  function renderTabs(all) {
-    var c = { all: all.length, active: 0, suspended: 0, disconnected: 0, due: 0 };
-    all.forEach(function (r) { c[r.status] = (c[r.status] || 0) + 1; if (dueDays(r) !== null) c.due++; });
-    var defs = [["all", "الكل"], ["active", "مفعل"], ["suspended", "معلق"], ["disconnected", "مفصول"]];
-    if (c.due) defs.push(["due", "تنبيهات"]);
-    if (filter === "due" && !c.due) filter = "all";
-    tabsEl.innerHTML = defs.map(function (t) { return '<button type="button" class="tab" data-f="' + t[0] + '" aria-pressed="' + (filter === t[0]) + '">' + t[1] + " <b>" + (c[t[0]] || 0) + "</b></button>"; }).join("");
-    summaryEl.textContent = all.length ? "إجمالي " + all.length + " شريحة · مرتبة: مفعل ثم معلق ثم مفصول" : "لا توجد شرائح بعد";
-  }
-  function render() {
-    updateAutoStatuses();
-    var all = Array.from(docs.values());
-    renderTabs(all); renderAlerts(all);
-    var rows = sorted(all.filter(matches));
-    if (!rows.length) { listEl.innerHTML = '<div class="empty">' + (all.length ? "لا توجد نتائج مطابقة للبحث." : "لا توجد شرائح. اضغط «إضافة» لإدخال أول سجل.") + "</div>"; return; }
-    var out = ['<div class="row head"><span>#</span><span>رقم الهاتف</span><span>رقم الشريحة</span><span>اسم الزبون</span><span>تاريخ الفصل</span><span>الحالة</span><span></span></div>'];
-    var last = null, i = 0, counts = {};
-    rows.forEach(function (r) { counts[r.status] = (counts[r.status] || 0) + 1; });
-    rows.slice(0, shown).forEach(function (r) {
-      if (filter === "all" && simStateFilter === "all-sims" && r.status !== last) { last = r.status; out.push('<div class="row group"><span class="pill ' + r.status + '">' + STATUS[r.status] + '</span><span class="n">' + counts[r.status] + "</span></div>"); }
-      i++;
-      var stateLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
-      var sub = [r.company, r.activation ? "⚙️ " + r.activation : "", "💳 " + stateLabel, r.place ? "📍 " + r.place : "", r.alarmOn && r.alarmAt ? "⏰ " + fmtDate(r.alarmAt.split("T")[0]) + " " + (r.alarmAt.split("T")[1] || "") : ""].filter(Boolean).map(esc).join(" · ");
-      out.push('<div class="row' + (dueDays(r) !== null ? " due" : "") + '">' +
-        '<span class="idx num">' + i + "</span>" +
-        '<span class="c-phone num">' + esc(r.phone) + "</span>" +
-        '<span class="c-sim num sim">' + esc(r.sim || "—") + "</span>" +
-        '<span class="c-name name">' + esc(r.name || "—") + (sub ? "<small>" + sub + "</small>" : "") + (r.notes ? '<span class="note">' + esc(r.notes) + "</span>" : "") + "</span>" +
-        '<span class="c-date date">' + fmtDate(r.cutDate) + "<small>" + dayNote(r) + "</small></span>" +
-        '<span class="c-status"><span class="pill ' + r.status + '">' + STATUS[r.status] + "</span></span>" +
-        '<span class="c-edit">' + waLink(r) + '<button type="button" class="edit" data-id="' + esc(r._id) + '">تعديل</button></span></div>');
-    });
-    if (rows.length > shown) out.push('<div class="more"><button class="btn" type="button" id="moreBtn">عرض المزيد (' + (rows.length - shown) + ")</button></div>");
-    listEl.innerHTML = out.join("");
+
+    $("list").innerHTML = html;
   }
 
-  // ---------- local notifications (phone fires them, no internet needed)
-  var schedTimer;
-  function scheduleNotifs() { clearTimeout(schedTimer); schedTimer = setTimeout(doSchedule, 400); }
-  async function doSchedule() {
-    if (!LN) return;
-    try {
-      var perm = await LN.checkPermissions();
-      if (perm.display !== "granted") perm = await LN.requestPermissions();
-      if (perm.display !== "granted") return;
-      var pend = await LN.getPending();
-      if (pend.notifications && pend.notifications.length) await LN.cancel({ notifications: pend.notifications });
-      var list = [], now = Date.now(), h = settings.hour;
-      docs.forEach(function (r) {
-        var who = (r.name || r.phone) + " · " + r.phone;
-        if (r.status !== "disconnected" && /^\d{4}-\d{2}-\d{2}$/.test(r.cutDate || "")) {
-          var p = r.cutDate.split("-").map(Number);
-          var day = new Date(p[0], p[1] - 1, p[2], h, 0, 0), before = new Date(p[0], p[1] - 1, p[2] - 1, h, 0, 0);
-          if (before.getTime() > now) list.push({ id: hash(r._id + "b"), title: "فصل شريحة غدًا", body: who, schedule: { at: before, allowWhileIdle: true } });
-          if (day.getTime() > now) list.push({ id: hash(r._id + "d"), title: "فصل شريحة اليوم", body: who, schedule: { at: day, allowWhileIdle: true } });
-        }
-        if (r.alarmOn && !r.alarmDone && r.alarmAt) {
-          var at = new Date(r.alarmAt);
-          var noteText = r.notes ? " — " + r.notes : "";
-          if (!isNaN(at) && at.getTime() > now) list.push({ id: hash(r._id + "a"), title: "منبه: " + (r.name || r.phone), body: r.phone + noteText, schedule: { at: at, allowWhileIdle: true } });
-        }
-      });
-      list.sort(function (a, b) { return a.schedule.at - b.schedule.at; });
-      if (list.length) await LN.schedule({ notifications: list.slice(0, 450) });
-    } catch (e) {}
-  }
-
-  // ---------- add / edit dialog
+  // Modal handlers
   function openDlg(id) {
-    editingId = id; delArmed = false;
+    editingId = id;
+    delArmed = false;
     var r = id ? docs.get(id) : null;
-    $("dlgTitle").textContent = r ? "تعديل الشريحة" : "إضافة شريحة";
-    $("f-name").value = r ? r.name || "" : ""; $("f-phone").value = r ? r.phone || "" : "";
-    $("f-sim").value = r ? r.sim || "" : ""; $("f-company").value = r ? r.company || "" : "";
+    $("dlgTitle").innerHTML = (r ? "تعديل الشريحة" : "إضافة شريحة جديدة") + ' <button class="btn" type="button" id="closeDlg" style="padding:4px 10px;font-size:.8rem;">إغلاق</button>';
+    
+    $("f-name").value = r ? r.name || "" : "";
+    $("f-phone").value = r ? r.phone || "" : "";
+    $("f-company").value = r ? r.company || "" : "";
+    $("f-sim").value = r ? r.sim || "" : "";
     $("f-activation").value = r ? r.activation || "" : "";
-    $("f-sim-state").value = r ? r.simState || "used-sim" : "used-sim";
-    $("f-place").value = r ? r.place || "" : ""; $("f-wa").value = r ? r.wa || "" : "";
-    $("f-status").value = r ? r.status : "active"; $("f-date").value = r ? r.cutDate || "" : "";
+    $("f-status").value = r ? r.status || "active" : "active";
+    $("f-simstate").value = r ? r.simState || "used-sim" : "used-sim";
+    $("f-date").value = r ? r.cutDate || "" : new Date().toISOString().slice(0, 10);
     $("f-notes").value = r ? r.notes || "" : "";
-    var at = r && r.alarmAt ? r.alarmAt.split("T") : ["", "09:00"];
-    $("f-alarm-on").checked = !!(r && r.alarmOn); $("f-alarm-date").value = at[0] || ""; $("f-alarm-time").value = at[1] || "09:00";
-    $("alarmRow").hidden = !$("f-alarm-on").checked;
+    
+    var del = $("delBtn");
+    del.hidden = !r;
+    del.textContent = "حذف";
+    
     $("err").textContent = "";
-    var del = $("delBtn"); del.hidden = !r; del.textContent = "حذف"; del.classList.remove("armed");
-    $("overlay").hidden = false; $("f-name").focus();
+    $("overlay").hidden = false;
   }
+
   function closeDlg() { $("overlay").hidden = true; editingId = null; }
 
-  $("f-alarm-on").addEventListener("change", function () {
-    var on = $("f-alarm-on").checked; $("alarmRow").hidden = !on;
-    if (on && !$("f-alarm-date").value) {
-      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec($("f-date").value || ""), d = m ? new Date(+m[1], +m[2] - 1, +m[3] - 1) : new Date();
-      $("f-alarm-date").value = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  // Events
+  $("tabs").addEventListener("click", function(e) {
+    var b = e.target.closest(".tab");
+    if (!b) return;
+    filter = b.dataset.f;
+    render();
+  });
+
+  $("q").addEventListener("input", function(e) {
+    query = e.target.value;
+    render();
+  });
+
+  $("addBtn").addEventListener("click", function() { openDlg(null); });
+  $("closeDlg").addEventListener("click", closeDlg);
+  $("overlay").addEventListener("click", function(e) { if(e.target === $("overlay")) closeDlg(); });
+
+  $("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    var phone = $("f-phone").value.trim();
+    if (!phone) { $("err").textContent = "يرجى إدخال رقم الهاتف."; return; }
+    
+    var id = editingId || ("s_" + Date.now());
+    var record = {
+      _id: id,
+      name: $("f-name").value.trim(),
+      phone: phone,
+      company: $("f-company").value,
+      sim: $("f-sim").value.trim(),
+      activation: $("f-activation").value,
+      status: $("f-status").value,
+      simState: $("f-simstate").value,
+      cutDate: $("f-date").value,
+      notes: $("f-notes").value.trim()
+    };
+
+    docs.set(id, record);
+    saveData();
+    closeDlg();
+    render();
+    toast(editingId ? "تم تحديث السجل بنجاح" : "تمت إضافة الشريحة بنجاح");
+  });
+
+  $("delBtn").addEventListener("click", function() {
+    if (!delArmed) {
+      delArmed = true;
+      this.textContent = "تأكيد الحذف؟";
+      return;
+    }
+    if (editingId) {
+      docs.delete(editingId);
+      saveData();
+      closeDlg();
+      render();
+      toast("تم حذف السجل");
     }
   });
-  $("form").addEventListener("submit", function (e) {
-    e.preventDefault();
-    var phone = digits($("f-phone").value);
-    if (phone.length < 9) { $("err").textContent = "أدخل رقم هاتف صحيحًا."; $("f-phone").focus(); return; }
-    var dup = Array.from(docs.values()).find(function (r) { return r.phone === phone && r._id !== editingId; });
-    if (dup) { $("err").textContent = "رقم الهاتف مسجل مسبقًا باسم: " + (dup.name || "بدون اسم"); return; }
-    var alarmOn = $("f-alarm-on").checked, adate = $("f-alarm-date").value, atime = $("f-alarm-time").value || "09:00";
-    if (alarmOn && !adate) { $("err").textContent = "اختر تاريخ المنبه."; return; }
-    var id = editingId || newId();
-    var rec = Object.assign({}, docs.get(id) || {}, {
-      _id: id, phone: phone, sim: digits($("f-sim").value), name: $("f-name").value.trim(), company: $("f-company").value,
-      activation: $("f-activation").value, simState: $("f-sim-state").value,
-      place: $("f-place").value.trim(), wa: digits($("f-wa").value), notes: $("f-notes").value.trim(),
-      status: $("f-status").value, cutDate: $("f-date").value,
-      alarmOn: alarmOn, alarmAt: alarmOn ? adate + "T" + atime : "", alarmDone: false, updatedAt: new Date().toISOString()
-    });
-    docs.set(id, rec); delete tomb[id]; persist(); closeDlg(); render();
-    toast(editingId ? "تم حفظ التعديل" : "تمت إضافة الشريحة");
-  });
-  $("delBtn").addEventListener("click", function () {
-    var b = $("delBtn");
-    if (!delArmed) { delArmed = true; b.textContent = "تأكيد الحذف"; b.classList.add("armed"); return; }
-    docs.delete(editingId); tomb[editingId] = new Date().toISOString(); persist(); closeDlg(); render(); toast("تم حذف السجل");
+
+  $("list").addEventListener("click", function(e) {
+    var btn = e.target.closest(".edit-btn");
+    if (btn) openDlg(btn.dataset.id);
   });
 
-  // ---------- list events
-  var t0;
-  $("q").addEventListener("input", function (e) { clearTimeout(t0); var v = e.target.value; t0 = setTimeout(function () { query = v; shown = PAGE; render(); }, 120); });
-  tabsEl.addEventListener("click", function (e) { var b = e.target.closest(".tab"); if (!b) return; filter = b.dataset.f; shown = PAGE; render(); });
-  listEl.addEventListener("click", function (e) {
-    if (e.target.id === "moreBtn") { shown += PAGE; render(); return; }
-    var b = e.target.closest(".edit"); if (b) openDlg(b.dataset.id);
+  // Settings Modal
+  $("setBtn").addEventListener("click", function() {
+    $("s-template").value = smsTemplate;
+    $("setOverlay").hidden = false;
   });
-  $("alerts").addEventListener("click", function (e) {
-    if (e.target.closest("[data-due]")) { filter = "due"; shown = PAGE; render(); return; }
-    var a = e.target.closest("[data-ack]");
-    if (a) { var r = docs.get(a.dataset.ack); if (r) { r.alarmDone = true; r.updatedAt = new Date().toISOString(); persist(); render(); } }
+  $("setClose").addEventListener("click", function() {
+    smsTemplate = $("s-template").value;
+    localStorage.setItem("sim_sms_tmpl", smsTemplate);
+    $("setOverlay").hidden = true;
+    toast("تم حفظ الإعدادات");
   });
-  $("addBtn").addEventListener("click", function () { openDlg(null); });
-  $("cancelBtn").addEventListener("click", closeDlg);
-  $("overlay").addEventListener("mousedown", function (e) { if (e.target === $("overlay")) closeDlg(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeDlg(); $("setOverlay").hidden = true; sidebar.classList.remove("open"); sbOverlay.classList.remove("open"); } });
-  document.addEventListener("visibilitychange", function () { if (!document.hidden) render(); });
+  $("setOverlay").addEventListener("click", function(e) { if(e.target === $("setOverlay")) $("setOverlay").hidden = true; });
 
-  // in-app alarm sound while the app is open
-  var beeped = {};
-  function beep() {
-    try { var C = window.AudioContext || window.webkitAudioContext, ctx = new C(), o = ctx.createOscillator(), g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; g.gain.value = 0.15; o.start(); o.stop(ctx.currentTime + 0.6); } catch (x) {}
-    try { if (navigator.vibrate) navigator.vibrate([300, 150, 300]); } catch (x) {}
-  }
-  setInterval(function () {
-    var fresh = false;
-    docs.forEach(function (r, id) { if (alarmDue(r) && !beeped[id]) { beeped[id] = 1; fresh = true; } });
-    if (fresh) beep();
-    render();
-  }, 30000);
-
-  // ---------- settings, export / import
-  var hs = $("s-hour");
-  for (var hh = 0; hh < 24; hh++) { var o = document.createElement("option"); o.value = hh; o.textContent = pad(hh) + ":00"; hs.appendChild(o); }
-  $("setBtn").addEventListener("click", function () { hs.value = settings.hour; $("setMsg").textContent = ""; $("setOverlay").hidden = false; });
-  $("setClose").addEventListener("click", function () { $("setOverlay").hidden = true; });
-  $("setOverlay").addEventListener("mousedown", function (e) { if (e.target === $("setOverlay")) $("setOverlay").hidden = true; });
-  hs.addEventListener("change", function () { settings.hour = +hs.value; writeJSON(SET, settings); scheduleNotifs(); $("setMsg").textContent = "تم حفظ الساعة."; });
-
-  $("expBtn").addEventListener("click", async function () {
-    var d = new Date(), name = "sims-" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + "-" + pad(d.getHours()) + pad(d.getMinutes()) + ".json";
-    var data = JSON.stringify({ v: 2, exportedAt: d.toISOString(), records: Array.from(docs.values()), deleted: tomb });
-    try {
-      if (FS && SH) { var w = await FS.writeFile({ path: name, data: data, directory: "CACHE", encoding: "utf8" }); await SH.share({ title: name, url: w.uri }); }
-      else { var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([data], { type: "application/json" })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
-      $("setMsg").textContent = "تم تجهيز النسخة.";
-    } catch (x) { $("setMsg").textContent = "تعذر التصدير."; }
-  });
-
-  // تصدير بصيغة CSV لبرنامج Excel
-  $("expBtnCSV").addEventListener("click", async function () {
-    var d = new Date(), name = "sims-" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + ".csv";
-    var csvRows = [];
-    var headers = ["الاسم", "رقم الهاتف", "الشركة", "رقم الشريحة", "مكان التفعيل", "الحالة", "حالة الشريحة (نظيفة/مستعملة)", "تاريخ الفصل", "ملاحظات"];
-    csvRows.push(headers.join(","));
-
+  // Export / Import CSV & JSON
+  $("expCSV").addEventListener("click", function() {
+    var rows = [["الاسم", "رقم الهاتف", "الشركة", "رقم الشريحة", "مكان التفعيل", "الحالة", "تاريخ الفصل", "ملاحظات"]];
     docs.forEach(function(r) {
-      var stateLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
-      var statusLabel = STATUS[r.status] || r.status;
-      var row = [
+      rows.push([
         '"' + (r.name || "").replace(/"/g, '""') + '"',
         '"' + (r.phone || "") + '"',
-        '"' + (r.company || "").replace(/"/g, '""') + '"',
+        '"' + (r.company || "") + '"',
         '"' + (r.sim || "") + '"',
-        '"' + (r.activation || "").replace(/"/g, '""') + '"',
-        '"' + statusLabel + '"',
-        '"' + stateLabel + '"',
+        '"' + (r.activation || "") + '"',
+        '"' + (STATUS[r.status] || r.status) + '"',
         '"' + (r.cutDate || "") + '"',
         '"' + (r.notes || "").replace(/"/g, '""') + '"'
-      ];
-      csvRows.push(row.join(","));
+      ]);
     });
-
-    var csvString = "\ufeff" + csvRows.join("\n"); 
-    try {
-      if (FS && SH) { var w = await FS.writeFile({ path: name, data: csvString, directory: "CACHE", encoding: "utf8" }); await SH.share({ title: name, url: w.uri }); }
-      else { var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csvString], { type: "text/csv;charset=utf-8;" })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
-      $("setMsg").textContent = "تم تجهيز ملف CSV.";
-    } catch (x) { $("setMsg").textContent = "تعذر تصدير CSV."; }
+    var csvContent = "\ufeff" + rows.map(e => e.join(",")).join("\n");
+    var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "sims-subscriptions-" + new Date().toISOString().slice(0,10) + ".csv";
+    a.click();
+    toast("تم تصدير ملف الـ CSV بنجاح");
   });
 
-  $("impBtn").addEventListener("click", function () { $("impFile").click(); });
-  $("impFile").addEventListener("change", function (e) {
-    var f = e.target.files && e.target.files[0]; if (!f) return;
-    var fr = new FileReader();
-    fr.onload = function () {
+  $("expJSON").addEventListener("click", function() {
+    var data = JSON.stringify(Array.from(docs.values()), null, 2);
+    var blob = new Blob([data], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "sims-backup-" + new Date().toISOString().slice(0,10) + ".json";
+    a.click();
+    toast("تم تصدير النسخة الاحتياطية");
+  });
+
+  $("impBtn").addEventListener("click", function() { $("impFile").click(); });
+  $("impFile").addEventListener("change", function(e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function(evt) {
       try {
-        var j = JSON.parse(fr.result), added = 0, updated = 0, removed = 0;
-        (j.records || []).forEach(function (r) {
-          if (!r || !r._id) return;
-          var loc = docs.get(r._id), tl = tomb[r._id];
-          if (tl && (r.updatedAt || "") <= tl) return;
-          if (!loc) { docs.set(r._id, r); delete tomb[r._id]; added++; }
-          else if ((r.updatedAt || "") > (loc.updatedAt || "")) { docs.set(r._id, r); updated++; }
-        });
-        Object.keys(j.deleted || {}).forEach(function (id) {
-          var loc = docs.get(id), t = j.deleted[id];
-          if (loc && t > (loc.updatedAt || "")) { docs.delete(id); removed++; }
-          if (!tomb[id] || t > tomb[id]) tomb[id] = t;
-        });
-        persist(); render();
-        $("setMsg").textContent = "تم الدمج: " + added + " جديد، " + updated + " محدّث، " + removed + " محذوف.";
-      } catch (x) { $("setMsg").textContent = "الملف غير صالح."; }
+        var parsed = JSON.parse(evt.target.result);
+        if (Array.isArray(parsed)) {
+          parsed.forEach(function(r) {
+            if (r._id && r.phone) docs.set(r._id, r);
+          });
+          saveData();
+          render();
+          toast("تم استيراد ودمج البيانات بنجاح");
+        }
+      } catch(err) {
+        toast("ملف غير صالح أو تالف");
+      }
       $("impFile").value = "";
     };
-    fr.readAsText(f);
+    reader.readAsText(f);
   });
 
-  // ---------- sidebar events
-  $("sbToggle").addEventListener("click", function() { sidebar.classList.add("open"); sbOverlay.classList.add("open"); });
-  $("sbClose").addEventListener("click", function() { sidebar.classList.remove("open"); sbOverlay.classList.remove("open"); });
-  sbOverlay.addEventListener("click", function() { sidebar.classList.remove("open"); sbOverlay.classList.remove("open"); });
-  
-  sidebar.querySelectorAll(".menu-item").forEach(function(item) {
-    item.addEventListener("click", function() {
-      simStateFilter = this.dataset.type;
-      shown = PAGE;
-      render();
-      sidebar.classList.remove("open"); sbOverlay.classList.remove("open");
-      $("addBtn").hidden = (simStateFilter === "all-sims" ? false : true);
-    });
-  });
-
-  loadAll(); render(); scheduleNotifs();
+  loadData();
+  render();
 })();
 </script>
 </body>
 </html>
-
