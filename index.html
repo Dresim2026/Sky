@@ -4,89 +4,297 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>الاشتراكات - إدارة الشرائح</title>
+<title>الاشتراكات - إدارة الشرائح والديون</title>
 <style>
 :root {
   --bg: #0f161c; --surface: #172029; --surface-card: #1e2936; --fg: #e6edf3; --muted: #93a2b1; --line: #263440;
   --accent: #4fb3d1; --accent-fg: #062029; --accent-soft: #14323d;
   --on: #6fd49a; --on-bg: #14341f; --hold: #f0c261; --hold-bg: #3a2c0c; --off: #f08a8a; --off-bg: #3d1a1a;
-  --danger: #f2877f; --shadow: 0 10px 30px rgba(0,0,0,.5);
+  --danger: #f2877f; --gold: #e8b64a; --gold-bg: #3a2e0c;
+  --shadow: 0 10px 30px rgba(0,0,0,.5);
   --font: system-ui, "Segoe UI", Roboto, Tahoma, sans-serif;
   --mono: ui-monospace, Consolas, "Roboto Mono", monospace;
 }
+:root[data-theme="light"] {
+  --bg: #f2f5f9; --surface: #ffffff; --surface-card: #ffffff; --fg: #16212b; --muted: #5d6d7c; --line: #dbe3ec;
+  --accent: #0e7fa8; --accent-fg: #ffffff; --accent-soft: #dff1f8;
+  --on: #187a47; --on-bg: #ddf5e6; --hold: #8a6100; --hold-bg: #fdf2d4; --off: #b0332f; --off-bg: #fce4e3;
+  --danger: #c0392b; --gold: #a57300; --gold-bg: #fdf3d6;
+  --shadow: 0 10px 30px rgba(15,30,50,.12);
+}
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5; padding: 14px; padding-bottom: calc(50px + env(safe-area-inset-bottom, 0px)); }
-.wrap { max-width: 720px; margin: 0 auto; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font); font-size: 15px; line-height: 1.5;
+  padding: 14px; padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  transition: background .2s ease, color .2s ease;
+}
+.wrap { max-width: 760px; margin: 0 auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; border: none; background: none; }
+a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font-family: var(--mono); background: var(--bg); padding: 1px 5px; border-radius: 5px; font-size: .82em; }
 
-header.top { position: sticky; top: 0; z-index: 10; background: var(--bg); padding-block: 10px 12px; display: grid; gap: 12px; }
-.titlebar { display: flex; align-items: center; justify-content: space-between; }
-h1 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--fg); }
-.sub { color: var(--muted); font-size: .82rem; margin-top: 2px; }
-.btns { display: flex; gap: 8px; align-items: center; }
-.btn-icon { width: 44px; height: 44px; background: var(--accent); color: var(--accent-fg); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; box-shadow: 0 4px 12px rgba(79,179,209,.3); }
-.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 14px; font-weight: 500; font-size: .9rem; }
+/* ---------- Header ---------- */
+header.top { position: sticky; top: 0; z-index: 10; background: var(--bg); padding-block: 8px 12px; display: grid; gap: 10px; }
+.titlebar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.title-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
+.sub { color: var(--muted); font-size: .78rem; margin-top: 1px; }
+.btns { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.icon-btn {
+  width: 42px; height: 42px; border: 1px solid var(--line); background: var(--surface);
+  border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; line-height: 1; color: var(--fg);
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.icon-btn.accent { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); box-shadow: 0 4px 12px rgba(79,179,209,.28); }
+.icon-btn.accent:hover { color: var(--accent-fg); filter: brightness(1.05); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; font-weight: 500; font-size: .86rem; white-space: nowrap; }
+.btn:hover { border-color: var(--accent); }
 .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
+.btn.primary:hover { filter: brightness(1.06); }
 .btn.danger { color: var(--danger); border-color: var(--danger); }
+.btn.gold { background: var(--gold); color: #2a1f00; border-color: var(--gold); font-weight: 700; }
+.btn.sm { padding: 5px 10px; font-size: .78rem; }
 
-.search input { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 16px; font-size: 1rem; color: var(--fg); }
+.search { position: relative; }
+.search input { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 11px 16px 11px 42px; font-size: .95rem; color: var(--fg); }
 .search input::placeholder { color: var(--muted); }
+.search .search-icon { position: absolute; inset-inline-end: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 1rem; }
+.search .clear-btn { position: absolute; inset-inline-start: 10px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; border-radius: 50%; color: var(--muted); display: none; align-items: center; justify-content: center; font-size: .9rem; }
+.search .clear-btn.show { display: flex; }
 
-.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.toolbar { display: flex; align-items: center; gap: 8px; justify-content: space-between; flex-wrap: wrap; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; flex: 1; min-width: 0; }
 .tabs::-webkit-scrollbar { display: none; }
-.tab { flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; display: inline-flex; gap: 6px; align-items: center; font-size: .88rem; color: var(--muted); }
-.tab b { font-family: var(--mono); font-weight: 600; font-size: .8rem; }
+.tab { flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; display: inline-flex; gap: 6px; align-items: center; font-size: .84rem; color: var(--muted); transition: all .15s ease; }
+.tab b { font-family: var(--mono); font-weight: 600; font-size: .76rem; }
 .tab[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .tab[aria-pressed="true"] b { color: inherit; }
+.sort-select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; font-size: .82rem; color: var(--fg); cursor: pointer; }
 
-.section-title { font-size: .85rem; color: var(--muted); font-weight: 600; margin-block: 10px 6px; display: flex; justify-content: space-between; }
-
-/* Cards list */
-.list { display: grid; gap: 12px; }
-.card { background: var(--surface-card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.2); position: relative; }
-.card.due { border-color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 20%, var(--surface-card)); }
-.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-.phone-lg { font-family: var(--mono); font-size: 1.25rem; font-weight: 700; direction: ltr; text-align: right; letter-spacing: 0.5px; }
-.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 600; }
+/* ---------- Cards ---------- */
+.list { display: grid; gap: 12px; margin-top: 12px; }
+.card {
+  background: var(--surface-card); border: 1px solid var(--line); border-radius: 14px;
+  padding: 14px; display: grid; gap: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.16); position: relative;
+  animation: cardIn .25s ease both;
+}
+@keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.card.due { border-color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 22%, var(--surface-card)); }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.phone-wrap { display: flex; align-items: center; gap: 8px; }
+.phone-lg { font-family: var(--mono); font-size: 1.22rem; font-weight: 700; direction: ltr; letter-spacing: .4px; }
+.copy-btn { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-size: .78rem; flex-shrink: 0; }
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: .76rem; font-weight: 600; white-space: nowrap; }
 .badge.active { background: var(--on-bg); color: var(--on); }
 .badge.suspended { background: var(--hold-bg); color: var(--hold); }
 .badge.disconnected { background: var(--off-bg); color: var(--off); }
-.badge.days { background: var(--accent-soft); color: var(--accent); margin-inline-end: auto; }
+.badge.days { background: var(--accent-soft); color: var(--accent); }
+.badge-tags { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-inline-start: auto; }
 
 .card-body { display: grid; gap: 4px; font-size: .9rem; }
-.name-row { font-weight: 600; font-size: 1.05rem; display: flex; justify-content: space-between; }
-.sim-row { font-family: var(--mono); font-size: .85rem; color: var(--muted); direction: ltr; text-align: right; display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
-.meta-row { display: flex; gap: 12px; font-size: .82rem; color: var(--muted); flex-wrap: wrap; margin-top: 2px; }
-.date-row { font-size: .85rem; color: var(--fg); border-top: 1px solid var(--line); padding-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+.name-row { font-weight: 600; font-size: 1.04rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sim-row { font-family: var(--mono); font-size: .82rem; color: var(--muted); direction: ltr; display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.meta-row { display: flex; gap: 10px; font-size: .81rem; color: var(--muted); flex-wrap: wrap; margin-top: 2px; }
+.notes-box { font-size: .81rem; color: var(--muted); margin-top: 3px; padding: 6px 9px; background: color-mix(in srgb, var(--line) 30%, transparent); border-radius: 8px; line-height: 1.45; }
+.date-row { font-size: .84rem; color: var(--fg); border-top: 1px solid var(--line); padding-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 .date-val { font-family: var(--mono); direction: ltr; color: var(--muted); }
 
-/* Card Actions */
-.card-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 4px; }
-.action-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 7px 4px; font-size: .82rem; font-weight: 500; text-align: center; color: var(--fg); display: flex; align-items: center; justify-content: center; gap: 4px; }
-.action-btn.wa { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 30%, transparent); }
-.action-btn.call { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 40%, transparent); }
-.action-btn.sms { border-color: var(--hold); color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 30%, transparent); }
+.card-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 2px; }
+.action-btn {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 9px;
+  padding: 8px 4px; font-size: .8rem; font-weight: 500; text-align: center; color: var(--fg);
+  display: flex; align-items: center; justify-content: center; gap: 4px; text-decoration: none;
+  transition: all .15s ease;
+}
+.action-btn:hover { transform: translateY(-1px); }
+.action-btn.wa { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 35%, transparent); }
+.action-btn.call { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+.action-btn.sms { border-color: var(--hold); color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 35%, transparent); }
 
-.empty { padding: 40px 20px; text-align: center; color: var(--muted); background: var(--surface); border-radius: 14px; border: 1px solid var(--line); }
+.empty { padding: 46px 20px; text-align: center; color: var(--muted); background: var(--surface); border-radius: 14px; border: 1px dashed var(--line); }
+.empty .big { font-size: 2rem; display: block; margin-bottom: 8px; }
 
-/* Modals */
-.overlay { position: fixed; inset: 0; z-index: 30; background: rgba(8,18,26,.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 14px; }
+/* ---------- Drawer ---------- */
+.drawer-scrim {
+  position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 60;
+  opacity: 0; pointer-events: none; transition: opacity .25s ease;
+  backdrop-filter: blur(2px);
+}
+.drawer-scrim.open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed; top: 0; bottom: 0; right: 0; width: min(370px, 92vw);
+  background: var(--surface); border-left: 1px solid var(--line);
+  z-index: 61; transform: translateX(100%);
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  display: flex; flex-direction: column; box-shadow: var(--shadow);
+}
+.drawer.open { transform: translateX(0); }
+.drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
+.drawer-title { font-size: 1.05rem; font-weight: 700; }
+.drawer-sub { font-size: .76rem; color: var(--muted); margin-top: 1px; }
+.drawer-body { flex: 1; overflow-y: auto; padding: 14px; display: grid; gap: 16px; align-content: start; }
+
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat { background: var(--surface-card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.stat .num { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; line-height: 1.15; }
+.stat .lbl { font-size: .74rem; color: var(--muted); margin-top: 2px; }
+.stat.on .num { color: var(--on); }
+.stat.hold .num { color: var(--hold); }
+.stat.off .num { color: var(--off); }
+.stat.acc .num { color: var(--accent); }
+.stat.gold .num { color: var(--gold); }
+
+.drawer-section { display: grid; gap: 8px; }
+.drawer-section-head { display: flex; justify-content: space-between; align-items: center; font-size: .84rem; font-weight: 700; color: var(--fg); padding-inline: 2px; gap: 8px; }
+.drawer-section-head b { font-family: var(--mono); font-size: .76rem; color: var(--muted); background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.mini-list { display: grid; gap: 6px; max-height: 240px; overflow-y: auto; padding-inline-end: 2px; }
+.mini-list::-webkit-scrollbar { width: 4px; }
+.mini-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+.mini-item {
+  width: 100%; text-align: start; background: var(--surface-card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 8px 11px; display: grid; gap: 1px; transition: all .15s ease;
+}
+.mini-item:hover { border-color: var(--accent); transform: translateX(-2px); }
+.mini-item .mi-phone { font-family: var(--mono); font-size: .92rem; font-weight: 700; direction: ltr; text-align: start; }
+.mini-item .mi-meta { font-size: .74rem; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
+.mini-empty { font-size: .8rem; color: var(--muted); text-align: center; padding: 14px; border: 1px dashed var(--line); border-radius: 10px; }
+
+/* Debt mini */
+.debt-mini {
+  width: 100%; text-align: start; background: linear-gradient(180deg, color-mix(in srgb, var(--gold-bg) 40%, var(--surface-card)), var(--surface-card));
+  border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; display: grid; gap: 3px;
+  transition: all .15s ease;
+}
+.debt-mini:hover { border-color: var(--gold); transform: translateX(-2px); }
+.debt-mini .dm-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.debt-mini .dm-name { font-weight: 700; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.debt-mini .dm-amount { font-family: var(--mono); font-weight: 700; font-size: .88rem; color: var(--gold); white-space: nowrap; }
+.debt-mini .dm-phone { font-family: var(--mono); font-size: .72rem; color: var(--muted); direction: ltr; text-align: start; }
+
+.debt-total {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--gold-bg) 70%, var(--surface-card)), color-mix(in srgb, var(--gold-bg) 30%, var(--surface-card)));
+  border: 1px solid var(--gold); border-radius: 12px; padding: 12px 14px;
+}
+.debt-total .dt-label { font-size: .78rem; color: var(--muted); font-weight: 600; }
+.debt-total .dt-value { font-family: var(--mono); font-size: 1.45rem; font-weight: 800; color: var(--gold); line-height: 1.1; }
+.debt-total .dt-count { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+
+.drawer-actions { display: grid; gap: 8px; }
+.drawer-actions .btn { text-align: center; }
+
+/* ---------- Modals ---------- */
+.overlay { position: fixed; inset: 0; z-index: 70; background: rgba(8,18,26,.72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 14px; }
 .overlay[hidden] { display: none; }
-.dlg { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 20px; display: grid; gap: 14px; border: 1px solid var(--line); }
-.dlg h2 { margin: 0; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+.dlg {
+  background: var(--surface); border-radius: 16px; box-shadow: var(--shadow);
+  width: 100%; max-width: 500px; max-height: 92vh; overflow-y: auto;
+  padding: 18px; display: grid; gap: 13px; border: 1px solid var(--line);
+  animation: dlgIn .22s ease both;
+}
+@keyframes dlgIn { from { opacity: 0; transform: scale(.97) translateY(6px); } to { opacity: 1; transform: none; } }
+.dlg.wide { max-width: 860px; }
+.dlg h2 { margin: 0; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .field { display: grid; gap: 5px; }
-.field label { font-size: .82rem; color: var(--muted); font-weight: 500; }
-.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 14px; color: var(--fg); font-size: .95rem; }
-.field textarea { min-height: 80px; resize: vertical; }
+.field label { font-size: .8rem; color: var(--muted); font-weight: 500; }
+.field input, .field select, .field textarea {
+  width: 100%; border: 1px solid var(--line); background: var(--bg);
+  border-radius: 10px; padding: 10px 13px; color: var(--fg); font-size: .93rem;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+.field textarea { min-height: 78px; resize: vertical; }
 .field input.ltr, .field textarea.ltr { direction: ltr; text-align: right; font-family: var(--mono); }
+.field input.amount { font-family: var(--mono); font-size: 1.05rem; font-weight: 700; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
 .actions .spacer { flex: 1; }
-.hint { color: var(--muted); font-size: .8rem; margin: 0; line-height: 1.4; }
-.toast { position: fixed; bottom: 20px; left: 50%变成了translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 20px; border-radius: 10px; z-index: 40; font-size: .9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(-50%); animation: fadeInOut 2.5s ease forwards; }
-@keyframes fadeInOut { 0%{opacity:0; transform:translate(-50%,20px);} 15%{opacity:1; transform:translate(-50%,0);} 85%{opacity:1; transform:translate(-50%,0);} 100%{opacity:0; transform:translate(-50%,20px);} }
+.hint { color: var(--muted); font-size: .78rem; margin: 0; line-height: 1.5; }
+
+/* ---------- Debt Manager ---------- */
+.debt-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.debt-toolbar .search { flex: 1; min-width: 180px; }
+.debt-toolbar .search input { padding-inline-start: 14px; padding-inline-end: 38px; }
+
+.debt-list { display: grid; gap: 10px; max-height: 56vh; overflow-y: auto; padding-inline-end: 2px; }
+.debt-list::-webkit-scrollbar { width: 6px; }
+.debt-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
+
+.debt-card {
+  background: var(--surface-card); border: 1px solid var(--line); border-radius: 14px;
+  padding: 13px 14px; display: grid; gap: 9px; position: relative; overflow: hidden;
+  animation: cardIn .22s ease both;
+}
+.debt-card::before {
+  content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(180deg, var(--gold), color-mix(in srgb, var(--gold) 40%, transparent));
+}
+.debt-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding-inline-start: 8px; }
+.debt-card-name { font-size: 1.06rem; font-weight: 700; line-height: 1.3; }
+.debt-card-amount {
+  font-family: var(--mono); font-size: 1.32rem; font-weight: 800; color: var(--gold);
+  white-space: nowrap; letter-spacing: .3px;
+}
+.debt-card-amount .cur { font-size: .72em; opacity: .75; margin-inline-start: 2px; }
+
+.debt-contacts { display: grid; gap: 4px; padding-inline-start: 8px; }
+.debt-contact {
+  display: flex; align-items: center; gap: 8px; font-size: .85rem;
+  background: color-mix(in srgb, var(--line) 25%, transparent);
+  border-radius: 9px; padding: 7px 10px;
+}
+.debt-contact .dc-icon { font-size: 1rem; flex-shrink: 0; }
+.debt-contact .dc-label { color: var(--muted); font-size: .78rem; white-space: nowrap; }
+.debt-contact .dc-value { font-family: var(--mono); direction: ltr; font-weight: 600; margin-inline-start: auto; }
+.debt-contact .dc-copy { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-size: .72rem; flex-shrink: 0; }
+.debt-contact .dc-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+.debt-notes { font-size: .8rem; color: var(--muted); padding-inline-start: 8px; padding-block: 3px; padding-inline-end: 4px; border-radius: 8px; }
+
+.debt-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-inline-start: 8px; }
+.debt-actions .action-btn.wa { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 35%, transparent); }
+.debt-actions .action-btn.call { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+.debt-actions .action-btn.del { border-color: var(--danger); color: var(--danger); background: color-mix(in srgb, var(--off-bg) 25%, transparent); }
+
+.debt-summary-bar {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  background: color-mix(in srgb, var(--gold-bg) 45%, var(--surface));
+  border: 1px solid var(--gold); border-radius: 12px; padding: 11px 14px;
+}
+.debt-summary-bar .dsb-label { font-size: .8rem; color: var(--muted); font-weight: 600; }
+.debt-summary-bar .dsb-value { font-family: var(--mono); font-size: 1.28rem; font-weight: 800; color: var(--gold); }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--fg); color: var(--bg); padding: 11px 16px; border-radius: 11px;
+  z-index: 90; font-size: .88rem; box-shadow: 0 6px 20px rgba(0,0,0,.35);
+  display: flex; align-items: center; gap: 12px; max-width: min(92vw, 460px);
+  animation: toastIn .25s ease both;
+}
+.toast.out { animation: toastOut .3s ease both; }
+.toast .toast-action {
+  background: transparent; border: 1px solid currentColor; color: inherit;
+  border-radius: 8px; padding: 3px 10px; font-size: .8rem; font-weight: 700;
+}
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, 18px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes toastOut { to { opacity: 0; transform: translate(-50%, 18px); } }
+
+/* Desktop tweaks */
+@media (min-width: 700px) {
+  .list { grid-template-columns: 1fr 1fr; }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  .debt-actions { grid-template-columns: repeat(2, 1fr); }
+  .debt-card-amount { font-size: 1.15rem; }
+}
 </style>
 </head>
 <body>
@@ -94,37 +302,124 @@ h1 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--fg); }
 <div class="wrap">
   <header class="top">
     <div class="titlebar">
-      <div>
-        <h1>الاشتراكات</h1>
-        <div class="sub" id="summary">جاري تحميل البيانات...</div>
+      <div class="title-left">
+        <button class="icon-btn" id="menuBtn" type="button" aria-label="القائمة الجانبية">☰</button>
+        <div>
+          <h1>الاشتراكات</h1>
+          <div class="sub" id="summary">جاري تحميل البيانات…</div>
+        </div>
       </div>
       <div class="btns">
-        <button class="btn" id="setBtn" type="button">الإعدادات</button>
-        <button class="btn-icon" id="addBtn" type="button" aria-label="إضافة شريحة">+</button>
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل المظهر" title="تبديل المظهر">🌙</button>
+        <button class="btn" id="bulkBtn" type="button" title="إضافة عدة شرائح">دفعة</button>
+        <button class="icon-btn accent" id="addBtn" type="button" aria-label="إضافة شريحة">+</button>
       </div>
     </div>
+
     <div class="search">
-      <input id="q" type="search" placeholder="ابحث برقم الهاتف، رقم الشريحة، أو اسم الزبون..." autocomplete="off">
+      <input id="q" type="search" placeholder="ابحث برقم الهاتف، رقم الشريحة، أو اسم الزبون…" autocomplete="off">
+      <span class="search-icon">🔍</span>
+      <button class="clear-btn" id="clearQ" type="button" aria-label="مسح البحث">✕</button>
     </div>
-    <div class="tabs" id="tabs"></div>
+
+    <div class="toolbar">
+      <div class="tabs" id="tabs"></div>
+      <select class="sort-select" id="sortSel" aria-label="ترتيب">
+        <option value="smart">ترتيب: الأقرب للفصل</option>
+        <option value="date">ترتيب: تاريخ الفصل</option>
+        <option value="recent">ترتيب: الأحدث إضافة</option>
+        <option value="name">ترتيب: الاسم (أ-ي)</option>
+        <option value="status">ترتيب: الحالة</option>
+      </select>
+    </div>
   </header>
+
   <main>
     <div class="list" id="list"></div>
   </main>
 </div>
 
-<!-- Add / Edit Modal -->
+<!-- ============ SIDEBAR DRAWER ============ -->
+<div class="drawer-scrim" id="drawerScrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-title">لوحة التحكم السريعة</div>
+      <div class="drawer-sub">نظرة عامة وإدارة سريعة</div>
+    </div>
+    <button class="icon-btn" id="drawerClose" type="button" aria-label="إغلاق">✕</button>
+  </div>
+
+  <div class="drawer-body">
+    <div class="stat-grid" id="statGrid"></div>
+
+    <!-- DEBTS SUMMARY CARD -->
+    <div class="debt-total" id="debtTotalCard">
+      <div>
+        <div class="dt-label">إجمالي الديون المستحقة</div>
+        <div class="dt-value" id="debtTotalValue">₪0</div>
+        <div class="dt-count" id="debtTotalCount">لا توجد ديون</div>
+      </div>
+      <button class="btn gold" id="openDebtsBtn" type="button" style="flex-shrink:0;">إدارة الديون</button>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-head">
+        <span>💰 آخر الديون المسجلة</span>
+        <b id="debtsMiniCount">0</b>
+      </div>
+      <div class="mini-list" id="debtsMiniList"></div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-head">
+        <span>🆕 الشرائح النظيفة</span>
+        <b id="cleanCount">0</b>
+      </div>
+      <div class="mini-list" id="cleanList"></div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-head">
+        <span>🕒 آخر الشرائح المستعملة</span>
+        <b id="recentCount">0</b>
+      </div>
+      <div class="mini-list" id="recentList"></div>
+    </div>
+
+    <div class="drawer-actions">
+      <button class="btn" id="dSetBtn" type="button">⚙️ الإعدادات العامة</button>
+      <button class="btn" id="dBulkBtn" type="button">＋ إضافة عدة شرائح دفعة واحدة</button>
+      <button class="btn" id="dExpCSV" type="button">⬇️ تصدير الشرائح (Excel/CSV)</button>
+      <button class="btn" id="dExpDebts" type="button">⬇️ تصدير الديون (CSV)</button>
+      <button class="btn" id="dExpJSON" type="button">⬇️ نسخة احتياطية JSON (الشرائح + الديون)</button>
+      <button class="btn" id="dImpBtn" type="button">⬆️ استيراد بيانات ودمجها</button>
+      <input id="impFile" type="file" accept=".json,.csv" hidden>
+    </div>
+
+    <div style="text-align:center; color:var(--muted); font-size:.74rem; padding-bottom:8px;">
+      البيانات محفوظة محلياً على جهازك وتعمل بدون إنترنت.
+    </div>
+  </div>
+</aside>
+
+<!-- ============ ADD / EDIT SIM MODAL ============ -->
 <div class="overlay" id="overlay" hidden>
   <form class="dlg" id="form" novalidate>
-    <h2 id="dlgTitle">إضافة شريحة جديدة <button class="btn" type="button" id="closeDlg" style="padding:4px 10px;font-size:.8rem;">إغلاق</button></h2>
+    <h2>
+      <span id="dlgTitle">إضافة شريحة جديدة</span>
+      <button class="btn sm" type="button" id="closeDlg">إغلاق</button>
+    </h2>
+
     <div class="field">
       <label for="f-name">اسم الزبون</label>
       <input id="f-name" type="text" autocomplete="off" placeholder="مثال: أحمد محمد">
     </div>
+
     <div class="two">
       <div class="field">
-        <label for="f-phone">رقم الهاتف</label>
-        <input id="f-phone" class="ltr" type="text" inputmode="numeric" placeholder="05XXXXXXXX" autocomplete="off">
+        <label for="f-phone">رقم الهاتف *</label>
+        <input id="f-phone" class="ltr" type="text" inputmode="tel" placeholder="05XXXXXXXX" autocomplete="off">
       </div>
       <div class="field">
         <label for="f-company">شركة الاتصالات</label>
@@ -141,10 +436,11 @@ h1 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--fg); }
         </select>
       </div>
     </div>
+
     <div class="two">
       <div class="field">
         <label for="f-sim">رقم الشريحة (SIM)</label>
-        <input id="f-sim" class="ltr" type="text" inputmode="numeric" placeholder="8997..." autocomplete="off">
+        <input id="f-sim" class="ltr" type="text" inputmode="numeric" placeholder="8997…" autocomplete="off">
       </div>
       <div class="field">
         <label for="f-activation">مكان التفعيل</label>
@@ -160,6 +456,7 @@ h1 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--fg); }
         </select>
       </div>
     </div>
+
     <div class="two">
       <div class="field">
         <label for="f-status">الحالة</label>
@@ -177,15 +474,19 @@ h1 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--fg); }
         </select>
       </div>
     </div>
+
     <div class="field">
       <label for="f-date">موعد الفصل</label>
       <input id="f-date" type="date">
     </div>
+
     <div class="field">
       <label for="f-notes">ملاحظات</label>
-      <textarea id="f-notes" placeholder="ملاحظات إضافية عن العضو أو الاشتراك..."></textarea>
+      <textarea id="f-notes" placeholder="ملاحظات إضافية عن العضو أو الاشتراك…"></textarea>
     </div>
-    <div style="color:var(--danger);font-size:.85rem;" id="err"></div>
+
+    <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="err"></div>
+
     <div class="actions">
       <button class="btn primary" type="submit" style="flex:2;">حفظ البيانات</button>
       <button class="btn danger" type="button" id="delBtn" hidden>حذف</button>
@@ -193,365 +494,1378 @@ h1 { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--fg); }
   </form>
 </div>
 
-<!-- Settings Modal -->
+<!-- ============ BULK ADD SIM MODAL ============ -->
+<div class="overlay" id="bulkOverlay" hidden>
+  <div class="dlg wide">
+    <h2>
+      <span>إضافة عدة شرائح دفعة واحدة</span>
+      <button class="btn sm" type="button" id="bulkClose">إغلاق</button>
+    </h2>
+    <p class="hint">أضف صفوفاً متعددة ثم اضغط «حفظ الكل». الحقل الأساسي هو رقم الهاتف أو رقم الشريحة.</p>
+
+    <div class="bulk-rows" id="bulkRows"></div>
+
+    <div class="actions">
+      <button class="btn" type="button" id="bulkAddRow">＋ إضافة صف جديد</button>
+      <button class="btn" type="button" id="bulkPasteBtn">📋 لصق قائمة أرقام</button>
+      <span class="spacer"></span>
+      <button class="btn primary" type="button" id="bulkSave" style="min-width:130px;">حفظ الكل</button>
+    </div>
+
+    <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="bulkErr"></div>
+  </div>
+</div>
+
+<!-- ============ DEBTS MANAGER MODAL ============ -->
+<div class="overlay" id="debtsOverlay" hidden>
+  <div class="dlg wide">
+    <h2>
+      <span>💰 إدارة الديون</span>
+      <button class="btn sm" type="button" id="debtsClose">إغلاق</button>
+    </h2>
+
+    <div class="debt-summary-bar">
+      <div>
+        <div class="dsb-label">إجمالي الديون</div>
+        <div class="dsb-value" id="dmTotal">₪0</div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <span class="hint" id="dmCount" style="margin:0;">0 دين</span>
+        <button class="btn gold" type="button" id="dmAddBtn">＋ إضافة دين</button>
+      </div>
+    </div>
+
+    <div class="debt-toolbar">
+      <div class="search">
+        <input id="dmSearch" type="search" placeholder="ابحث باسم الزبون أو رقم الهاتف…" autocomplete="off">
+        <span class="search-icon">🔍</span>
+      </div>
+      <select class="sort-select" id="dmSort" aria-label="ترتيب الديون">
+        <option value="amount">الأعلى ديناً</option>
+        <option value="recent">الأحدث إضافة</option>
+        <option value="name">الاسم (أ-ي)</option>
+        <option value="oldest">الأقدم إضافة</option>
+      </select>
+    </div>
+
+    <div class="debt-list" id="dmList"></div>
+
+    <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
+      <button class="btn" type="button" id="dmExpCSV">⬇️ تصدير الديون CSV</button>
+      <span class="spacer"></span>
+      <button class="btn danger" type="button" id="dmWipeAll">حذف كل الديون</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADD / EDIT DEBT MODAL ============ -->
+<div class="overlay" id="debtDlgOverlay" hidden>
+  <form class="dlg" id="debtForm" novalidate>
+    <h2>
+      <span id="debtDlgTitle">إضافة دين جديد</span>
+      <button class="btn sm" type="button" id="debtClose">إغلاق</button>
+    </h2>
+
+    <div class="field">
+      <label for="d-name">اسم الزبون *</label>
+      <input id="d-name" type="text" autocomplete="off" placeholder="مثال: أحمد محمد">
+    </div>
+
+    <div class="field">
+      <label for="d-amount">مبلغ الدين (شيكل) *</label>
+      <input id="d-amount" class="amount ltr" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00">
+    </div>
+
+    <div class="two">
+      <div class="field">
+        <label for="d-wa">رقم الواتساب</label>
+        <input id="d-wa" class="ltr" type="text" inputmode="tel" placeholder="05XXXXXXXX أو +972…" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="d-contact">رقم التواصل</label>
+        <input id="d-contact" class="ltr" type="text" inputmode="tel" placeholder="05XXXXXXXX" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="d-notes">ملاحظات</label>
+      <textarea id="d-notes" placeholder="تفاصيل إضافية عن الدين…"></textarea>
+    </div>
+
+    <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="debtErr"></div>
+
+    <div class="actions">
+      <button class="btn primary" type="submit" style="flex:2;">حفظ الدين</button>
+      <button class="btn danger" type="button" id="debtDelBtn" hidden>حذف</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ SETTINGS MODAL ============ -->
 <div class="overlay" id="setOverlay" hidden>
   <div class="dlg">
-    <h2>الإعدادات العامة <button class="btn" type="button" id="setClose" style="padding:4px 10px;font-size:.8rem;">إغلاق</button></h2>
-    
+    <h2>
+      <span>الإعدادات العامة</span>
+      <button class="btn sm" type="button" id="setClose">إغلاق</button>
+    </h2>
+
     <div class="field">
-      <label for="s-template">قالب رسالة التذكير (SMS)</label>
-      <textarea id="s-template" class="ltr" style="direction:rtl; text-align:right;">مرحباً {name}، نذّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.</textarea>
-      <p class="hint">المتغيرات المتاحة: <code>{name}</code> للاسم، <code>{phone}</code> للرقم، <code>{date}</code> لموعد الفصل.</p>
+      <label for="s-template">قالب تذكير الاشتراك (SMS / واتساب)</label>
+      <textarea id="s-template" style="direction:rtl; text-align:right;">مرحباً {name}، نذكّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.</textarea>
+      <p class="hint">المتغيرات: <code>{name}</code> للاسم، <code>{phone}</code> للرقم، <code>{date}</code> لموعد الفصل.</p>
     </div>
 
-    <div class="field" style="margin-top: 10px;">
-      <label>إدارة النسخ الاحتياطي والملفات</label>
-      <div style="display: grid; gap: 8px; margin-top: 6px;">
-        <button class="btn" type="button" id="expCSV">تصدير ملف Excel / CSV</button>
+    <div class="field">
+      <label for="s-debt-template">قالب تذكير الدين (SMS / واتساب)</label>
+      <textarea id="s-debt-template" style="direction:rtl; text-align:right;">مرحباً {name}، نود تذكيركم بوجود مبلغ دين بقيمة {amount} شيكل. يرجى التواصل معنا للتسوية. شكراً.</textarea>
+      <p class="hint">المتغيرات: <code>{name}</code> للاسم، <code>{amount}</code> للمبلغ بالشيكل.</p>
+    </div>
+
+    <div class="field">
+      <label>إدارة البيانات</label>
+      <div style="display:grid; gap:8px; margin-top:4px;">
+        <button class="btn" type="button" id="expCSV">تصدير الشرائح (Excel/CSV)</button>
+        <button class="btn" type="button" id="expDebts">تصدير الديون (CSV)</button>
         <button class="btn" type="button" id="expJSON">تصدير نسخة احتياطية كاملة (JSON)</button>
-        <button class="btn" type="button" id="impBtn">استيراد بيانات ودمجها</button>
-        <input id="impFile" type="file" accept=".json,.csv" hidden>
+        <button class="btn" type="button" id="impBtn2">استيراد بيانات ودمجها (JSON / CSV)</button>
+        <button class="btn danger" type="button" id="wipeBtn">حذف جميع البيانات نهائياً</button>
       </div>
-      <p class="hint" style="margin-top:4px;">يمكنك تصدير ملف الـ CSV وفتحه مباشرة عبر برنامج Excel على جهازك.</p>
+      <p class="hint" style="margin-top:6px;">استيراد JSON يشمل الشرائح والديون معاً.</p>
     </div>
 
-    <div style="text-align:center; color:var(--muted); font-size:.8rem; margin-top:10px;">
-      البيانات محفوظة محلياً على هاتفك بأمان تام وتعمل بدون إنترنت.
+    <div style="text-align:center; color:var(--muted); font-size:.76rem;">
+      كل البيانات محفوظة محلياً على جهازك ولا تُرسل إلى أي خادم خارجي.
     </div>
   </div>
 </div>
 
 <script>
-(function() {
-  var STORAGE_KEY = "sim_subscriptions_v3";
+(function () {
+  "use strict";
+
+  /* ============================================================
+     CONSTANTS & STATE
+     ============================================================ */
+  var STORAGE_KEY = "sim_subscriptions_v4";
+  var DEBTS_KEY = "sim_debts_v1";
+  var TEMPLATE_KEY = "sim_sms_tmpl";
+  var DEBT_TEMPLATE_KEY = "sim_debt_tmpl";
+  var THEME_KEY = "sim_theme";
+
   var STATUS = { active: "مفعل", suspended: "معلق", disconnected: "مفصول" };
   var ORDER = ["active", "suspended", "disconnected"];
-  
+
+  var COMPANIES = ["سلكوم", "هوت موبايل", "بلفون", "بارتنر", "رامي ليفي", "019", "ألوها", "أخرى"];
+
+  var COLS = [
+    ["phone", "رقم الهاتف"], ["name", "اسم الزبون"], ["company", "شركة الاتصالات"],
+    ["sim", "رقم الشريحة"], ["activation", "مكان التفعيل"], ["status", "الحالة"],
+    ["simState", "نوع الشريحة"], ["cutDate", "موعد الفصل"], ["notes", "ملاحظات"]
+  ];
+
+  var DEBT_COLS = [
+    ["name", "اسم الزبون"], ["amount", "المبلغ (شيكل)"],
+    ["whatsapp", "رقم واتساب"], ["contact", "رقم التواصل"], ["notes", "ملاحظات"]
+  ];
+
   var docs = new Map();
-  var filter = "all", query = "", editingId = null, delArmed = false;
-  
-  var defaultSMSTemplate = "مرحباً {name}، نذّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.";
-  var smsTemplate = localStorage.getItem("sim_sms_tmpl") || defaultSMSTemplate;
+  var debts = new Map();
+  var filter = "all";
+  var query = "";
+  var sortMode = "smart";
+  var editingId = null;
+  var delArmed = false;
+  var lastDeleted = null;
 
-  var $ = function(id) { return document.getElementById(id); };
+  var debtQuery = "";
+  var debtSort = "amount";
+  var editingDebtId = null;
+  var debtDelArmed = false;
+  var lastDeletedDebt = null;
 
-  function loadData() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        JSON.parse(raw).forEach(function(r) { docs.set(r._id, r); });
-      } else {
-        // بيانات تجريبية أولية مطابقة للمواصفات
-        var sample = [
-          { _id: "s1", phone: "0524392489", sim: "899700224989972020", name: "أحمد علي", company: "سلكوم", activation: "ألوها", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
-          { _id: "s2", phone: "0535673845", sim: "8997207105106265389", name: "ضبة هوت", company: "هوت موبايل", activation: "كويك لاين", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
-          { _id: "s3", phone: "0507485352", sim: "8997250400047527708", name: "محمد خالد", company: "بلفون", activation: "سكاي", status: "active", simState: "used-sim", cutDate: "2026-10-19", notes: "" }
-        ];
-        sample.forEach(function(r) { docs.set(r._id, r); });
-        saveData();
-      }
-    } catch(e) { docs = new Map(); }
-    checkAutoDisconnect();
+  var defaultSMSTemplate = "مرحباً {name}، نذكّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.";
+  var defaultDebtTemplate = "مرحباً {name}، نود تذكيركم بوجود مبلغ دين بقيمة {amount} شيكل. يرجى التواصل معنا للتسوية. شكراً.";
+
+  var smsTemplate = localStorage.getItem(TEMPLATE_KEY) || defaultSMSTemplate;
+  var debtTemplate = localStorage.getItem(DEBT_TEMPLATE_KEY) || defaultDebtTemplate;
+
+  function $(id) { return document.getElementById(id); }
+
+  /* ============================================================
+     UTILITIES
+     ============================================================ */
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
   }
-
-  function saveData() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(docs.values())));
-    } catch(e) { toast("تعذر الحفظ، مساحة التخزين ممتلئة!"); }
+  function uid(prefix) {
+    return (prefix || "id_") + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
   }
-
-  function toast(msg) {
+  function toast(msg, actionLabel, actionFn) {
     var t = document.createElement("div");
     t.className = "toast";
-    t.textContent = msg;
+    var span = document.createElement("span");
+    span.textContent = msg;
+    t.appendChild(span);
+    if (actionLabel && actionFn) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "toast-action";
+      b.textContent = actionLabel;
+      b.addEventListener("click", function () { actionFn(); dismiss(); });
+      t.appendChild(b);
+    }
     document.body.appendChild(t);
-    setTimeout(function() { t.remove(); }, 2500);
+    var timer = setTimeout(dismiss, actionLabel ? 5000 : 2500);
+    function dismiss() {
+      clearTimeout(timer);
+      if (!t.parentNode) return;
+      t.classList.add("out");
+      setTimeout(function () { t.remove(); }, 300);
+    }
+  }
+  function copyText(text) {
+    text = String(text || "");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast("تم النسخ ✓"); })
+        .catch(function () { fallbackCopy(text); });
+    } else fallbackCopy(text);
+  }
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      toast("تم النسخ ✓");
+    } catch (e) { toast("تعذر النسخ"); }
+  }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function todayISO() {
+    var t = new Date();
+    return t.getFullYear() + "-" + pad(t.getMonth() + 1) + "-" + pad(t.getDate());
+  }
+  function daysFrom(iso) {
+    if (!iso) return null;
+    var t = new Date();
+    var nowUTC = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
+    var p = String(iso).split("-").map(Number);
+    if (p.length < 3 || !p[0] || !p[1] || !p[2]) return null;
+    return Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - nowUTC) / 86400000);
+  }
+  function fmtDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+    return m ? m[3] + "/" + m[2] + "/" + m[1] : "—";
+  }
+  function fmtMoney(n) {
+    var v = Number(n) || 0;
+    var s = v.toLocaleString("en-US", { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
+    return "₪" + s;
+  }
+  function digitsOnly(s) { return String(s || "").replace(/\D/g, ""); }
+  function waNumber(phone) {
+    var d = digitsOnly(phone);
+    if (d.indexOf("0") === 0) d = "972" + d.slice(1);
+    return d;
+  }
+  function telNumber(phone) {
+    return String(phone || "").replace(/[^\d+*#]/g, "");
+  }
+  function formatDaysBadge(r) {
+    if (r.status === "disconnected") return '<span class="badge disconnected">مفصول</span>';
+    var d = daysFrom(r.cutDate);
+    if (d === null) return "";
+    if (d < 0) return '<span class="badge disconnected">متأخر ' + Math.abs(d) + " أيام</span>";
+    if (d === 0) return '<span class="badge days" style="background:var(--off-bg);color:var(--off);">ينتهي اليوم</span>';
+    if (d === 1) return '<span class="badge days" style="background:var(--hold-bg);color:var(--hold);">باقي يوم واحد</span>';
+    return '<span class="badge days">باقي ' + d + " أيام</span>";
   }
 
+  /* ============================================================
+     STORAGE
+     ============================================================ */
+  function loadData() {
+    /* Sim cards */
+    var raw = null;
+    try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { raw = null; }
+
+    if (raw) {
+      try {
+        var arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          arr.forEach(function (r) {
+            if (r && r._id) {
+              if (!r.createdAt) r.createdAt = Date.now();
+              if (!r.updatedAt) r.updatedAt = r.createdAt;
+              docs.set(r._id, r);
+            }
+          });
+        }
+      } catch (e) { docs = new Map(); }
+    }
+
+    if (docs.size === 0 && !raw) {
+      var now = Date.now();
+      var sample = [
+        { _id: "s1", phone: "0524392489", sim: "899700224989972020", name: "أحمد علي", company: "سلكوم", activation: "ألوها", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
+        { _id: "s2", phone: "0535673845", sim: "8997207105106265389", name: "ضبة هوت", company: "هوت موبايل", activation: "كويك لاين", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
+        { _id: "s3", phone: "0507485352", sim: "8997250400047527708", name: "محمد خالد", company: "بلفون", activation: "سكاي", status: "active", simState: "used-sim", cutDate: "2026-10-19", notes: "" },
+        { _id: "s4", phone: "", sim: "899700224989970001", name: "شريحة نظيفة 1", company: "سلكوم", activation: "ألوها", status: "active", simState: "clear-sim", cutDate: "", notes: "متاحة للبيع" },
+        { _id: "s5", phone: "", sim: "899700224989970002", name: "شريحة نظيفة 2", company: "هوت موبايل", activation: "كويك لاين", status: "active", simState: "clear-sim", cutDate: "", notes: "" }
+      ];
+      sample.forEach(function (r, i) { r.createdAt = now - i * 1000; r.updatedAt = r.createdAt; docs.set(r._id, r); });
+      saveData();
+    }
+
+    /* Debts */
+    var rawDebts = null;
+    try { rawDebts = localStorage.getItem(DEBTS_KEY); } catch (e) { rawDebts = null; }
+
+    if (rawDebts) {
+      try {
+        var dArr = JSON.parse(rawDebts);
+        if (Array.isArray(dArr)) {
+          dArr.forEach(function (d) {
+            if (d && d._id) {
+              if (!d.createdAt) d.createdAt = Date.now();
+              if (!d.updatedAt) d.updatedAt = d.createdAt;
+              debts.set(d._id, d);
+            }
+          });
+        }
+      } catch (e) { debts = new Map(); }
+    }
+
+    if (debts.size === 0 && !rawDebts) {
+      var dnow = Date.now();
+      var dsample = [
+        { _id: "d1", name: "سامي يوسف", amount: 450, whatsapp: "0524392489", contact: "0524392489", notes: "دين شريحة + رصيد" },
+        { _id: "d2", name: "ليلى إبراهيم", amount: 1200, whatsapp: "0535673845", contact: "0535673845", notes: "" },
+        { _id: "d3", name: "خالد منصور", amount: 300, whatsapp: "0507485352", contact: "0507485352", notes: "وعد بالدفع نهاية الشهر" }
+      ];
+      dsample.forEach(function (d, i) { d.createdAt = dnow - i * 1000; d.updatedAt = d.createdAt; debts.set(d._id, d); });
+      saveDebts();
+    }
+
+    checkAutoDisconnect();
+  }
+  function saveData() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(docs.values()))); }
+    catch (e) { toast("تعذر الحفظ، مساحة التخزين ممتلئة!"); }
+  }
+  function saveDebts() {
+    try { localStorage.setItem(DEBTS_KEY, JSON.stringify(Array.from(debts.values()))); }
+    catch (e) { toast("تعذر حفظ الديون، مساحة التخزين ممتلئة!"); }
+  }
   function checkAutoDisconnect() {
-    var today = new Date().toISOString().slice(0, 10);
+    var today = todayISO();
     var changed = false;
-    docs.forEach(function(r) {
+    docs.forEach(function (r) {
       if (r.status === "active" && r.cutDate && r.cutDate <= today) {
-        r.status = "disconnected";
-        changed = true;
+        r.status = "disconnected"; r.updatedAt = Date.now(); changed = true;
       }
     });
     if (changed) saveData();
   }
 
-  function daysFrom(iso) {
-    if (!iso) return null;
-    var t = new Date(), nowUTC = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
-    var p = iso.split("-").map(Number);
-    if (p.length < 3) return null;
-    var targetUTC = Date.UTC(p[0], p[1]-1, p[2]);
-    return Math.round((targetUTC - nowUTC) / 86400000);
-  }
-
-  function fmtDate(iso) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
-    return m ? m[3] + "/" + m[2] + "/" + m[1] : "—";
-  }
-
-  function formatDaysBadge(r) {
-    if (r.status === "disconnected") return '<span class="badge disconnected">مفصول</span>';
-    var d = daysFrom(r.cutDate);
-    if (d === null) return '';
-    if (d < 0) return '<span class="badge disconnected">متأخر ' + Math.abs(d) + ' أيام</span>';
-    if (d === 0) return '<span class="badge days" style="background:var(--off-bg); color:var(--off);">ينتهي اليوم</span>';
-    if (d === 1) return '<span class="badge days" style="background:var(--hold-bg); color:var(--hold);">باقي يوم واحد</span>';
-    return '<span class="badge days">باقي ' + d + ' أيام</span>';
-  }
-
-  function renderTabs(all) {
-    var counts = { all: all.length, active: 0, suspended: 0, disconnected: 0 };
-    all.forEach(function(r) { if (counts[r.status] !== undefined) counts[r.status]++; });
-    
-    var defs = [
-      ["all", "الكل", counts.all],
-      ["active", "مفعل", counts.active],
-      ["suspended", "معلق", counts.suspended],
-      ["disconnected", "مفصول", counts.disconnected]
-    ];
-
-    $("tabs").innerHTML = defs.map(function(t) {
-      return '<button type="button" class="tab" data-f="' + t[0] + '" aria-pressed="' + (filter === t[0]) + '">' + t[1] + ' <b>' + t[2] + '</b></button>';
-    }).join("");
-
-    $("summary").textContent = "إجمالي " + all.length + " شريحة · مرتبة حسب الحالة والتاريخ";
-  }
-
+  /* ============================================================
+     FILTERS / SORT
+     ============================================================ */
   function matches(r) {
     if (filter !== "all" && r.status !== filter) return false;
     var q = query.trim().toLowerCase();
     if (!q) return true;
-    var combined = [r.name, r.phone, r.sim, r.company, r.activation, r.notes].join(" ").toLowerCase();
-    return combined.indexOf(q) !== -1;
+    return [r.name, r.phone, r.sim, r.company, r.activation, r.notes]
+      .join(" ").toLowerCase().indexOf(q) !== -1;
+  }
+  function sortRecords(arr) {
+    var copy = arr.slice();
+    if (sortMode === "name") copy.sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "ar"); });
+    else if (sortMode === "recent") copy.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    else if (sortMode === "status") copy.sort(function (a, b) {
+      var d = ORDER.indexOf(a.status) - ORDER.indexOf(b.status);
+      if (d) return d;
+      return (a.cutDate || "9999") < (b.cutDate || "9999") ? -1 : 1;
+    });
+    else if (sortMode === "date") copy.sort(function (a, b) {
+      var da = a.cutDate || "9999-99-99", db = b.cutDate || "9999-99-99";
+      return da < db ? -1 : (da > db ? 1 : 0);
+    });
+    else copy.sort(function (a, b) {
+      var d = ORDER.indexOf(a.status) - ORDER.indexOf(b.status);
+      if (d) return d;
+      var da = a.cutDate || "9999-99-99", db = b.cutDate || "9999-99-99";
+      return da < db ? -1 : (da > db ? 1 : 0);
+    });
+    return copy;
+  }
+  function filterDebts(q) {
+    q = String(q || "").trim().toLowerCase();
+    if (!q) return Array.from(debts.values());
+    return Array.from(debts.values()).filter(function (d) {
+      return [d.name, d.whatsapp, d.contact, d.notes].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  function sortDebts(arr, mode) {
+    var copy = arr.slice();
+    if (mode === "name") copy.sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "ar"); });
+    else if (mode === "recent") copy.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    else if (mode === "oldest") copy.sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+    else copy.sort(function (a, b) { return (Number(b.amount) || 0) - (Number(a.amount) || 0); });
+    return copy;
+  }
+
+  /* ============================================================
+     RENDER — TABS / SUMMARY
+     ============================================================ */
+  function renderTabs(all) {
+    var counts = { all: all.length, active: 0, suspended: 0, disconnected: 0 };
+    all.forEach(function (r) { if (counts[r.status] !== undefined) counts[r.status]++; });
+    var defs = [
+      ["all", "الكل", counts.all], ["active", "مفعل", counts.active],
+      ["suspended", "معلق", counts.suspended], ["disconnected", "مفصول", counts.disconnected]
+    ];
+    $("tabs").innerHTML = defs.map(function (t) {
+      return '<button type="button" class="tab" data-f="' + t[0] + '" aria-pressed="' + (filter === t[0]) + '">' +
+        t[1] + " <b>" + t[2] + "</b></button>";
+    }).join("");
+  }
+  function renderSummary(all) {
+    var dueSoon = 0, overdue = 0;
+    all.forEach(function (r) {
+      if (r.status !== "active") return;
+      var d = daysFrom(r.cutDate);
+      if (d === null) return;
+      if (d < 0) overdue++;
+      else if (d <= 3) dueSoon++;
+    });
+    var totalDebt = 0;
+    debts.forEach(function (d) { totalDebt += Number(d.amount) || 0; });
+    var debtInfo = debts.size ? " · ديون: " + fmtMoney(totalDebt) : "";
+    $("summary").textContent = "إجمالي " + all.length + " شريحة · مستحقة قريباً: " + dueSoon + " · متأخرة: " + overdue + debtInfo;
+  }
+
+  /* ============================================================
+     RENDER — SIDEBAR STATS & MINI LISTS
+     ============================================================ */
+  function renderStats(all) {
+    var clean = 0, used = 0, active = 0, suspended = 0, disconnected = 0;
+    all.forEach(function (r) {
+      if (r.simState === "clear-sim") clean++; else used++;
+      if (r.status === "active") active++;
+      else if (r.status === "suspended") suspended++;
+      else if (r.status === "disconnected") disconnected++;
+    });
+
+    var totalDebt = 0;
+    debts.forEach(function (d) { totalDebt += Number(d.amount) || 0; });
+
+    var stats = [
+      { cls: "acc", num: all.length, lbl: "إجمالي الشرائح" },
+      { cls: "on", num: active, lbl: "مفعلة حالياً" },
+      { cls: "hold", num: suspended, lbl: "معلّقة" },
+      { cls: "off", num: disconnected, lbl: "مفصولة" },
+      { cls: "acc", num: clean, lbl: "شرائح نظيفة" },
+      { cls: "", num: used, lbl: "شرائح مستعملة" }
+    ];
+
+    $("statGrid").innerHTML = stats.map(function (s) {
+      return '<div class="stat ' + s.cls + '"><div class="num">' + s.num + '</div><div class="lbl">' + s.lbl + "</div></div>";
+    }).join("");
+
+    $("debtTotalValue").textContent = fmtMoney(totalDebt);
+    var cnt = debts.size;
+    $("debtTotalCount").textContent = cnt === 0 ? "لا توجد ديون" : (cnt + (cnt === 1 ? " دين مسجل" : " ديون مسجلة"));
+  }
+
+  function miniSimHTML(r) {
+    var tag = r.company || (r.simState === "clear-sim" ? "نظيفة" : "مستعملة");
+    return '<button type="button" class="mini-item" data-id="' + esc(r._id) + '">' +
+      '<span class="mi-phone">' + esc(r.phone || r.sim || "—") + "</span>" +
+      '<span class="mi-meta"><span>' + esc(r.name || "بدون اسم") + "</span><span>" + esc(tag) + "</span></span>" +
+      "</button>";
+  }
+  function miniDebtHTML(d) {
+    return '<button type="button" class="debt-mini" data-id="' + esc(d._id) + '">' +
+      '<span class="dm-top">' +
+        '<span class="dm-name">' + esc(d.name || "بدون اسم") + "</span>" +
+        '<span class="dm-amount">' + fmtMoney(d.amount) + "</span>" +
+      "</span>" +
+      (d.whatsapp || d.contact
+        ? '<span class="dm-phone">' + esc(d.whatsapp || d.contact) + "</span>"
+        : "") +
+      "</button>";
+  }
+
+  function renderSidebar(all) {
+    /* Debt mini list */
+    var recentDebts = Array.from(debts.values())
+      .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); })
+      .slice(0, 8);
+    $("debtsMiniCount").textContent = debts.size;
+    $("debtsMiniList").innerHTML = recentDebts.length
+      ? recentDebts.map(miniDebtHTML).join("")
+      : '<div class="mini-empty">لا توجد ديون مسجلة حالياً</div>';
+
+    /* Clean SIMs */
+    var clean = all.filter(function (r) { return r.simState === "clear-sim"; })
+      .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); })
+      .slice(0, 30);
+    $("cleanCount").textContent = clean.length;
+    $("cleanList").innerHTML = clean.length
+      ? clean.map(miniSimHTML).join("")
+      : '<div class="mini-empty">لا توجد شرائح نظيفة حالياً</div>';
+
+    /* Recent used SIMs */
+    var recent = all.filter(function (r) { return r.simState === "used-sim"; })
+      .sort(function (a, b) { return (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0); })
+      .slice(0, 30);
+    $("recentCount").textContent = recent.length;
+    $("recentList").innerHTML = recent.length
+      ? recent.map(miniSimHTML).join("")
+      : '<div class="mini-empty">لا توجد شرائح مستعملة بعد</div>';
+  }
+
+  /* ============================================================
+     RENDER — SIM CARDS
+     ============================================================ */
+  function buildSmsBody(r) {
+    return smsTemplate
+      .replace(/\{name\}/g, r.name || "العزيز")
+      .replace(/\{phone\}/g, r.phone || "")
+      .replace(/\{date\}/g, fmtDate(r.cutDate));
+  }
+  function buildDebtSmsBody(d) {
+    return debtTemplate
+      .replace(/\{name\}/g, d.name || "العزيز")
+      .replace(/\{amount\}/g, (Number(d.amount) || 0).toFixed(2).replace(/\.00$/, ""));
+  }
+
+  function cardHTML(r) {
+    var d = daysFrom(r.cutDate);
+    var isDue = d !== null && d <= 1 && r.status === "active";
+    var cleanLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
+    var subInfo = [r.company, r.activation ? "التفعيل: " + r.activation : "", cleanLabel]
+      .filter(Boolean).join(" · ");
+    var smsBody = encodeURIComponent(buildSmsBody(r));
+    var tel = telNumber(r.phone);
+    var wa = waNumber(r.phone);
+    var hasPhone = !!r.phone;
+
+    return '<div class="card' + (isDue ? " due" : "") + '">' +
+      '<div class="card-header">' +
+        '<div class="phone-wrap">' +
+          '<div class="phone-lg">' + esc(r.phone || "—") + "</div>" +
+          (hasPhone ? '<button class="copy-btn" type="button" data-copy="' + esc(r.phone) + '" aria-label="نسخ الرقم">⧉</button>' : "") +
+        "</div>" +
+        '<div class="badge-tags">' + formatDaysBadge(r) + "</div>" +
+      "</div>" +
+      '<div class="card-body">' +
+        '<div class="name-row"><span>' + esc(r.name || "بدون اسم") + "</span></div>" +
+        (r.sim
+          ? '<div class="sim-row"><button class="copy-btn" type="button" data-copy="' + esc(r.sim) + '" aria-label="نسخ الشريحة">⧉</button><span>💳 ' + esc(r.sim) + "</span></div>"
+          : "") +
+        '<div class="meta-row"><span>🏢 ' + esc(subInfo) + "</span></div>" +
+        (r.notes ? '<div class="notes-box">📝 ' + esc(r.notes) + "</div>" : "") +
+      "</div>" +
+      '<div class="date-row">' +
+        '<span>موعد الفصل: <span class="date-val">' + fmtDate(r.cutDate) + "</span></span>" +
+        '<span class="badge ' + esc(r.status) + '">' + (STATUS[r.status] || r.status) + "</span>" +
+      "</div>" +
+      '<div class="card-actions">' +
+        (hasPhone
+          ? '<a class="action-btn sms" href="sms:' + esc(tel) + "?body=" + smsBody + '">رسالة</a>'
+          : '<span class="action-btn" style="opacity:.4;pointer-events:none;">رسالة</span>') +
+        (hasPhone
+          ? '<a class="action-btn call" href="tel:' + esc(tel) + '">اتصال</a>'
+          : '<span class="action-btn" style="opacity:.4;pointer-events:none;">اتصال</span>') +
+        (hasPhone
+          ? '<a class="action-btn wa" href="https://wa.me/' + esc(wa) + "?text=" + smsBody + '" target="_blank" rel="noopener">واتساب</a>'
+          : '<span class="action-btn" style="opacity:.4;pointer-events:none;">واتساب</span>') +
+        '<button class="action-btn edit-btn" type="button" data-id="' + esc(r._id) + '">تعديل</button>' +
+      "</div>" +
+    "</div>";
   }
 
   function render() {
     checkAutoDisconnect();
     var all = Array.from(docs.values());
     renderTabs(all);
+    renderSummary(all);
+    renderStats(all);
+    renderSidebar(all);
 
-    var filtered = all.filter(matches).sort(function(a, b) {
-      var sa = ORDER.indexOf(a.status), sb = ORDER.indexOf(b.status);
-      if (sa !== sb) return sa - sb;
-      return (a.cutDate || "") < (b.cutDate || "") ? -1 : 1;
-    });
-
+    var filtered = sortRecords(all.filter(matches));
     if (!filtered.length) {
-      $("list").innerHTML = '<div class="empty">لا توجد سجلات مطابقة للبحث أو التصفية الحالية.</div>';
+      $("list").innerHTML = '<div class="empty"><span class="big">📭</span>لا توجد سجلات مطابقة للبحث أو التصفية الحالية.</div>';
       return;
     }
-
-    var html = "";
-    filtered.forEach(function(r) {
-      var isDue = daysFrom(r.cutDate) !== null && daysFrom(r.cutDate) <= 1 && r.status === "active";
-      var cleanLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
-      var subInfo = [r.company, r.activation ? "التفعيل: " + r.activation : "", cleanLabel].filter(Boolean).join(" · ");
-
-      // رسالة SMS الجاهزة للإرسال
-      var smsBody = encodeURIComponent(
-        smsTemplate
-          .replace("{name}", r.name || "العزيز")
-          .replace("{phone}", r.phone || "")
-          .replace("{date}", fmtDate(r.cutDate))
-      );
-
-      html += '<div class="card' + (isDue ? ' due' : '') + '">' +
-        '<div class="card-header">' +
-          '<div class="phone-lg">' + r.phone + '</div>' +
-          formatDaysBadge(r) +
-        '</div>' +
-        '<div class="card-body">' +
-          '<div class="name-row"><span>' + (r.name || "بدون اسم") + '</span></div>' +
-          (r.sim ? '<div class="sim-row"><span>💳 ' + r.sim + '</span></div>' : '') +
-          '<div class="meta-row"><span>🏢 ' + subInfo + '</span></div>' +
-          (r.notes ? '<div style="font-size:.82rem; color:var(--muted); margin-top:2px;">📝 ' + r.notes + '</div>' : '') +
-        '</div>' +
-        '<div class="date-row">' +
-          '<span>موعد الفصل: <span class="date-val">' + fmtDate(r.cutDate) + '</span></span>' +
-          '<span class="badge ' + r.status + '">' + STATUS[r.status] + '</span>' +
-        '</div>' +
-        '<div class="card-actions">' +
-          '<a class="action-btn sms" href="sms:' + r.phone + '?body=' + smsBody + '">رسالة</a>' +
-          '<a class="action-btn call" href="tel:' + r.phone + '">اتصال</a>' +
-          '<a class="action-btn wa" href="https://wa.me/972' + (r.phone.startsWith("0") ? r.phone.slice(1) : r.phone) + '?text=' + smsBody + '" target="_blank">واتساب</a>' +
-          '<button class="action-btn edit-btn" type="button" data-id="' + r._id + '">تعديل</button>' +
-        '</div>' +
-      '</div>';
-    });
-
-    $("list").innerHTML = html;
+    $("list").innerHTML = filtered.map(cardHTML).join("");
   }
 
-  // Modal handlers
+  /* ============================================================
+     DEBTS — RENDER
+     ============================================================ */
+  function debtCardHTML(d) {
+    var amount = Number(d.amount) || 0;
+    var wa = waNumber(d.whatsapp || d.contact);
+    var tel = telNumber(d.contact || d.whatsapp);
+    var smsBody = encodeURIComponent(buildDebtSmsBody(d));
+    var hasWa = !!(d.whatsapp || d.contact);
+    var hasTel = !!(d.contact || d.whatsapp);
+
+    var waRow = d.whatsapp
+      ? '<div class="debt-contact">' +
+          '<span class="dc-icon">💬</span>' +
+          '<span class="dc-label">واتساب</span>' +
+          '<span class="dc-value">' + esc(d.whatsapp) + "</span>" +
+          '<button class="dc-copy" type="button" data-copy="' + esc(d.whatsapp) + '" aria-label="نسخ">⧉</button>' +
+        "</div>"
+      : "";
+    var telRow = d.contact
+      ? '<div class="debt-contact">' +
+          '<span class="dc-icon">📞</span>' +
+          '<span class="dc-label">تواصل</span>' +
+          '<span class="dc-value">' + esc(d.contact) + "</span>" +
+          '<button class="dc-copy" type="button" data-copy="' + esc(d.contact) + '" aria-label="نسخ">⧉</button>' +
+        "</div>"
+      : "";
+
+    return '<div class="debt-card" data-id="' + esc(d._id) + '">' +
+      '<div class="debt-card-head">' +
+        '<div class="debt-card-name">' + esc(d.name || "بدون اسم") + "</div>" +
+        '<div class="debt-card-amount">' + fmtMoney(amount).replace("₪", '<span class="cur">₪</span>') + "</div>" +
+      "</div>" +
+      ((waRow || telRow) ? '<div class="debt-contacts">' + waRow + telRow + "</div>" : "") +
+      (d.notes ? '<div class="debt-notes">📝 ' + esc(d.notes) + "</div>" : "") +
+      '<div class="debt-actions">' +
+        (hasWa
+          ? '<a class="action-btn wa" href="https://wa.me/' + esc(wa) + "?text=" + smsBody + '" target="_blank" rel="noopener">واتساب</a>'
+          : '<span class="action-btn" style="opacity:.4;pointer-events:none;">واتساب</span>') +
+        (hasTel
+          ? '<a class="action-btn call" href="tel:' + esc(tel) + '">اتصال</a>'
+          : '<span class="action-btn" style="opacity:.4;pointer-events:none;">اتصال</span>') +
+        '<button class="action-btn debt-edit-btn" type="button" data-id="' + esc(d._id) + '">تعديل</button>' +
+        '<button class="action-btn del debt-del-btn" type="button" data-id="' + esc(d._id) + '">حذف</button>' +
+      "</div>" +
+    "</div>";
+  }
+
+  function renderDebtsManager() {
+    var list = sortDebts(filterDebts(debtQuery), debtSort);
+    var total = 0;
+    Array.from(debts.values()).forEach(function (d) { total += Number(d.amount) || 0; });
+
+    $("dmTotal").textContent = fmtMoney(total);
+    $("dmCount").textContent = debts.size + (debts.size === 1 ? " دين" : " ديون");
+
+    if (!list.length) {
+      $("dmList").innerHTML = '<div class="empty"><span class="big">💸</span>' +
+        (debts.size === 0 ? "لا توجد ديون مسجلة بعد. اضغط «إضافة دين» للبدء." : "لا نتائج مطابقة للبحث.") +
+        "</div>";
+      return;
+    }
+    $("dmList").innerHTML = list.map(debtCardHTML).join("");
+  }
+
+  /* ============================================================
+     SIM — ADD / EDIT
+     ============================================================ */
   function openDlg(id) {
-    editingId = id;
+    editingId = id || null;
     delArmed = false;
-    var r = id ? docs.get(id) : null;
-    $("dlgTitle").innerHTML = (r ? "تعديل الشريحة" : "إضافة شريحة جديدة") + ' <button class="btn" type="button" id="closeDlg" style="padding:4px 10px;font-size:.8rem;">إغلاق</button>';
-    
-    $("f-name").value = r ? r.name || "" : "";
-    $("f-phone").value = r ? r.phone || "" : "";
-    $("f-company").value = r ? r.company || "" : "";
-    $("f-sim").value = r ? r.sim || "" : "";
-    $("f-activation").value = r ? r.activation || "" : "";
-    $("f-status").value = r ? r.status || "active" : "active";
-    $("f-simstate").value = r ? r.simState || "used-sim" : "used-sim";
-    $("f-date").value = r ? r.cutDate || "" : new Date().toISOString().slice(0, 10);
-    $("f-notes").value = r ? r.notes || "" : "";
-    
-    var del = $("delBtn");
-    del.hidden = !r;
-    del.textContent = "حذف";
-    
+    var r = editingId ? docs.get(editingId) : null;
+    if (editingId && !r) editingId = null;
+
+    $("dlgTitle").textContent = r ? "تعديل الشريحة" : "إضافة شريحة جديدة";
+    $("f-name").value = r ? (r.name || "") : "";
+    $("f-phone").value = r ? (r.phone || "") : "";
+    $("f-company").value = r ? (r.company || "") : "";
+    $("f-sim").value = r ? (r.sim || "") : "";
+    $("f-activation").value = r ? (r.activation || "") : "";
+    $("f-status").value = r ? (r.status || "active") : "active";
+    $("f-simstate").value = r ? (r.simState || "used-sim") : "used-sim";
+    $("f-date").value = r ? (r.cutDate || "") : "";
+    $("f-notes").value = r ? (r.notes || "") : "";
     $("err").textContent = "";
+    var db = $("delBtn");
+    db.hidden = !r;
+    db.textContent = "حذف";
     $("overlay").hidden = false;
+    setTimeout(function () { $("f-name").focus(); }, 60);
+  }
+  function closeDlg() { $("overlay").hidden = true; editingId = null; delArmed = false; }
+
+  function isDuplicate(field, value, exceptId) {
+    if (!value) return false;
+    var found = false;
+    docs.forEach(function (r) {
+      if (found) return;
+      if (r._id === exceptId) return;
+      if (r[field] && String(r[field]).trim() === String(value).trim()) found = true;
+    });
+    return found;
   }
 
-  function closeDlg() { $("overlay").hidden = true; editingId = null; }
-
-  // Events
-  $("tabs").addEventListener("click", function(e) {
-    var b = e.target.closest(".tab");
-    if (!b) return;
-    filter = b.dataset.f;
-    render();
-  });
-
-  $("q").addEventListener("input", function(e) {
-    query = e.target.value;
-    render();
-  });
-
-  $("addBtn").addEventListener("click", function() { openDlg(null); });
-  $("closeDlg").addEventListener("click", closeDlg);
-  $("overlay").addEventListener("click", function(e) { if(e.target === $("overlay")) closeDlg(); });
-
-  $("form").addEventListener("submit", function(e) {
+  function handleSubmit(e) {
     e.preventDefault();
+    var errEl = $("err");
     var phone = $("f-phone").value.trim();
-    if (!phone) { $("err").textContent = "يرجى إدخال رقم الهاتف."; return; }
-    
-    var id = editingId || ("s_" + Date.now());
-    var record = {
-      _id: id,
-      name: $("f-name").value.trim(),
-      phone: phone,
-      company: $("f-company").value,
-      sim: $("f-sim").value.trim(),
-      activation: $("f-activation").value,
-      status: $("f-status").value,
-      simState: $("f-simstate").value,
-      cutDate: $("f-date").value,
-      notes: $("f-notes").value.trim()
-    };
+    var sim = $("f-sim").value.trim();
+    var name = $("f-name").value.trim();
 
-    docs.set(id, record);
+    if (!phone && !sim) { errEl.textContent = "الرجاء إدخال رقم الهاتف أو رقم الشريحة على الأقل."; $("f-phone").focus(); return; }
+    if (phone && !/^[0-9+\s-]{5,20}$/.test(phone)) { errEl.textContent = "رقم الهاتف غير صالح."; $("f-phone").focus(); return; }
+    if (phone && isDuplicate("phone", phone, editingId)) { errEl.textContent = "رقم الهاتف مُسجَّل مسبقاً."; $("f-phone").focus(); return; }
+    if (sim && isDuplicate("sim", sim, editingId)) { errEl.textContent = "رقم الشريحة مُسجَّل مسبقاً."; $("f-sim").focus(); return; }
+
+    var now = Date.now();
+    var isEdit = !!editingId;
+    var id = editingId || uid("s_");
+    var prev = editingId ? docs.get(editingId) : null;
+
+    docs.set(id, {
+      _id: id, name: name, phone: phone,
+      company: $("f-company").value, sim: sim,
+      activation: $("f-activation").value,
+      status: $("f-status").value, simState: $("f-simstate").value,
+      cutDate: $("f-date").value, notes: $("f-notes").value.trim(),
+      createdAt: prev ? (prev.createdAt || now) : now, updatedAt: now
+    });
     saveData();
     closeDlg();
     render();
-    toast(editingId ? "تم تحديث السجل بنجاح" : "تمت إضافة الشريحة بنجاح");
-  });
+    toast(isEdit ? "تم تحديث البيانات ✓" : "تمت إضافة الشريحة ✓");
+  }
 
-  $("delBtn").addEventListener("click", function() {
-    if (!delArmed) {
-      delArmed = true;
-      this.textContent = "تأكيد الحذف؟";
-      return;
-    }
-    if (editingId) {
-      docs.delete(editingId);
-      saveData();
-      closeDlg();
-      render();
-      toast("تم حذف السجل");
-    }
-  });
-
-  $("list").addEventListener("click", function(e) {
-    var btn = e.target.closest(".edit-btn");
-    if (btn) openDlg(btn.dataset.id);
-  });
-
-  // Settings Modal
-  $("setBtn").addEventListener("click", function() {
-    $("s-template").value = smsTemplate;
-    $("setOverlay").hidden = false;
-  });
-  $("setClose").addEventListener("click", function() {
-    smsTemplate = $("s-template").value;
-    localStorage.setItem("sim_sms_tmpl", smsTemplate);
-    $("setOverlay").hidden = true;
-    toast("تم حفظ الإعدادات");
-  });
-  $("setOverlay").addEventListener("click", function(e) { if(e.target === $("setOverlay")) $("setOverlay").hidden = true; });
-
-  // Export / Import CSV & JSON
-  $("expCSV").addEventListener("click", function() {
-    var rows = [["الاسم", "رقم الهاتف", "الشركة", "رقم الشريحة", "مكان التفعيل", "الحالة", "تاريخ الفصل", "ملاحظات"]];
-    docs.forEach(function(r) {
-      rows.push([
-        '"' + (r.name || "").replace(/"/g, '""') + '"',
-        '"' + (r.phone || "") + '"',
-        '"' + (r.company || "") + '"',
-        '"' + (r.sim || "") + '"',
-        '"' + (r.activation || "") + '"',
-        '"' + (STATUS[r.status] || r.status) + '"',
-        '"' + (r.cutDate || "") + '"',
-        '"' + (r.notes || "").replace(/"/g, '""') + '"'
-      ]);
-    });
-    var csvContent = "\ufeff" + rows.map(e => e.join(",")).join("\n");
-    var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = "sims-subscriptions-" + new Date().toISOString().slice(0,10) + ".csv";
-    a.click();
-    toast("تم تصدير ملف الـ CSV بنجاح");
-  });
-
-  $("expJSON").addEventListener("click", function() {
-    var data = JSON.stringify(Array.from(docs.values()), null, 2);
-    var blob = new Blob([data], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = "sims-backup-" + new Date().toISOString().slice(0,10) + ".json";
-    a.click();
-    toast("تم تصدير النسخة الاحتياطية");
-  });
-
-  $("impBtn").addEventListener("click", function() { $("impFile").click(); });
-  $("impFile").addEventListener("change", function(e) {
-    var f = e.target.files && e.target.files[0];
-    if (!f) return;
-    var reader = new FileReader();
-    reader.onload = function(evt) {
-      try {
-        var parsed = JSON.parse(evt.target.result);
-        if (Array.isArray(parsed)) {
-          parsed.forEach(function(r) {
-            if (r._id && r.phone) docs.set(r._id, r);
-          });
-          saveData();
-          render();
-          toast("تم استيراد ودمج البيانات بنجاح");
-        }
-      } catch(err) {
-        toast("ملف غير صالح أو تالف");
+  function handleDelete() {
+    if (!editingId) return;
+    if (!delArmed) { delArmed = true; $("delBtn").textContent = "تأكيد الحذف؟"; return; }
+    var rec = docs.get(editingId);
+    if (!rec) return;
+    lastDeleted = { rec: rec };
+    docs.delete(editingId);
+    saveData();
+    closeDlg();
+    render();
+    toast("تم حذف السجل", "تراجع", function () {
+      if (lastDeleted && lastDeleted.rec) {
+        docs.set(lastDeleted.rec._id, lastDeleted.rec);
+        saveData(); render();
+        toast("تم التراجع عن الحذف");
       }
-      $("impFile").value = "";
+    });
+  }
+
+  /* ============================================================
+     SIM — BULK
+     ============================================================ */
+  function companyOptions(selected) {
+    var out = '<option value="">الشركة</option>';
+    COMPANIES.forEach(function (c) { out += '<option' + (c === selected ? " selected" : "") + ">" + esc(c) + "</option>"; });
+    return out;
+  }
+  function statusOptions(selected) {
+    return ORDER.map(function (k) {
+      return '<option value="' + k + '"' + (k === selected ? " selected" : "") + ">" + STATUS[k] + "</option>";
+    }).join("");
+  }
+  function addBulkRow(data) {
+    data = data || {};
+    var row = document.createElement("div");
+    row.className = "bulk-row";
+    row.innerHTML =
+      '<input data-k="phone" class="ltr" placeholder="رقم الهاتف *" value="' + esc(data.phone || "") + '">' +
+      '<input data-k="name" placeholder="اسم الزبون" value="' + esc(data.name || "") + '">' +
+      '<input data-k="sim" class="ltr" placeholder="رقم الشريحة" value="' + esc(data.sim || "") + '">' +
+      '<select data-k="company">' + companyOptions(data.company || "") + "</select>" +
+      '<input data-k="cutDate" type="date" value="' + esc(data.cutDate || "") + '">' +
+      '<select data-k="status">' + statusOptions(data.status || "active") + "</select>" +
+      '<button type="button" class="row-del" aria-label="حذف الصف">✕</button>';
+    row.querySelector(".row-del").addEventListener("click", function () {
+      var c = $("bulkRows");
+      if (c.children.length > 1) row.remove();
+      else row.querySelectorAll("input").forEach(function (i) { i.value = ""; });
+    });
+    $("bulkRows").appendChild(row);
+    return row;
+  }
+  function openBulk() {
+    $("bulkErr").textContent = "";
+    $("bulkRows").innerHTML = "";
+    for (var i = 0; i < 3; i++) addBulkRow({ status: "active" });
+    $("bulkOverlay").hidden = false;
+    setTimeout(function () { var f = $("bulkRows").querySelector("input"); if (f) f.focus(); }, 60);
+  }
+  function closeBulk() { $("bulkOverlay").hidden = true; }
+  function bulkSave() {
+    var rows = Array.from($("bulkRows").children);
+    var now = Date.now();
+    var added = 0, dupes = 0;
+    rows.forEach(function (row) {
+      var get = function (k) { var el = row.querySelector('[data-k="' + k + '"]'); return el ? el.value.trim() : ""; };
+      var phone = get("phone"), sim = get("sim"), name = get("name");
+      if (!phone && !sim && !name) return;
+      if (!phone && !sim) return;
+      if (phone && isDuplicate("phone", phone, null)) { dupes++; return; }
+      if (sim && isDuplicate("sim", sim, null)) { dupes++; return; }
+      if (phone && !/^[0-9+\s-]{5,20}$/.test(phone)) return;
+      var id = uid("s_");
+      docs.set(id, {
+        _id: id, name: name, phone: phone, company: get("company"), sim: sim,
+        activation: "", status: get("status") || "active",
+        simState: phone ? "used-sim" : "clear-sim",
+        cutDate: get("cutDate"), notes: "", createdAt: now + added, updatedAt: now + added
+      });
+      added++;
+    });
+    if (added === 0 && dupes === 0) { $("bulkErr").textContent = "لم يتم إدخال أي بيانات صالحة."; return; }
+    saveData(); render(); closeBulk();
+    var msg = "تمت إضافة " + added + " شريحة";
+    if (dupes) msg += " · تم تجاهل " + dupes + " مكررة";
+    toast(msg + " ✓");
+  }
+  function bulkPaste() {
+    var raw = prompt("الصق قائمة أرقام (كل رقم في سطر، أو مفصولة بفاصلة/مسافة):");
+    if (!raw) return;
+    var nums = raw.split(/[\s,;،\n\r]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+    if (!nums.length) { toast("لم يتم العثور على أرقام"); return; }
+    $("bulkRows").innerHTML = "";
+    nums.forEach(function (n) { addBulkRow({ phone: n, status: "active", cutDate: todayISO() }); });
+    toast("تم لصق " + nums.length + " رقم");
+  }
+
+  /* ============================================================
+     DEBTS — ADD / EDIT / DELETE
+     ============================================================ */
+  function openDebtDlg(id) {
+    editingDebtId = id || null;
+    debtDelArmed = false;
+    var d = editingDebtId ? debts.get(editingDebtId) : null;
+    if (editingDebtId && !d) editingDebtId = null;
+
+    $("debtDlgTitle").textContent = d ? "تعديل الدين" : "إضافة دين جديد";
+    $("d-name").value = d ? (d.name || "") : "";
+    $("d-amount").value = d ? (d.amount != null ? d.amount : "") : "";
+    $("d-wa").value = d ? (d.whatsapp || "") : "";
+    $("d-contact").value = d ? (d.contact || "") : "";
+    $("d-notes").value = d ? (d.notes || "") : "";
+    $("debtErr").textContent = "";
+    var db = $("debtDelBtn");
+    db.hidden = !d;
+    db.textContent = "حذف";
+    $("debtDlgOverlay").hidden = false;
+    setTimeout(function () { $("d-name").focus(); }, 60);
+  }
+  function closeDebtDlg() {
+    $("debtDlgOverlay").hidden = true;
+    editingDebtId = null;
+    debtDelArmed = false;
+  }
+  function handleDebtSubmit(e) {
+    e.preventDefault();
+    var errEl = $("debtErr");
+    var name = $("d-name").value.trim();
+    var amountRaw = $("d-amount").value.trim();
+    var amount = parseFloat(amountRaw);
+
+    if (!name) { errEl.textContent = "الرجاء إدخال اسم الزبون."; $("d-name").focus(); return; }
+    if (amountRaw === "" || isNaN(amount) || amount < 0) { errEl.textContent = "الرجاء إدخال مبلغ صحيح بالشيكل."; $("d-amount").focus(); return; }
+
+    var now = Date.now();
+    var isEdit = !!editingDebtId;
+    var id = editingDebtId || uid("d_");
+    var prev = editingDebtId ? debts.get(editingDebtId) : null;
+
+    debts.set(id, {
+      _id: id, name: name, amount: amount,
+      whatsapp: $("d-wa").value.trim(),
+      contact: $("d-contact").value.trim(),
+      notes: $("d-notes").value.trim(),
+      createdAt: prev ? (prev.createdAt || now) : now,
+      updatedAt: now
+    });
+    saveDebts();
+    closeDebtDlg();
+    render();
+    renderDebtsManager();
+    toast(isEdit ? "تم تحديث الدين ✓" : "تمت إضافة الدين ✓");
+  }
+  function handleDebtDelete() {
+    if (!editingDebtId) return;
+    if (!debtDelArmed) { debtDelArmed = true; $("debtDelBtn").textContent = "تأكيد الحذف؟"; return; }
+    var rec = debts.get(editingDebtId);
+    if (!rec) return;
+    lastDeletedDebt = { rec: rec };
+    debts.delete(editingDebtId);
+    saveDebts();
+    closeDebtDlg();
+    render();
+    renderDebtsManager();
+    toast("تم حذف الدين", "تراجع", function () {
+      if (lastDeletedDebt && lastDeletedDebt.rec) {
+        debts.set(lastDeletedDebt.rec._id, lastDeletedDebt.rec);
+        saveDebts(); render(); renderDebtsManager();
+        toast("تم التراجع عن الحذف");
+      }
+    });
+  }
+  function quickDeleteDebt(id) {
+    var rec = debts.get(id);
+    if (!rec) return;
+    lastDeletedDebt = { rec: rec };
+    debts.delete(id);
+    saveDebts();
+    render();
+    renderDebtsManager();
+    toast("تم حذف دين " + (rec.name || ""), "تراجع", function () {
+      if (lastDeletedDebt && lastDeletedDebt.rec) {
+        debts.set(lastDeletedDebt.rec._id, lastDeletedDebt.rec);
+        saveDebts(); render(); renderDebtsManager();
+        toast("تم التراجع عن الحذف");
+      }
+    });
+  }
+
+  /* ============================================================
+     DRAWER
+     ============================================================ */
+  function openDrawer() {
+    $("drawer").classList.add("open");
+    $("drawer").setAttribute("aria-hidden", "false");
+    $("drawerScrim").classList.add("open");
+  }
+  function closeDrawer() {
+    $("drawer").classList.remove("open");
+    $("drawer").setAttribute("aria-hidden", "true");
+    $("drawerScrim").classList.remove("open");
+  }
+
+  /* ============================================================
+     THEME
+     ============================================================ */
+  function applyTheme(theme) {
+    if (theme === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+      $("themeBtn").textContent = "☀️";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      $("themeBtn").textContent = "🌙";
+    }
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+  }
+
+  /* ============================================================
+     EXPORT / IMPORT
+     ============================================================ */
+  function download(content, filename, mime) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 800);
+  }
+  function stamp() { return new Date().toISOString().slice(0, 10); }
+  function csvCell(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+
+  function exportCSV() {
+    var rows = [COLS.map(function (c) { return csvCell(c[1]); }).join(",")];
+    Array.from(docs.values()).forEach(function (r) {
+      rows.push(COLS.map(function (c) {
+        var v = r[c[0]];
+        if (c[0] === "status") v = STATUS[r.status] || r.status || "";
+        if (c[0] === "simState") v = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
+        return csvCell(v);
+      }).join(","));
+    });
+    download("\uFEFF" + rows.join("\r\n"), "subscriptions-" + stamp() + ".csv", "text/csv;charset=utf-8");
+    toast("تم تصدير ملف الشرائح ✓");
+  }
+  function exportDebtsCSV() {
+    var rows = [DEBT_COLS.map(function (c) { return csvCell(c[1]); }).join(",")];
+    Array.from(debts.values()).forEach(function (d) {
+      rows.push(DEBT_COLS.map(function (c) { return csvCell(d[c[0]]); }).join(","));
+    });
+    download("\uFEFF" + rows.join("\r\n"), "debts-" + stamp() + ".csv", "text/csv;charset=utf-8");
+    toast("تم تصدير ملف الديون ✓");
+  }
+  function exportJSON() {
+    var payload = {
+      version: 5,
+      exportedAt: new Date().toISOString(),
+      sims: { count: docs.size, data: Array.from(docs.values()) },
+      debts: { count: debts.size, data: Array.from(debts.values()) }
     };
-    reader.readAsText(f);
+    download(JSON.stringify(payload, null, 2), "sim-backup-" + stamp() + ".json", "application/json");
+    toast("تم تصدير النسخة الاحتياطية ✓");
+  }
+
+  function parseCSV(text) {
+    var rows = [], row = [], cur = "", inQ = false;
+    text = text.replace(/^\uFEFF/, "");
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (inQ) {
+        if (ch === '"') { if (text[i + 1] === '"') { cur += '"'; i++; } else inQ = false; }
+        else cur += ch;
+      } else {
+        if (ch === '"') inQ = true;
+        else if (ch === ",") { row.push(cur); cur = ""; }
+        else if (ch === "\n") { row.push(cur); rows.push(row); row = []; cur = ""; }
+        else if (ch !== "\r") cur += ch;
+      }
+    }
+    if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
+    return rows.filter(function (r) { return r.some(function (c) { return String(c).trim() !== ""; }); });
+  }
+  function reverseStatus(label) { for (var k in STATUS) if (STATUS[k] === label) return k; return null; }
+  function findExistingSim(rec) {
+    var found = null;
+    docs.forEach(function (r) {
+      if (found) return;
+      if (rec.sim && r.sim && rec.sim === r.sim) { found = r; return; }
+      if (rec.phone && r.phone && rec.phone === r.phone) found = r;
+    });
+    return found;
+  }
+  function findExistingDebt(rec) {
+    var found = null;
+    debts.forEach(function (d) {
+      if (found) return;
+      if (rec.name && d.name && rec.name === d.name && Number(rec.amount) === Number(d.amount)) found = d;
+    });
+    return found;
+  }
+
+  function importCSV(text, target) {
+    var rows = parseCSV(text);
+    if (rows.length < 2) return 0;
+    var header = rows[0].map(function (h) { return String(h).trim(); });
+    var cols = target === "debts" ? DEBT_COLS : COLS;
+    var index = {};
+    header.forEach(function (h, i) {
+      cols.forEach(function (c) {
+        if (index[c[0]] === undefined && (h === c[0] || h === c[1])) index[c[0]] = i;
+      });
+    });
+
+    var now = Date.now(), added = 0;
+    rows.slice(1).forEach(function (cells) {
+      var get = function (key) {
+        var i = index[key];
+        return i === undefined ? "" : String(cells[i] == null ? "" : cells[i]).trim();
+      };
+
+      if (target === "debts") {
+        var dName = get("name");
+        if (!dName) return;
+        var rec = {
+          _id: uid("d_"),
+          name: dName,
+          amount: parseFloat(get("amount")) || 0,
+          whatsapp: get("whatsapp"),
+          contact: get("contact"),
+          notes: get("notes"),
+          createdAt: now + added, updatedAt: now + added
+        };
+        var ex = findExistingDebt(rec);
+        if (ex) { rec._id = ex._id; rec.createdAt = ex.createdAt || now; debts.set(ex._id, rec); }
+        else { debts.set(rec._id, rec); added++; }
+      } else {
+        var phone = get("phone"), name = get("name"), sim = get("sim");
+        if (!phone && !name && !sim) return;
+        var srec = {
+          _id: uid("s_"),
+          name: name, phone: phone, company: get("company"), sim: sim,
+          activation: get("activation"),
+          status: reverseStatus(get("status")) || "active",
+          simState: get("simState") === "نظيفة" ? "clear-sim" : "used-sim",
+          cutDate: get("cutDate"), notes: get("notes"),
+          createdAt: now + added, updatedAt: now + added
+        };
+        var sx = findExistingSim(srec);
+        if (sx) { srec._id = sx._id; srec.createdAt = sx.createdAt || now; docs.set(sx._id, srec); }
+        else { docs.set(srec._id, srec); added++; }
+      }
+    });
+    return added;
+  }
+
+  function importJSON(text) {
+    var parsed = JSON.parse(text);
+    var simArr = null, debtArr = null;
+
+    if (Array.isArray(parsed)) simArr = parsed;
+    else if (parsed && parsed.sims && Array.isArray(parsed.sims.data)) {
+      simArr = parsed.sims.data;
+      debtArr = parsed.debts && Array.isArray(parsed.debts.data) ? parsed.debts.data : null;
+    } else if (parsed && Array.isArray(parsed.data)) simArr = parsed.data;
+    else if (parsed && parsed.debts && Array.isArray(parsed.debts.data)) debtArr = parsed.debts.data;
+
+    if (!simArr && !debtArr) throw new Error("bad");
+    var now = Date.now(), added = 0;
+
+    if (simArr) {
+      simArr.forEach(function (r) {
+        if (!r || typeof r !== "object") return;
+        var rec = {
+          _id: r._id || uid("s_"),
+          name: r.name || "", phone: r.phone || "", company: r.company || "",
+          sim: r.sim || "", activation: r.activation || "",
+          status: STATUS[r.status] ? r.status : "active",
+          simState: r.simState === "clear-sim" ? "clear-sim" : "used-sim",
+          cutDate: r.cutDate || "", notes: r.notes || "",
+          createdAt: r.createdAt || (now + added), updatedAt: r.updatedAt || (now + added)
+        };
+        var ex = docs.get(rec._id) || findExistingSim(rec);
+        if (ex) { rec._id = ex._id; docs.set(ex._id, rec); }
+        else { docs.set(rec._id, rec); added++; }
+      });
+    }
+    if (debtArr) {
+      debtArr.forEach(function (d) {
+        if (!d || typeof d !== "object") return;
+        var rec = {
+          _id: d._id || uid("d_"),
+          name: d.name || "", amount: Number(d.amount) || 0,
+          whatsapp: d.whatsapp || "", contact: d.contact || "", notes: d.notes || "",
+          createdAt: d.createdAt || (now + added), updatedAt: d.updatedAt || (now + added)
+        };
+        var ex = debts.get(rec._id) || findExistingDebt(rec);
+        if (ex) { rec._id = ex._id; debts.set(ex._id, rec); }
+        else { debts.set(rec._id, rec); added++; }
+      });
+    }
+    return added;
+  }
+
+  function handleImportFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var text = String(reader.result || "");
+      var n = 0;
+      try {
+        if (/\.json$/i.test(file.name)) n = importJSON(text);
+        else {
+          /* CSV: detect by header — if first line contains "المبلغ" or "amount" treat as debts */
+          var firstLine = text.split(/\r?\n/)[0] || "";
+          var isDebt = /amount|المبلغ|whatsapp|واتساب|contact|تواصل/i.test(firstLine) && !/sim|شريحة|company|شركة/i.test(firstLine);
+          n = importCSV(text, isDebt ? "debts" : "sims");
+        }
+      } catch (e) { toast("تعذر قراءة الملف، تأكد من الصيغة."); return; }
+      saveData(); saveDebts(); render(); renderDebtsManager();
+      toast(n > 0 ? ("تم استيراد " + n + " سجل جديد ✓") : "تم الدمج، لا سجلات جديدة");
+    };
+    reader.onerror = function () { toast("حدث خطأ أثناء قراءة الملف."); };
+    reader.readAsText(file, "utf-8");
+  }
+
+  /* ============================================================
+     SETTINGS
+     ============================================================ */
+  function openSettings() {
+    $("s-template").value = smsTemplate;
+    $("s-debt-template").value = debtTemplate;
+    $("setOverlay").hidden = false;
+  }
+  function closeSettings() {
+    smsTemplate = $("s-template").value || defaultSMSTemplate;
+    debtTemplate = $("s-debt-template").value || defaultDebtTemplate;
+    try {
+      localStorage.setItem(TEMPLATE_KEY, smsTemplate);
+      localStorage.setItem(DEBT_TEMPLATE_KEY, debtTemplate);
+    } catch (e) {}
+    $("setOverlay").hidden = true;
+    render();
+    renderDebtsManager();
+    toast("تم حفظ الإعدادات ✓");
+  }
+  function wipeAll() {
+    if (!confirm("هل أنت متأكد من حذف جميع البيانات (الشرائح والديون) نهائياً؟")) return;
+    if (!confirm("تأكيد أخير: سيتم حذف " + docs.size + " شريحة و " + debts.size + " دين نهائياً.")) return;
+    docs = new Map();
+    debts = new Map();
+    saveData(); saveDebts();
+    render(); renderDebtsManager();
+    closeSettings();
+    toast("تم حذف جميع البيانات");
+  }
+  function wipeDebts() {
+    if (!confirm("هل تريد حذف جميع الديون (" + debts.size + ")؟ لا يمكن التراجع.")) return;
+    debts = new Map();
+    saveDebts(); render(); renderDebtsManager();
+    toast("تم حذف جميع الديون");
+  }
+
+  /* ============================================================
+     EVENTS
+     ============================================================ */
+  /* Drawer */
+  $("menuBtn").addEventListener("click", openDrawer);
+  $("drawerClose").addEventListener("click", closeDrawer);
+  $("drawerScrim").addEventListener("click", closeDrawer);
+  $("dSetBtn").addEventListener("click", function () { closeDrawer(); openSettings(); });
+  $("dBulkBtn").addEventListener("click", function () { closeDrawer(); openBulk(); });
+  $("dExpCSV").addEventListener("click", exportCSV);
+  $("dExpDebts").addEventListener("click", exportDebtsCSV);
+  $("dExpJSON").addEventListener("click", exportJSON);
+  $("dImpBtn").addEventListener("click", function () { $("impFile").click(); });
+  $("openDebtsBtn").addEventListener("click", function () { closeDrawer(); openDebtsManager(); });
+
+  /* Sim modals */
+  $("addBtn").addEventListener("click", function () { openDlg(null); });
+  $("bulkBtn").addEventListener("click", openBulk);
+  $("closeDlg").addEventListener("click", closeDlg);
+  $("setClose").addEventListener("click", closeSettings);
+  $("bulkClose").addEventListener("click", closeBulk);
+  $("form").addEventListener("submit", handleSubmit);
+  $("delBtn").addEventListener("click", handleDelete);
+  $("bulkAddRow").addEventListener("click", function () {
+    var row = addBulkRow({ status: "active", cutDate: todayISO() });
+    var inp = row.querySelector("input"); if (inp) inp.focus();
   });
+  $("bulkPasteBtn").addEventListener("click", bulkPaste);
+  $("bulkSave").addEventListener("click", bulkSave);
+
+  /* Debts manager */
+  $("debtsClose").addEventListener("click", closeDebtsManager);
+  $("dmAddBtn").addEventListener("click", function () { openDebtDlg(null); });
+  $("dmSearch").addEventListener("input", function (e) {
+    debtQuery = e.target.value; renderDebtsManager();
+  });
+  $("dmSort").addEventListener("change", function (e) {
+    debtSort = e.target.value; renderDebtsManager();
+  });
+  $("dmExpCSV").addEventListener("click", exportDebtsCSV);
+  $("dmWipeAll").addEventListener("click", wipeDebts);
+
+  /* Debt list delegation */
+  $("dmList").addEventListener("click", function (e) {
+    var editBtn = e.target.closest(".debt-edit-btn");
+    if (editBtn) { openDebtDlg(editBtn.dataset.id); return; }
+    var delBtn = e.target.closest(".debt-del-btn");
+    if (delBtn) { quickDeleteDebt(delBtn.dataset.id); return; }
+    var copyBtn = e.target.closest("[data-copy]");
+    if (copyBtn) { copyText(copyBtn.dataset.copy); return; }
+  });
+
+  /* Debt add/edit form */
+  $("debtClose").addEventListener("click", closeDebtDlg);
+  $("debtForm").addEventListener("submit", handleDebtSubmit);
+  $("debtDelBtn").addEventListener("click", handleDebtDelete);
+
+  /* Theme */
+  $("themeBtn").addEventListener("click", function () {
+    var isLight = document.documentElement.getAttribute("data-theme") === "light";
+    applyTheme(isLight ? "dark" : "light");
+  });
+
+  /* Search sims */
+  $("q").addEventListener("input", function (e) {
+    query = e.target.value;
+    $("clearQ").classList.toggle("show", !!query);
+    render();
+  });
+  $("clearQ").addEventListener("click", function () {
+    query = ""; $("q").value = ""; $("clearQ").classList.remove("show"); render();
+  });
+  $("sortSel").addEventListener("change", function (e) { sortMode = e.target.value; render(); });
+  $("tabs").addEventListener("click", function (e) {
+    var b = e.target.closest(".tab"); if (!b) return;
+    filter = b.dataset.f; render();
+  });
+  $("list").addEventListener("click", function (e) {
+    var editBtn = e.target.closest(".edit-btn");
+    if (editBtn) { openDlg(editBtn.dataset.id); return; }
+    var copyBtn = e.target.closest("[data-copy]");
+    if (copyBtn) { copyText(copyBtn.dataset.copy); return; }
+  });
+
+  /* Sidebar item clicks */
+  document.querySelector(".drawer-body").addEventListener("click", function (e) {
+    var sim = e.target.closest(".mini-item");
+    if (sim) { closeDrawer(); setTimeout(function () { openDlg(sim.dataset.id); }, 180); return; }
+    var debt = e.target.closest(".debt-mini");
+    if (debt) { closeDrawer(); setTimeout(function () { openDebtDlg(debt.dataset.id); }, 180); return; }
+  });
+
+  /* Import file input (shared) */
+  $("impFile").addEventListener("change", function (e) {
+    handleImportFile(e.target.files && e.target.files[0]);
+    e.target.value = "";
+  });
+
+  /* Settings actions */
+  $("expCSV").addEventListener("click", exportCSV);
+  $("expDebts").addEventListener("click", exportDebtsCSV);
+  $("expJSON").addEventListener("click", exportJSON);
+  $("impBtn2").addEventListener("click", function () { $("impFile").click(); });
+  $("wipeBtn").addEventListener("click", wipeAll);
+
+  /* Keyboard */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (!$("overlay").hidden) closeDlg();
+      else if (!$("bulkOverlay").hidden) closeBulk();
+      else if (!$("debtDlgOverlay").hidden) closeDebtDlg();
+      else if (!$("debtsOverlay").hidden) closeDebtsManager();
+      else if (!$("setOverlay").hidden) closeSettings();
+      else if ($("drawer").classList.contains("open")) closeDrawer();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); $("q").focus(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "n") { e.preventDefault(); openDlg(null); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d") { e.preventDefault(); openDebtDlg(null); }
+  });
+
+  ["overlay", "bulkOverlay", "setOverlay", "debtDlgOverlay", "debtsOverlay"].forEach(function (id) {
+    $(id).addEventListener("click", function (e) {
+      if (e.target !== $(id)) return;
+      if (id === "overlay") closeDlg();
+      else if (id === "bulkOverlay") closeBulk();
+      else if (id === "setOverlay") closeSettings();
+      else if (id === "debtDlgOverlay") closeDebtDlg();
+      else if (id === "debtsOverlay") closeDebtsManager();
+    });
+  });
+
+  /* ============================================================
+     DEBTS MANAGER OPEN/CLOSE
+     ============================================================ */
+  function openDebtsManager() {
+    debtQuery = ""; $("dmSearch").value = "";
+    $("debtsOverlay").hidden = false;
+    renderDebtsManager();
+  }
+  function closeDebtsManager() { $("debtsOverlay").hidden = true; }
+
+  /* ============================================================
+     INIT
+     ============================================================ */
+  try {
+    var savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme === "light") applyTheme("light");
+    else if (savedTheme === "dark") applyTheme("dark");
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) applyTheme("light");
+  } catch (e) {}
 
   loadData();
   render();
+
+  /* Auto-refresh day badges every minute */
+  setInterval(function () {
+    var before = JSON.stringify(Array.from(docs.values()).map(function (r) { return r.status; }));
+    checkAutoDisconnect();
+    var after = JSON.stringify(Array.from(docs.values()).map(function (r) { return r.status; }));
+    if (before !== after) render();
+  }, 60000);
+
 })();
 </script>
 </body>
