@@ -4,63 +4,70 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>الاشتراكات - إدارة الشرائح والديون</title>
+<title>نظام إدارة الشرائح والديون المتقدم</title>
 <style>
 :root {
-  --bg: #0f161c; --surface: #172029; --surface-card: #1e2936; --fg: #e6edf3; --muted: #93a2b1; --line: #263440;
+  --bg: #0d1419; --surface: #161f28; --surface-card: #1c2733; --surface-2: #22303d;
+  --fg: #e6edf3; --muted: #8b9aab; --line: #2a3846;
   --accent: #4fb3d1; --accent-fg: #062029; --accent-soft: #14323d;
   --on: #6fd49a; --on-bg: #14341f; --hold: #f0c261; --hold-bg: #3a2c0c; --off: #f08a8a; --off-bg: #3d1a1a;
   --danger: #f2877f; --gold: #e8b64a; --gold-bg: #3a2e0c;
-  --shadow: 0 10px 30px rgba(0,0,0,.5);
+  --purple: #a892e8; --purple-bg: #2a2340;
+  --shadow: 0 12px 36px rgba(0,0,0,.55);
   --font: system-ui, "Segoe UI", Roboto, Tahoma, sans-serif;
   --mono: ui-monospace, Consolas, "Roboto Mono", monospace;
 }
 :root[data-theme="light"] {
-  --bg: #f2f5f9; --surface: #ffffff; --surface-card: #ffffff; --fg: #16212b; --muted: #5d6d7c; --line: #dbe3ec;
+  --bg: #eef2f7; --surface: #ffffff; --surface-card: #ffffff; --surface-2: #f5f8fb;
+  --fg: #16212b; --muted: #5d6d7c; --line: #d9e2ec;
   --accent: #0e7fa8; --accent-fg: #ffffff; --accent-soft: #dff1f8;
   --on: #187a47; --on-bg: #ddf5e6; --hold: #8a6100; --hold-bg: #fdf2d4; --off: #b0332f; --off-bg: #fce4e3;
   --danger: #c0392b; --gold: #a57300; --gold-bg: #fdf3d6;
-  --shadow: 0 10px 30px rgba(15,30,50,.12);
+  --purple: #6b4fbf; --purple-bg: #ece7fa;
+  --shadow: 0 12px 36px rgba(15,30,50,.14);
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
   margin: 0; background: var(--bg); color: var(--fg);
   font-family: var(--font); font-size: 15px; line-height: 1.5;
-  padding: 14px; padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  padding: 14px; padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
   transition: background .2s ease, color .2s ease;
 }
-.wrap { max-width: 760px; margin: 0 auto; }
+.wrap { max-width: 820px; margin: 0 auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; border: none; background: none; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-code { font-family: var(--mono); background: var(--bg); padding: 1px 5px; border-radius: 5px; font-size: .82em; }
+code { font-family: var(--mono); background: var(--bg); padding: 1px 6px; border-radius: 5px; font-size: .82em; }
 
-/* ---------- Header ---------- */
+/* ==================== HEADER ==================== */
 header.top { position: sticky; top: 0; z-index: 10; background: var(--bg); padding-block: 8px 12px; display: grid; gap: 10px; }
 .titlebar { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .title-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
-.sub { color: var(--muted); font-size: .78rem; margin-top: 1px; }
+h1 { margin: 0; font-size: 1.3rem; font-weight: 700; }
+.sub { color: var(--muted); font-size: .76rem; margin-top: 1px; }
 .btns { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
 .icon-btn {
   width: 42px; height: 42px; border: 1px solid var(--line); background: var(--surface);
   border-radius: 12px; display: flex; align-items: center; justify-content: center;
-  font-size: 1.15rem; line-height: 1; color: var(--fg);
+  font-size: 1.15rem; line-height: 1; color: var(--fg); position: relative; transition: all .15s ease;
 }
 .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 .icon-btn.accent { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); box-shadow: 0 4px 12px rgba(79,179,209,.28); }
 .icon-btn.accent:hover { color: var(--accent-fg); filter: brightness(1.05); }
-.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; font-weight: 500; font-size: .86rem; white-space: nowrap; }
+.icon-btn .dot { position: absolute; top: -3px; inset-inline-end: -3px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--danger); color: #fff; font-size: .65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid var(--bg); }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; font-weight: 500; font-size: .85rem; white-space: nowrap; transition: all .15s ease; }
 .btn:hover { border-color: var(--accent); }
 .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; }
 .btn.primary:hover { filter: brightness(1.06); }
 .btn.danger { color: var(--danger); border-color: var(--danger); }
 .btn.gold { background: var(--gold); color: #2a1f00; border-color: var(--gold); font-weight: 700; }
+.btn.gold:hover { filter: brightness(1.05); }
+.btn.purple { background: var(--purple); color: #fff; border-color: var(--purple); font-weight: 600; }
 .btn.sm { padding: 5px 10px; font-size: .78rem; }
 
 .search { position: relative; }
-.search input { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 11px 16px 11px 42px; font-size: .95rem; color: var(--fg); }
+.search input { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 11px 42px 11px 16px; font-size: .95rem; color: var(--fg); }
 .search input::placeholder { color: var(--muted); }
 .search .search-icon { position: absolute; inset-inline-end: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 1rem; }
 .search .clear-btn { position: absolute; inset-inline-start: 10px; top: 50%; transform: translateY(-50%); width: 26px; height: 26px; border-radius: 50%; color: var(--muted); display: none; align-items: center; justify-content: center; font-size: .9rem; }
@@ -75,7 +82,21 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 .tab[aria-pressed="true"] b { color: inherit; }
 .sort-select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; font-size: .82rem; color: var(--fg); cursor: pointer; }
 
-/* ---------- Cards ---------- */
+/* ==================== ALERT BANNER ==================== */
+.alert-banner {
+  display: none; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--off-bg) 70%, var(--surface-card)), color-mix(in srgb, var(--off-bg) 30%, var(--surface-card)));
+  border: 1px solid var(--danger); border-radius: 12px; padding: 11px 14px; margin-top: 8px;
+  animation: cardIn .3s ease both;
+}
+.alert-banner.show { display: flex; }
+.alert-banner .ab-icon { font-size: 1.4rem; flex-shrink: 0; }
+.alert-banner .ab-body { flex: 1; min-width: 0; }
+.alert-banner .ab-title { font-weight: 700; font-size: .9rem; }
+.alert-banner .ab-desc { font-size: .78rem; color: var(--muted); margin-top: 1px; }
+.alert-banner .ab-btn { flex-shrink: 0; }
+
+/* ==================== CARDS ==================== */
 .list { display: grid; gap: 12px; margin-top: 12px; }
 .card {
   background: var(--surface-card); border: 1px solid var(--line); border-radius: 14px;
@@ -84,17 +105,21 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   animation: cardIn .25s ease both;
 }
 @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.card.due { border-color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 22%, var(--surface-card)); }
+.card.due { border-color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 20%, var(--surface-card)); }
+.card.has-debt { border-color: color-mix(in srgb, var(--gold) 60%, var(--line)); }
+.card.reminder-due { border-color: var(--danger); background: color-mix(in srgb, var(--off-bg) 18%, var(--surface-card)); }
 .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
 .phone-wrap { display: flex; align-items: center; gap: 8px; }
 .phone-lg { font-family: var(--mono); font-size: 1.22rem; font-weight: 700; direction: ltr; letter-spacing: .4px; }
-.copy-btn { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-size: .78rem; flex-shrink: 0; }
+.copy-btn { width: 26px; height: 26px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-size: .78rem; flex-shrink: 0; transition: all .15s ease; }
 .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
 .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; font-size: .76rem; font-weight: 600; white-space: nowrap; }
 .badge.active { background: var(--on-bg); color: var(--on); }
 .badge.suspended { background: var(--hold-bg); color: var(--hold); }
 .badge.disconnected { background: var(--off-bg); color: var(--off); }
 .badge.days { background: var(--accent-soft); color: var(--accent); }
+.badge.debt { background: var(--gold-bg); color: var(--gold); font-family: var(--mono); }
+.badge.reminder { background: var(--off-bg); color: var(--off); }
 .badge-tags { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-inline-start: auto; }
 
 .card-body { display: grid; gap: 4px; font-size: .9rem; }
@@ -102,6 +127,22 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 .sim-row { font-family: var(--mono); font-size: .82rem; color: var(--muted); direction: ltr; display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
 .meta-row { display: flex; gap: 10px; font-size: .81rem; color: var(--muted); flex-wrap: wrap; margin-top: 2px; }
 .notes-box { font-size: .81rem; color: var(--muted); margin-top: 3px; padding: 6px 9px; background: color-mix(in srgb, var(--line) 30%, transparent); border-radius: 8px; line-height: 1.45; }
+
+/* Debt strip inside sim card */
+.debt-strip {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--gold-bg) 65%, var(--surface-2)), color-mix(in srgb, var(--gold-bg) 25%, var(--surface-2)));
+  border: 1px solid var(--gold); border-radius: 10px; padding: 9px 12px;
+}
+.debt-strip.warn { background: linear-gradient(135deg, color-mix(in srgb, var(--off-bg) 70%, var(--surface-2)), color-mix(in srgb, var(--off-bg) 30%, var(--surface-2))); border-color: var(--danger); }
+.debt-strip .ds-left { display: flex; align-items: center; gap: 8px; }
+.debt-strip .ds-icon { font-size: 1.15rem; }
+.debt-strip .ds-label { font-size: .74rem; color: var(--muted); }
+.debt-strip .ds-amount { font-family: var(--mono); font-size: 1.05rem; font-weight: 800; color: var(--gold); line-height: 1.1; }
+.debt-strip.warn .ds-amount { color: var(--danger); }
+.debt-strip .ds-reminder { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+.debt-strip .ds-reminder strong { color: var(--danger); }
+
 .date-row { font-size: .84rem; color: var(--fg); border-top: 1px solid var(--line); padding-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 .date-val { font-family: var(--mono); direction: ltr; color: var(--muted); }
 
@@ -116,19 +157,20 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 .action-btn.wa { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 35%, transparent); }
 .action-btn.call { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
 .action-btn.sms { border-color: var(--hold); color: var(--hold); background: color-mix(in srgb, var(--hold-bg) 35%, transparent); }
+.action-btn.pay { border-color: var(--gold); color: var(--gold); background: color-mix(in srgb, var(--gold-bg) 35%, transparent); }
 
 .empty { padding: 46px 20px; text-align: center; color: var(--muted); background: var(--surface); border-radius: 14px; border: 1px dashed var(--line); }
 .empty .big { font-size: 2rem; display: block; margin-bottom: 8px; }
 
-/* ---------- Drawer ---------- */
+/* ==================== DRAWER ==================== */
 .drawer-scrim {
-  position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 60;
+  position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 60;
   opacity: 0; pointer-events: none; transition: opacity .25s ease;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
 }
 .drawer-scrim.open { opacity: 1; pointer-events: auto; }
 .drawer {
-  position: fixed; top: 0; bottom: 0; right: 0; width: min(370px, 92vw);
+  position: fixed; top: 0; bottom: 0; right: 0; width: min(400px, 94vw);
   background: var(--surface); border-left: 1px solid var(--line);
   z-index: 61; transform: translateX(100%);
   transition: transform .3s cubic-bezier(.2,.8,.2,1);
@@ -137,69 +179,117 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 .drawer.open { transform: translateX(0); }
 .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 16px 16px 12px; border-bottom: 1px solid var(--line); }
 .drawer-title { font-size: 1.05rem; font-weight: 700; }
-.drawer-sub { font-size: .76rem; color: var(--muted); margin-top: 1px; }
+.drawer-sub { font-size: .74rem; color: var(--muted); margin-top: 1px; }
 .drawer-body { flex: 1; overflow-y: auto; padding: 14px; display: grid; gap: 16px; align-content: start; }
+.drawer-body::-webkit-scrollbar { width: 6px; }
+.drawer-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
+
+/* Sidebar navigation tabs */
+.side-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 5px; }
+.side-nav-btn {
+  border: none; background: transparent; color: var(--muted); font-size: .8rem; font-weight: 600;
+  padding: 9px 6px; border-radius: 9px; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  transition: all .15s ease;
+}
+.side-nav-btn:hover { color: var(--fg); }
+.side-nav-btn.active { background: var(--accent); color: var(--accent-fg); }
+.side-nav-btn .sn-icon { font-size: 1.1rem; }
+.side-nav-btn .sn-badge { font-family: var(--mono); font-size: .68rem; opacity: .85; }
+.side-panel { display: none; gap: 14px; align-content: start; }
+.side-panel.active { display: grid; }
 
 .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .stat { background: var(--surface-card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
-.stat .num { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; line-height: 1.15; }
-.stat .lbl { font-size: .74rem; color: var(--muted); margin-top: 2px; }
+.stat .num { font-family: var(--mono); font-size: 1.32rem; font-weight: 700; line-height: 1.15; }
+.stat .lbl { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 .stat.on .num { color: var(--on); }
 .stat.hold .num { color: var(--hold); }
 .stat.off .num { color: var(--off); }
 .stat.acc .num { color: var(--accent); }
 .stat.gold .num { color: var(--gold); }
+.stat.purple .num { color: var(--purple); }
 
 .drawer-section { display: grid; gap: 8px; }
 .drawer-section-head { display: flex; justify-content: space-between; align-items: center; font-size: .84rem; font-weight: 700; color: var(--fg); padding-inline: 2px; gap: 8px; }
-.drawer-section-head b { font-family: var(--mono); font-size: .76rem; color: var(--muted); background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
-.mini-list { display: grid; gap: 6px; max-height: 240px; overflow-y: auto; padding-inline-end: 2px; }
+.drawer-section-head b { font-family: var(--mono); font-size: .74rem; color: var(--muted); background: var(--bg); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.mini-list { display: grid; gap: 6px; max-height: 300px; overflow-y: auto; padding-inline-end: 2px; }
 .mini-list::-webkit-scrollbar { width: 4px; }
 .mini-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+
 .mini-item {
   width: 100%; text-align: start; background: var(--surface-card); border: 1px solid var(--line);
   border-radius: 10px; padding: 8px 11px; display: grid; gap: 1px; transition: all .15s ease;
 }
 .mini-item:hover { border-color: var(--accent); transform: translateX(-2px); }
-.mini-item .mi-phone { font-family: var(--mono); font-size: .92rem; font-weight: 700; direction: ltr; text-align: start; }
-.mini-item .mi-meta { font-size: .74rem; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
+.mini-item .mi-phone { font-family: var(--mono); font-size: .9rem; font-weight: 700; direction: ltr; text-align: start; }
+.mini-item .mi-meta { font-size: .72rem; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
 .mini-empty { font-size: .8rem; color: var(--muted); text-align: center; padding: 14px; border: 1px dashed var(--line); border-radius: 10px; }
 
-/* Debt mini */
+/* Debt mini card */
 .debt-mini {
-  width: 100%; text-align: start; background: linear-gradient(180deg, color-mix(in srgb, var(--gold-bg) 40%, var(--surface-card)), var(--surface-card));
+  width: 100%; text-align: start;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--gold-bg) 42%, var(--surface-card)), var(--surface-card));
   border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; display: grid; gap: 3px;
-  transition: all .15s ease;
+  transition: all .15s ease; position: relative;
 }
 .debt-mini:hover { border-color: var(--gold); transform: translateX(-2px); }
+.debt-mini.paid { opacity: .55; background: var(--surface-card); }
+.debt-mini.paid .dm-name { text-decoration: line-through; }
 .debt-mini .dm-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .debt-mini .dm-name { font-weight: 700; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.debt-mini .dm-amount { font-family: var(--mono); font-weight: 700; font-size: .88rem; color: var(--gold); white-space: nowrap; }
+.debt-mini .dm-amount { font-family: var(--mono); font-weight: 700; font-size: .9rem; color: var(--gold); white-space: nowrap; }
 .debt-mini .dm-phone { font-family: var(--mono); font-size: .72rem; color: var(--muted); direction: ltr; text-align: start; }
+.debt-mini .dm-due { font-size: .7rem; color: var(--danger); font-weight: 600; }
+.debt-mini .dm-paid-mark { position: absolute; top: 6px; inset-inline-end: 8px; font-size: .7rem; color: var(--on); font-weight: 700; }
 
+/* Debt totals */
 .debt-total {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--gold-bg) 70%, var(--surface-card)), color-mix(in srgb, var(--gold-bg) 30%, var(--surface-card)));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--gold-bg) 72%, var(--surface-card)), color-mix(in srgb, var(--gold-bg) 32%, var(--surface-card)));
   border: 1px solid var(--gold); border-radius: 12px; padding: 12px 14px;
 }
-.debt-total .dt-label { font-size: .78rem; color: var(--muted); font-weight: 600; }
-.debt-total .dt-value { font-family: var(--mono); font-size: 1.45rem; font-weight: 800; color: var(--gold); line-height: 1.1; }
-.debt-total .dt-count { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+.debt-total .dt-label { font-size: .76rem; color: var(--muted); font-weight: 600; }
+.debt-total .dt-value { font-family: var(--mono); font-size: 1.42rem; font-weight: 800; color: var(--gold); line-height: 1.1; }
+.debt-total .dt-count { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+.debt-total .dt-sub { font-size: .72rem; color: var(--on); font-weight: 700; margin-top: 3px; }
+
+/* SIM inventory in sidebar */
+.inv-tabs { display: flex; gap: 6px; margin-bottom: 4px; }
+.inv-tab {
+  flex: 1; border: 1px solid var(--line); background: var(--surface-card); border-radius: 9px;
+  padding: 7px 8px; font-size: .78rem; font-weight: 600; color: var(--muted);
+  display: flex; align-items: center; justify-content: center; gap: 5px; transition: all .15s ease;
+}
+.inv-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+.inv-tab .it-count { font-family: var(--mono); font-size: .72rem; opacity: .85; }
+
+.sim-inv-item {
+  width: 100%; text-align: start; background: var(--surface-card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 9px 11px; display: grid; gap: 3px; transition: all .15s ease; position: relative;
+}
+.sim-inv-item:hover { border-color: var(--purple); transform: translateX(-2px); }
+.sim-inv-item.used { border-inline-start: 3px solid var(--hold); }
+.sim-inv-item.clear { border-inline-start: 3px solid var(--on); }
+.sim-inv-item .sii-sim { font-family: var(--mono); font-size: .84rem; font-weight: 700; direction: ltr; }
+.sim-inv-item .sii-meta { font-size: .72rem; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
+.sim-inv-item .sii-tag { font-size: .68rem; padding: 1px 7px; border-radius: 999px; font-weight: 700; }
+.sim-inv-item .sii-tag.clear { background: var(--on-bg); color: var(--on); }
+.sim-inv-item .sii-tag.used { background: var(--hold-bg); color: var(--hold); }
 
 .drawer-actions { display: grid; gap: 8px; }
 .drawer-actions .btn { text-align: center; }
 
-/* ---------- Modals ---------- */
-.overlay { position: fixed; inset: 0; z-index: 70; background: rgba(8,18,26,.72); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 14px; }
+/* ==================== MODALS ==================== */
+.overlay { position: fixed; inset: 0; z-index: 70; background: rgba(8,18,26,.75); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; padding: 14px; }
 .overlay[hidden] { display: none; }
 .dlg {
   background: var(--surface); border-radius: 16px; box-shadow: var(--shadow);
-  width: 100%; max-width: 500px; max-height: 92vh; overflow-y: auto;
+  width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
   padding: 18px; display: grid; gap: 13px; border: 1px solid var(--line);
   animation: dlgIn .22s ease both;
 }
 @keyframes dlgIn { from { opacity: 0; transform: scale(.97) translateY(6px); } to { opacity: 1; transform: none; } }
-.dlg.wide { max-width: 860px; }
+.dlg.wide { max-width: 900px; }
 .dlg h2 { margin: 0; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .field { display: grid; gap: 5px; }
 .field label { font-size: .8rem; color: var(--muted); font-weight: 500; }
@@ -212,16 +302,58 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 .field input.ltr, .field textarea.ltr { direction: ltr; text-align: right; font-family: var(--mono); }
 .field input.amount { font-family: var(--mono); font-size: 1.05rem; font-weight: 700; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media (max-width: 520px) { .three { grid-template-columns: 1fr 1fr; } }
 .actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
 .actions .spacer { flex: 1; }
 .hint { color: var(--muted); font-size: .78rem; margin: 0; line-height: 1.5; }
 
-/* ---------- Debt Manager ---------- */
+/* Collapsible section inside form */
+.form-section { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.form-section-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 11px 13px; background: var(--surface-2); cursor: pointer;
+  font-size: .88rem; font-weight: 700; user-select: none;
+}
+.form-section-head:hover { background: color-mix(in srgb, var(--accent-soft) 30%, var(--surface-2)); }
+.form-section-head .fs-icon { font-size: 1.05rem; }
+.form-section-head .fs-arrow { color: var(--muted); transition: transform .2s ease; font-size: .9rem; }
+.form-section.open .fs-arrow { transform: rotate(180deg); }
+.form-section-body { display: none; padding: 12px 13px; gap: 10px; grid-template-columns: 1fr; }
+.form-section.open .form-section-body { display: grid; }
+.form-section.debt-section { border-color: color-mix(in srgb, var(--gold) 55%, var(--line)); }
+.form-section.debt-section .form-section-head { background: color-mix(in srgb, var(--gold-bg) 45%, var(--surface-2)); }
+.form-section.reminder-section { border-color: color-mix(in srgb, var(--danger) 55%, var(--line)); }
+.form-section.reminder-section .form-section-head { background: color-mix(in srgb, var(--off-bg) 40%, var(--surface-2)); }
+
+/* Toggle switch */
+.switch-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 0; }
+.switch-row .sr-label { font-size: .85rem; font-weight: 600; }
+.switch-row .sr-desc { font-size: .74rem; color: var(--muted); }
+.switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch .slider {
+  position: absolute; cursor: pointer; inset: 0; background: var(--line);
+  border-radius: 999px; transition: .25s;
+}
+.switch .slider::before {
+  content: ""; position: absolute; height: 20px; width: 20px; left: 3px; top: 3px;
+  background: var(--fg); border-radius: 50%; transition: .25s;
+}
+.switch input:checked + .slider { background: var(--accent); }
+.switch input:checked + .slider::before { transform: translateX(20px); background: var(--accent-fg); }
+
+/* ==================== DEBTS MANAGER ==================== */
 .debt-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .debt-toolbar .search { flex: 1; min-width: 180px; }
-.debt-toolbar .search input { padding-inline-start: 14px; padding-inline-end: 38px; }
+.debt-filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  border: 1px solid var(--line); background: var(--surface-card); border-radius: 999px;
+  padding: 5px 12px; font-size: .78rem; color: var(--muted); font-weight: 600; transition: all .15s ease;
+}
+.chip.active { background: var(--gold); color: #2a1f00; border-color: var(--gold); }
 
-.debt-list { display: grid; gap: 10px; max-height: 56vh; overflow-y: auto; padding-inline-end: 2px; }
+.debt-list { display: grid; gap: 10px; max-height: 58vh; overflow-y: auto; padding-inline-end: 2px; }
 .debt-list::-webkit-scrollbar { width: 6px; }
 .debt-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
 
@@ -234,13 +366,18 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 4px;
   background: linear-gradient(180deg, var(--gold), color-mix(in srgb, var(--gold) 40%, transparent));
 }
+.debt-card.paid { opacity: .65; }
+.debt-card.paid::before { background: linear-gradient(180deg, var(--on), color-mix(in srgb, var(--on) 40%, transparent)); }
+.debt-card.overdue::before { background: linear-gradient(180deg, var(--danger), color-mix(in srgb, var(--danger) 40%, transparent)); }
 .debt-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding-inline-start: 8px; }
 .debt-card-name { font-size: 1.06rem; font-weight: 700; line-height: 1.3; }
-.debt-card-amount {
-  font-family: var(--mono); font-size: 1.32rem; font-weight: 800; color: var(--gold);
-  white-space: nowrap; letter-spacing: .3px;
-}
-.debt-card-amount .cur { font-size: .72em; opacity: .75; margin-inline-start: 2px; }
+.debt-card-amount { font-family: var(--mono); font-size: 1.32rem; font-weight: 800; color: var(--gold); white-space: nowrap; letter-spacing: .3px; }
+.debt-card.paid .debt-card-amount { color: var(--on); text-decoration: line-through; }
+.debt-card.overdue .debt-card-amount { color: var(--danger); }
+.debt-card-meta { display: flex; gap: 8px; flex-wrap: wrap; padding-inline-start: 8px; font-size: .76rem; }
+.debt-meta-pill { background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; color: var(--muted); }
+.debt-meta-pill.danger { background: var(--off-bg); color: var(--off); border-color: var(--off); font-weight: 700; }
+.debt-meta-pill.good { background: var(--on-bg); color: var(--on); border-color: var(--on); font-weight: 700; }
 
 .debt-contacts { display: grid; gap: 4px; padding-inline-start: 8px; }
 .debt-contact {
@@ -254,27 +391,69 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 .debt-contact .dc-copy { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-size: .72rem; flex-shrink: 0; }
 .debt-contact .dc-copy:hover { color: var(--accent); border-color: var(--accent); }
 
-.debt-notes { font-size: .8rem; color: var(--muted); padding-inline-start: 8px; padding-block: 3px; padding-inline-end: 4px; border-radius: 8px; }
-
-.debt-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding-inline-start: 8px; }
-.debt-actions .action-btn.wa { border-color: var(--on); color: var(--on); background: color-mix(in srgb, var(--on-bg) 35%, transparent); }
-.debt-actions .action-btn.call { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
-.debt-actions .action-btn.del { border-color: var(--danger); color: var(--danger); background: color-mix(in srgb, var(--off-bg) 25%, transparent); }
+.debt-notes { font-size: .8rem; color: var(--muted); padding-inline-start: 8px; padding-block: 3px; }
+.debt-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding-inline-start: 8px; }
+.debt-actions .action-btn.wa { border-color: var(--on); color: var(--on); }
+.debt-actions .action-btn.call { border-color: var(--accent); color: var(--accent); }
+.debt-actions .action-btn.paid { border-color: var(--on); color: var(--on); }
+.debt-actions .action-btn.del { border-color: var(--danger); color: var(--danger); }
+@media (max-width: 560px) { .debt-actions { grid-template-columns: repeat(3, 1fr); } }
 
 .debt-summary-bar {
   display: flex; justify-content: space-between; align-items: center; gap: 10px;
-  background: color-mix(in srgb, var(--gold-bg) 45%, var(--surface));
+  background: color-mix(in srgb, var(--gold-bg) 48%, var(--surface));
   border: 1px solid var(--gold); border-radius: 12px; padding: 11px 14px;
+  flex-wrap: wrap;
 }
-.debt-summary-bar .dsb-label { font-size: .8rem; color: var(--muted); font-weight: 600; }
+.debt-summary-bar .dsb-label { font-size: .78rem; color: var(--muted); font-weight: 600; }
 .debt-summary-bar .dsb-value { font-family: var(--mono); font-size: 1.28rem; font-weight: 800; color: var(--gold); }
+.debt-summary-bar .dsb-sub { font-size: .72rem; color: var(--muted); margin-top: 2px; }
 
-/* ---------- Toast ---------- */
+/* ==================== INVENTORY (SIMs) MANAGER ==================== */
+.inv-manager-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.inv-summary-card {
+  border-radius: 14px; padding: 14px; border: 1px solid var(--line);
+  display: grid; gap: 4px; position: relative; overflow: hidden;
+}
+.inv-summary-card.clear { background: linear-gradient(135deg, color-mix(in srgb, var(--on-bg) 70%, var(--surface-card)), var(--surface-card)); border-color: var(--on); }
+.inv-summary-card.used { background: linear-gradient(135deg, color-mix(in srgb, var(--hold-bg) 70%, var(--surface-card)), var(--surface-card)); border-color: var(--hold); }
+.inv-summary-card .isc-icon { font-size: 1.6rem; }
+.inv-summary-card .isc-num { font-family: var(--mono); font-size: 1.7rem; font-weight: 800; line-height: 1.1; }
+.inv-summary-card.clear .isc-num { color: var(--on); }
+.inv-summary-card.used .isc-num { color: var(--hold); }
+.inv-summary-card .isc-label { font-size: .78rem; color: var(--muted); font-weight: 600; }
+
+.inv-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;
+  max-height: 52vh; overflow-y: auto; padding-inline-end: 2px;
+}
+.inv-grid::-webkit-scrollbar { width: 6px; }
+.inv-grid::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
+
+.inv-card {
+  background: var(--surface-card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 12px; display: grid; gap: 7px; position: relative; transition: all .15s ease;
+}
+.inv-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
+.inv-card.clear { border-inline-start: 4px solid var(--on); }
+.inv-card.used { border-inline-start: 4px solid var(--hold); }
+.inv-card .ic-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.inv-card .ic-sim { font-family: var(--mono); font-size: .88rem; font-weight: 700; direction: ltr; word-break: break-all; }
+.inv-card .ic-badge { font-size: .68rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; flex-shrink: 0; }
+.inv-card .ic-badge.clear { background: var(--on-bg); color: var(--on); }
+.inv-card .ic-badge.used { background: var(--hold-bg); color: var(--hold); }
+.inv-card .ic-meta { font-size: .76rem; color: var(--muted); }
+.inv-card .ic-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 3px; }
+.inv-card .ic-actions .action-btn { font-size: .75rem; padding: 6px 4px; }
+.inv-card .action-btn.assign { border-color: var(--purple); color: var(--purple); background: color-mix(in srgb, var(--purple-bg) 40%, transparent); }
+.inv-card .action-btn.del { border-color: var(--danger); color: var(--danger); }
+
+/* ==================== TOAST ==================== */
 .toast {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   background: var(--fg); color: var(--bg); padding: 11px 16px; border-radius: 11px;
   z-index: 90; font-size: .88rem; box-shadow: 0 6px 20px rgba(0,0,0,.35);
-  display: flex; align-items: center; gap: 12px; max-width: min(92vw, 460px);
+  display: flex; align-items: center; gap: 12px; max-width: min(92vw, 480px);
   animation: toastIn .25s ease both;
 }
 .toast.out { animation: toastOut .3s ease both; }
@@ -285,15 +464,14 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 18px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @keyframes toastOut { to { opacity: 0; transform: translate(-50%, 18px); } }
 
-/* Desktop tweaks */
-@media (min-width: 700px) {
-  .list { grid-template-columns: 1fr 1fr; }
-}
+/* Desktop */
+@media (min-width: 720px) { .list { grid-template-columns: 1fr 1fr; } }
 
 /* Small screens */
 @media (max-width: 480px) {
-  .debt-actions { grid-template-columns: repeat(2, 1fr); }
   .debt-card-amount { font-size: 1.15rem; }
+  .three { grid-template-columns: 1fr; }
+  .two { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -303,34 +481,47 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   <header class="top">
     <div class="titlebar">
       <div class="title-left">
-        <button class="icon-btn" id="menuBtn" type="button" aria-label="القائمة الجانبية">☰</button>
+        <button class="icon-btn" id="menuBtn" type="button" aria-label="القائمة الجانبية">
+          ☰
+          <span class="dot" id="menuDot" style="display:none;">0</span>
+        </button>
         <div>
           <h1>الاشتراكات</h1>
-          <div class="sub" id="summary">جاري تحميل البيانات…</div>
+          <div class="sub" id="summary">جاري التحميل…</div>
         </div>
       </div>
       <div class="btns">
-        <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل المظهر" title="تبديل المظهر">🌙</button>
-        <button class="btn" id="bulkBtn" type="button" title="إضافة عدة شرائح">دفعة</button>
-        <button class="icon-btn accent" id="addBtn" type="button" aria-label="إضافة شريحة">+</button>
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="تبديل المظهر">🌙</button>
+        <button class="btn" id="bulkBtn" type="button">دفعة</button>
+        <button class="icon-btn accent" id="addBtn" type="button" aria-label="إضافة">＋</button>
       </div>
     </div>
 
     <div class="search">
       <input id="q" type="search" placeholder="ابحث برقم الهاتف، رقم الشريحة، أو اسم الزبون…" autocomplete="off">
       <span class="search-icon">🔍</span>
-      <button class="clear-btn" id="clearQ" type="button" aria-label="مسح البحث">✕</button>
+      <button class="clear-btn" id="clearQ" type="button" aria-label="مسح">✕</button>
     </div>
 
     <div class="toolbar">
       <div class="tabs" id="tabs"></div>
-      <select class="sort-select" id="sortSel" aria-label="ترتيب">
-        <option value="smart">ترتيب: الأقرب للفصل</option>
-        <option value="date">ترتيب: تاريخ الفصل</option>
-        <option value="recent">ترتيب: الأحدث إضافة</option>
-        <option value="name">ترتيب: الاسم (أ-ي)</option>
-        <option value="status">ترتيب: الحالة</option>
+      <select class="sort-select" id="sortSel">
+        <option value="smart">الأقرب للفصل</option>
+        <option value="reminder">تنبيهات الدفع</option>
+        <option value="debt">الأعلى ديناً</option>
+        <option value="date">تاريخ الفصل</option>
+        <option value="recent">الأحدث</option>
+        <option value="name">الاسم (أ-ي)</option>
       </select>
+    </div>
+
+    <div class="alert-banner" id="alertBanner">
+      <span class="ab-icon">🔔</span>
+      <div class="ab-body">
+        <div class="ab-title" id="alertTitle">لديك تنبيهات دفع مستحقة</div>
+        <div class="ab-desc" id="alertDesc"></div>
+      </div>
+      <button class="btn gold sm ab-btn" id="alertBtn" type="button">عرض</button>
     </div>
   </header>
 
@@ -344,151 +535,269 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-head">
     <div>
-      <div class="drawer-title">لوحة التحكم السريعة</div>
-      <div class="drawer-sub">نظرة عامة وإدارة سريعة</div>
+      <div class="drawer-title">لوحة التحكم</div>
+      <div class="drawer-sub">إدارة الشرائح والديون والمخزون</div>
     </div>
     <button class="icon-btn" id="drawerClose" type="button" aria-label="إغلاق">✕</button>
   </div>
 
   <div class="drawer-body">
-    <div class="stat-grid" id="statGrid"></div>
-
-    <!-- DEBTS SUMMARY CARD -->
-    <div class="debt-total" id="debtTotalCard">
-      <div>
-        <div class="dt-label">إجمالي الديون المستحقة</div>
-        <div class="dt-value" id="debtTotalValue">₪0</div>
-        <div class="dt-count" id="debtTotalCount">لا توجد ديون</div>
-      </div>
-      <button class="btn gold" id="openDebtsBtn" type="button" style="flex-shrink:0;">إدارة الديون</button>
+    <!-- Navigation tabs -->
+    <div class="side-nav">
+      <button class="side-nav-btn active" data-panel="overview" type="button">
+        <span class="sn-icon">📊</span>
+        <span>نظرة عامة</span>
+      </button>
+      <button class="side-nav-btn" data-panel="debts" type="button">
+        <span class="sn-icon">💰</span>
+        <span>الديون</span>
+        <span class="sn-badge" id="snDebtsBadge">0</span>
+      </button>
+      <button class="side-nav-btn" data-panel="inventory" type="button">
+        <span class="sn-icon">📦</span>
+        <span>الشرائح</span>
+        <span class="sn-badge" id="snInvBadge">0</span>
+      </button>
     </div>
 
-    <div class="drawer-section">
-      <div class="drawer-section-head">
-        <span>💰 آخر الديون المسجلة</span>
-        <b id="debtsMiniCount">0</b>
+    <!-- OVERVIEW PANEL -->
+    <div class="side-panel active" id="panel-overview">
+      <div class="stat-grid" id="statGrid"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-head">
+          <span>🆕 الشرائح النظيفة</span>
+          <b id="cleanCount">0</b>
+        </div>
+        <div class="mini-list" id="cleanList"></div>
       </div>
-      <div class="mini-list" id="debtsMiniList"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-head">
+          <span>🕒 آخر المستعملة</span>
+          <b id="recentCount">0</b>
+        </div>
+        <div class="mini-list" id="recentList"></div>
+      </div>
     </div>
 
-    <div class="drawer-section">
-      <div class="drawer-section-head">
-        <span>🆕 الشرائح النظيفة</span>
-        <b id="cleanCount">0</b>
+    <!-- DEBTS PANEL -->
+    <div class="side-panel" id="panel-debts">
+      <div class="debt-total">
+        <div>
+          <div class="dt-label">إجمالي الديون</div>
+          <div class="dt-value" id="debtTotalValue">₪0</div>
+          <div class="dt-count" id="debtTotalCount">0 دين</div>
+          <div class="dt-sub" id="debtPaidInfo"></div>
+        </div>
+        <button class="btn gold" id="openDebtsBtn" type="button">إدارة</button>
       </div>
-      <div class="mini-list" id="cleanList"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-head">
+          <span>⚡ تنبيهات الدفع المستحقة</span>
+          <b id="debtDueCount">0</b>
+        </div>
+        <div class="mini-list" id="debtDueList"></div>
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-head">
+          <span>💰 آخر الديون</span>
+          <b id="debtsMiniCount">0</b>
+        </div>
+        <div class="mini-list" id="debtsMiniList"></div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn gold" id="sideAddDebt" type="button">＋ إضافة دين جديد</button>
+        <button class="btn" id="sideExpDebts" type="button">⬇️ تصدير الديون CSV</button>
+      </div>
     </div>
 
-    <div class="drawer-section">
-      <div class="drawer-section-head">
-        <span>🕒 آخر الشرائح المستعملة</span>
-        <b id="recentCount">0</b>
+    <!-- INVENTORY PANEL -->
+    <div class="side-panel" id="panel-inventory">
+      <div class="stat-grid">
+        <div class="stat on"><div class="num" id="invCleanStat">0</div><div class="lbl">شرائح نظيفة</div></div>
+        <div class="stat hold"><div class="num" id="invUsedStat">0</div><div class="lbl">شرائح مستعملة</div></div>
       </div>
-      <div class="mini-list" id="recentList"></div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-head">
+          <span>📦 مخزون الشرائح (غير مرتبط بأرقام)</span>
+          <b id="invTotalBadge">0</b>
+        </div>
+        <div class="inv-tabs">
+          <button class="inv-tab active" data-inv="all" type="button">الكل <span class="it-count" id="itAll">0</span></button>
+          <button class="inv-tab" data-inv="clear" type="button">نظيفة <span class="it-count" id="itClear">0</span></button>
+          <button class="inv-tab" data-inv="used" type="button">مستعملة <span class="it-count" id="itUsed">0</span></button>
+        </div>
+        <div class="mini-list" id="invList"></div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn purple" id="sideAddInv" type="button">＋ إضافة شريحة للمخزون</button>
+        <button class="btn" id="openInvBtn" type="button">📦 فتح مدير المخزون</button>
+      </div>
     </div>
 
-    <div class="drawer-actions">
+    <!-- GLOBAL ACTIONS -->
+    <div class="drawer-actions" style="margin-top:6px; padding-top:12px; border-top:1px solid var(--line);">
       <button class="btn" id="dSetBtn" type="button">⚙️ الإعدادات العامة</button>
-      <button class="btn" id="dBulkBtn" type="button">＋ إضافة عدة شرائح دفعة واحدة</button>
-      <button class="btn" id="dExpCSV" type="button">⬇️ تصدير الشرائح (Excel/CSV)</button>
-      <button class="btn" id="dExpDebts" type="button">⬇️ تصدير الديون (CSV)</button>
-      <button class="btn" id="dExpJSON" type="button">⬇️ نسخة احتياطية JSON (الشرائح + الديون)</button>
-      <button class="btn" id="dImpBtn" type="button">⬆️ استيراد بيانات ودمجها</button>
+      <button class="btn" id="dExpJSON" type="button">⬇️ نسخة احتياطية كاملة (JSON)</button>
+      <button class="btn" id="dImpBtn" type="button">⬆️ استيراد بيانات</button>
       <input id="impFile" type="file" accept=".json,.csv" hidden>
     </div>
 
-    <div style="text-align:center; color:var(--muted); font-size:.74rem; padding-bottom:8px;">
-      البيانات محفوظة محلياً على جهازك وتعمل بدون إنترنت.
+    <div style="text-align:center; color:var(--muted); font-size:.72rem; padding-bottom:8px;">
+      البيانات محفوظة محلياً وتعمل بدون إنترنت.
     </div>
   </div>
 </aside>
 
-<!-- ============ ADD / EDIT SIM MODAL ============ -->
+<!-- ============ ADD/EDIT SIM MODAL (with Debt + Reminder sections) ============ -->
 <div class="overlay" id="overlay" hidden>
   <form class="dlg" id="form" novalidate>
     <h2>
-      <span id="dlgTitle">إضافة شريحة جديدة</span>
+      <span id="dlgTitle">إضافة شريحة</span>
       <button class="btn sm" type="button" id="closeDlg">إغلاق</button>
     </h2>
 
-    <div class="field">
-      <label for="f-name">اسم الزبون</label>
-      <input id="f-name" type="text" autocomplete="off" placeholder="مثال: أحمد محمد">
+    <!-- BASIC INFO -->
+    <div class="form-section open">
+      <div class="form-section-head" data-toggle>
+        <span><span class="fs-icon">👤</span> المعلومات الأساسية</span>
+        <span class="fs-arrow">▼</span>
+      </div>
+      <div class="form-section-body">
+        <div class="field">
+          <label for="f-name">اسم الزبون</label>
+          <input id="f-name" type="text" autocomplete="off" placeholder="مثال: أحمد محمد">
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="f-phone">رقم الهاتف</label>
+            <input id="f-phone" class="ltr" type="text" inputmode="tel" placeholder="05XXXXXXXX" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="f-company">شركة الاتصالات</label>
+            <select id="f-company">
+              <option value="">اختر الشركة</option>
+              <option>سلكوم</option><option>هوت موبايل</option><option>بلفون</option>
+              <option>بارتنر</option><option>رامي ليفي</option><option>019</option>
+              <option>ألوها</option><option>أخرى</option>
+            </select>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="f-sim">رقم الشريحة (SIM)</label>
+            <input id="f-sim" class="ltr" type="text" inputmode="numeric" placeholder="8997…" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="f-activation">مكان التفعيل</label>
+            <select id="f-activation">
+              <option value="">اختر المكان</option>
+              <option>ألوها</option><option>كويك لاين</option><option>أرين</option>
+              <option>سكاي</option><option>توب أب</option><option>مسار</option><option>أخرى</option>
+            </select>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="f-status">الحالة</label>
+            <select id="f-status">
+              <option value="active">مفعل</option>
+              <option value="suspended">معلق</option>
+              <option value="disconnected">مفصول</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-simstate">نوع الشريحة</label>
+            <select id="f-simstate">
+              <option value="used-sim">مستعملة</option>
+              <option value="clear-sim">نظيفة</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-date">موعد الفصل</label>
+          <input id="f-date" type="date">
+        </div>
+        <div class="field">
+          <label for="f-notes">ملاحظات</label>
+          <textarea id="f-notes" placeholder="ملاحظات إضافية…"></textarea>
+        </div>
+      </div>
     </div>
 
-    <div class="two">
-      <div class="field">
-        <label for="f-phone">رقم الهاتف *</label>
-        <input id="f-phone" class="ltr" type="text" inputmode="tel" placeholder="05XXXXXXXX" autocomplete="off">
+    <!-- DEBT SECTION -->
+    <div class="form-section debt-section" id="debtSection">
+      <div class="form-section-head" data-toggle>
+        <span><span class="fs-icon">💰</span> الديون والمدفوعات</span>
+        <span class="fs-arrow">▼</span>
       </div>
-      <div class="field">
-        <label for="f-company">شركة الاتصالات</label>
-        <select id="f-company">
-          <option value="">اختر الشركة</option>
-          <option>سلكوم</option>
-          <option>هوت موبايل</option>
-          <option>بلفون</option>
-          <option>بارتنر</option>
-          <option>رامي ليفي</option>
-          <option>019</option>
-          <option>ألوها</option>
-          <option>أخرى</option>
-        </select>
+      <div class="form-section-body">
+        <div class="switch-row">
+          <div>
+            <div class="sr-label">يوجد دين على هذا الزبون</div>
+            <div class="sr-desc">تفعيل هذا الخيار لإظهار حقل المبلغ وتتبع الدين</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="f-hasdebt">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div id="debtFields" style="display:none; gap:10px; grid-template-columns:1fr;">
+          <div class="field">
+            <label for="f-debtamount">المبلغ المتبقي (شيكل)</label>
+            <input id="f-debtamount" class="amount ltr" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00">
+          </div>
+          <div class="field">
+            <label for="f-debtnotes">ملاحظات الدين</label>
+            <textarea id="f-debtnotes" placeholder="تفاصيل الدين، تاريخ الاتفاق، إلخ…" style="min-height:56px;"></textarea>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="two">
-      <div class="field">
-        <label for="f-sim">رقم الشريحة (SIM)</label>
-        <input id="f-sim" class="ltr" type="text" inputmode="numeric" placeholder="8997…" autocomplete="off">
+    <!-- REMINDER SECTION -->
+    <div class="form-section reminder-section" id="reminderSection">
+      <div class="form-section-head" data-toggle>
+        <span><span class="fs-icon">🔔</span> تنبيه تذكير الدفع</span>
+        <span class="fs-arrow">▼</span>
       </div>
-      <div class="field">
-        <label for="f-activation">مكان التفعيل</label>
-        <select id="f-activation">
-          <option value="">اختر المكان</option>
-          <option>ألوها</option>
-          <option>كويك لاين</option>
-          <option>أرين</option>
-          <option>سكاي</option>
-          <option>توب أب</option>
-          <option>مسار</option>
-          <option>أخرى</option>
-        </select>
-      </div>
-    </div>
+      <div class="form-section-body">
+        <div class="switch-row">
+          <div>
+            <div class="sr-label">تفعيل تذكير الدفع</div>
+            <div class="sr-desc">سيظهر تنبيه بارز عندما يحين الموعد</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="f-hasreminder">
+            <span class="slider"></span>
+          </label>
+        </div>
 
-    <div class="two">
-      <div class="field">
-        <label for="f-status">الحالة</label>
-        <select id="f-status">
-          <option value="active">مفعل</option>
-          <option value="suspended">معلق</option>
-          <option value="disconnected">مفصول</option>
-        </select>
+        <div id="reminderFields" style="display:none; gap:10px; grid-template-columns:1fr;">
+          <div class="field">
+            <label for="f-reminderdate">تاريخ التذكير</label>
+            <input id="f-reminderdate" type="date">
+          </div>
+          <div class="field">
+            <label for="f-remindernote">نص التذكير</label>
+            <input id="f-remindernote" type="text" placeholder="مثال: تذكير بدفع 500 شيكل">
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <label for="f-simstate">نوع الشريحة</label>
-        <select id="f-simstate">
-          <option value="used-sim">مستعملة</option>
-          <option value="clear-sim">نظيفة</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="f-date">موعد الفصل</label>
-      <input id="f-date" type="date">
-    </div>
-
-    <div class="field">
-      <label for="f-notes">ملاحظات</label>
-      <textarea id="f-notes" placeholder="ملاحظات إضافية عن العضو أو الاشتراك…"></textarea>
     </div>
 
     <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="err"></div>
 
     <div class="actions">
       <button class="btn primary" type="submit" style="flex:2;">حفظ البيانات</button>
+      <button class="btn gold sm" type="button" id="quickReminderBtn" style="display:none;">تعيين تذكير سريع</button>
       <button class="btn danger" type="button" id="delBtn" hidden>حذف</button>
     </div>
   </form>
@@ -502,21 +811,18 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       <button class="btn sm" type="button" id="bulkClose">إغلاق</button>
     </h2>
     <p class="hint">أضف صفوفاً متعددة ثم اضغط «حفظ الكل». الحقل الأساسي هو رقم الهاتف أو رقم الشريحة.</p>
-
-    <div class="bulk-rows" id="bulkRows"></div>
-
+    <div class="bulk-rows" id="bulkRows" style="display:grid; gap:8px; max-height:46vh; overflow-y:auto; padding:6px; border:1px dashed var(--line); border-radius:12px;"></div>
     <div class="actions">
-      <button class="btn" type="button" id="bulkAddRow">＋ إضافة صف جديد</button>
-      <button class="btn" type="button" id="bulkPasteBtn">📋 لصق قائمة أرقام</button>
+      <button class="btn" type="button" id="bulkAddRow">＋ صف جديد</button>
+      <button class="btn" type="button" id="bulkPasteBtn">📋 لصق أرقام</button>
       <span class="spacer"></span>
       <button class="btn primary" type="button" id="bulkSave" style="min-width:130px;">حفظ الكل</button>
     </div>
-
     <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="bulkErr"></div>
   </div>
 </div>
 
-<!-- ============ DEBTS MANAGER MODAL ============ -->
+<!-- ============ DEBTS MANAGER ============ -->
 <div class="overlay" id="debtsOverlay" hidden>
   <div class="dlg wide">
     <h2>
@@ -526,43 +832,49 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 
     <div class="debt-summary-bar">
       <div>
-        <div class="dsb-label">إجمالي الديون</div>
+        <div class="dsb-label">إجمالي الديون المتبقية</div>
         <div class="dsb-value" id="dmTotal">₪0</div>
+        <div class="dsb-sub" id="dmSub"></div>
       </div>
-      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-        <span class="hint" id="dmCount" style="margin:0;">0 دين</span>
-        <button class="btn gold" type="button" id="dmAddBtn">＋ إضافة دين</button>
-      </div>
+      <button class="btn gold" type="button" id="dmAddBtn">＋ إضافة دين</button>
     </div>
 
     <div class="debt-toolbar">
       <div class="search">
-        <input id="dmSearch" type="search" placeholder="ابحث باسم الزبون أو رقم الهاتف…" autocomplete="off">
+        <input id="dmSearch" type="search" placeholder="ابحث بالاسم أو الهاتف…" autocomplete="off">
         <span class="search-icon">🔍</span>
       </div>
-      <select class="sort-select" id="dmSort" aria-label="ترتيب الديون">
+      <select class="sort-select" id="dmSort">
         <option value="amount">الأعلى ديناً</option>
-        <option value="recent">الأحدث إضافة</option>
-        <option value="name">الاسم (أ-ي)</option>
-        <option value="oldest">الأقدم إضافة</option>
+        <option value="due">الأقرب استحقاقاً</option>
+        <option value="recent">الأحدث</option>
+        <option value="name">الاسم</option>
       </select>
+    </div>
+
+    <div class="debt-filter-chips">
+      <button class="chip active" data-dfilter="all" type="button">الكل</button>
+      <button class="chip" data-dfilter="pending" type="button">غير مسدد</button>
+      <button class="chip" data-dfilter="overdue" type="button">متأخر</button>
+      <button class="chip" data-dfilter="dueSoon" type="button">مستحق قريباً</button>
+      <button class="chip" data-dfilter="paid" type="button">مسدد</button>
     </div>
 
     <div class="debt-list" id="dmList"></div>
 
     <div style="display:flex; gap:8px; margin-top:4px; flex-wrap:wrap;">
-      <button class="btn" type="button" id="dmExpCSV">⬇️ تصدير الديون CSV</button>
+      <button class="btn" type="button" id="dmExpCSV">⬇️ تصدير CSV</button>
       <span class="spacer"></span>
       <button class="btn danger" type="button" id="dmWipeAll">حذف كل الديون</button>
     </div>
   </div>
 </div>
 
-<!-- ============ ADD / EDIT DEBT MODAL ============ -->
+<!-- ============ ADD/EDIT DEBT MODAL ============ -->
 <div class="overlay" id="debtDlgOverlay" hidden>
   <form class="dlg" id="debtForm" novalidate>
     <h2>
-      <span id="debtDlgTitle">إضافة دين جديد</span>
+      <span id="debtDlgTitle">إضافة دين</span>
       <button class="btn sm" type="button" id="debtClose">إغلاق</button>
     </h2>
 
@@ -572,14 +884,14 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     </div>
 
     <div class="field">
-      <label for="d-amount">مبلغ الدين (شيكل) *</label>
+      <label for="d-amount">المبلغ (شيكل) *</label>
       <input id="d-amount" class="amount ltr" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00">
     </div>
 
     <div class="two">
       <div class="field">
         <label for="d-wa">رقم الواتساب</label>
-        <input id="d-wa" class="ltr" type="text" inputmode="tel" placeholder="05XXXXXXXX أو +972…" autocomplete="off">
+        <input id="d-wa" class="ltr" type="text" inputmode="tel" placeholder="05XXXXXXXX" autocomplete="off">
       </div>
       <div class="field">
         <label for="d-contact">رقم التواصل</label>
@@ -587,54 +899,183 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       </div>
     </div>
 
+    <div class="two">
+      <div class="field">
+        <label for="d-duedate">موعد السداد المتوقع</label>
+        <input id="d-duedate" type="date">
+      </div>
+      <div class="field">
+        <label for="d-reminder">تفعيل تذكير الدفع</label>
+        <select id="d-reminder">
+          <option value="off">معطّل</option>
+          <option value="on">مفعّل</option>
+        </select>
+      </div>
+    </div>
+
     <div class="field">
       <label for="d-notes">ملاحظات</label>
-      <textarea id="d-notes" placeholder="تفاصيل إضافية عن الدين…"></textarea>
+      <textarea id="d-notes" placeholder="تفاصيل إضافية…"></textarea>
+    </div>
+
+    <div class="switch-row">
+      <div>
+        <div class="sr-label">تم السداد بالكامل</div>
+        <div class="sr-desc">تعليم الدين كمسدد</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="d-paid">
+        <span class="slider"></span>
+      </label>
     </div>
 
     <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="debtErr"></div>
 
     <div class="actions">
-      <button class="btn primary" type="submit" style="flex:2;">حفظ الدين</button>
+      <button class="btn primary" type="submit" style="flex:2;">حفظ</button>
       <button class="btn danger" type="button" id="debtDelBtn" hidden>حذف</button>
     </div>
   </form>
 </div>
 
-<!-- ============ SETTINGS MODAL ============ -->
+<!-- ============ SIM INVENTORY MANAGER ============ -->
+<div class="overlay" id="invOverlay" hidden>
+  <div class="dlg wide">
+    <h2>
+      <span>📦 مخزون الشرائح</span>
+      <button class="btn sm" type="button" id="invClose">إغلاق</button>
+    </h2>
+
+    <div class="inv-manager-summary">
+      <div class="inv-summary-card clear">
+        <div class="isc-icon">🟢</div>
+        <div class="isc-num" id="invMgrCleanNum">0</div>
+        <div class="isc-label">شرائح نظيفة متاحة</div>
+      </div>
+      <div class="inv-summary-card used">
+        <div class="isc-icon">🟡</div>
+        <div class="isc-num" id="invMgrUsedNum">0</div>
+        <div class="isc-label">شرائح مستعملة</div>
+      </div>
+    </div>
+
+    <div class="debt-toolbar">
+      <div class="search">
+        <input id="invSearch" type="search" placeholder="ابحث برقم الشريحة أو الشركة…" autocomplete="off">
+        <span class="search-icon">🔍</span>
+      </div>
+      <div class="debt-filter-chips">
+        <button class="chip active" data-ifilter="all" type="button">الكل</button>
+        <button class="chip" data-ifilter="clear" type="button">نظيفة</button>
+        <button class="chip" data-ifilter="used" type="button">مستعملة</button>
+      </div>
+    </div>
+
+    <div class="inv-grid" id="invMgrList"></div>
+
+    <div class="actions">
+      <button class="btn purple" type="button" id="invMgrAdd">＋ إضافة شريحة للمخزون</button>
+      <span class="spacer"></span>
+      <button class="btn danger" type="button" id="invWipeAll">حذف الكل</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADD/EDIT INVENTORY SIM MODAL ============ -->
+<div class="overlay" id="invDlgOverlay" hidden>
+  <form class="dlg" id="invForm" novalidate>
+    <h2>
+      <span id="invDlgTitle">إضافة شريحة للمخزون</span>
+      <button class="btn sm" type="button" id="invDlgClose">إغلاق</button>
+    </h2>
+
+    <div class="field">
+      <label for="i-sim">رقم الشريحة (SIM) *</label>
+      <input id="i-sim" class="ltr" type="text" inputmode="numeric" placeholder="8997…" autocomplete="off">
+    </div>
+
+    <div class="two">
+      <div class="field">
+        <label for="i-company">شركة الاتصالات</label>
+        <select id="i-company">
+          <option value="">اختر</option>
+          <option>سلكوم</option><option>هوت موبايل</option><option>بلفون</option>
+          <option>بارتنر</option><option>رامي ليفي</option><option>019</option>
+          <option>ألوها</option><option>أخرى</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="i-type">نوع الشريحة</label>
+        <select id="i-type">
+          <option value="clear">نظيفة</option>
+          <option value="used">مستعملة</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="field">
+        <label for="i-activation">مكان التفعيل</label>
+        <select id="i-activation">
+          <option value="">اختر</option>
+          <option>ألوها</option><option>كويك لاين</option><option>أرين</option>
+          <option>سكاي</option><option>توب أب</option><option>مسار</option><option>أخرى</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="i-qty">الكمية</label>
+        <input id="i-qty" class="ltr" type="number" inputmode="numeric" min="1" value="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="i-notes">ملاحظات</label>
+      <textarea id="i-notes" placeholder="مثال: متاحة للبيع، سعر الشراء…"></textarea>
+    </div>
+
+    <div style="color:var(--danger);font-size:.83rem;min-height:1.1em;" id="invErr"></div>
+
+    <div class="actions">
+      <button class="btn primary" type="submit" style="flex:2;">حفظ</button>
+      <button class="btn danger" type="button" id="invDelBtn" hidden>حذف</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ SETTINGS ============ -->
 <div class="overlay" id="setOverlay" hidden>
   <div class="dlg">
     <h2>
-      <span>الإعدادات العامة</span>
+      <span>⚙️ الإعدادات العامة</span>
       <button class="btn sm" type="button" id="setClose">إغلاق</button>
     </h2>
 
     <div class="field">
-      <label for="s-template">قالب تذكير الاشتراك (SMS / واتساب)</label>
+      <label for="s-template">قالب تذكير الاشتراك</label>
       <textarea id="s-template" style="direction:rtl; text-align:right;">مرحباً {name}، نذكّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.</textarea>
-      <p class="hint">المتغيرات: <code>{name}</code> للاسم، <code>{phone}</code> للرقم، <code>{date}</code> لموعد الفصل.</p>
+      <p class="hint">المتغيرات: <code>{name}</code> <code>{phone}</code> <code>{date}</code></p>
     </div>
 
     <div class="field">
-      <label for="s-debt-template">قالب تذكير الدين (SMS / واتساب)</label>
+      <label for="s-debt-template">قالب تذكير الدين</label>
       <textarea id="s-debt-template" style="direction:rtl; text-align:right;">مرحباً {name}، نود تذكيركم بوجود مبلغ دين بقيمة {amount} شيكل. يرجى التواصل معنا للتسوية. شكراً.</textarea>
-      <p class="hint">المتغيرات: <code>{name}</code> للاسم، <code>{amount}</code> للمبلغ بالشيكل.</p>
+      <p class="hint">المتغيرات: <code>{name}</code> <code>{amount}</code></p>
     </div>
 
     <div class="field">
       <label>إدارة البيانات</label>
       <div style="display:grid; gap:8px; margin-top:4px;">
-        <button class="btn" type="button" id="expCSV">تصدير الشرائح (Excel/CSV)</button>
+        <button class="btn" type="button" id="expCSV">تصدير الشرائح (CSV)</button>
         <button class="btn" type="button" id="expDebts">تصدير الديون (CSV)</button>
-        <button class="btn" type="button" id="expJSON">تصدير نسخة احتياطية كاملة (JSON)</button>
-        <button class="btn" type="button" id="impBtn2">استيراد بيانات ودمجها (JSON / CSV)</button>
-        <button class="btn danger" type="button" id="wipeBtn">حذف جميع البيانات نهائياً</button>
+        <button class="btn" type="button" id="expInv">تصدير المخزون (CSV)</button>
+        <button class="btn" type="button" id="expJSON">نسخة احتياطية كاملة (JSON)</button>
+        <button class="btn" type="button" id="impBtn2">استيراد ودمج (JSON / CSV)</button>
+        <button class="btn danger" type="button" id="wipeBtn">حذف جميع البيانات</button>
       </div>
-      <p class="hint" style="margin-top:6px;">استيراد JSON يشمل الشرائح والديون معاً.</p>
     </div>
 
-    <div style="text-align:center; color:var(--muted); font-size:.76rem;">
-      كل البيانات محفوظة محلياً على جهازك ولا تُرسل إلى أي خادم خارجي.
+    <div style="text-align:center; color:var(--muted); font-size:.74rem;">
+      البيانات محفوظة محلياً ولا تُرسل لأي خادم.
     </div>
   </div>
 </div>
@@ -643,76 +1084,111 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
 (function () {
   "use strict";
 
-  /* ============================================================
-     CONSTANTS & STATE
-     ============================================================ */
-  var STORAGE_KEY = "sim_subscriptions_v4";
-  var DEBTS_KEY = "sim_debts_v1";
-  var TEMPLATE_KEY = "sim_sms_tmpl";
-  var DEBT_TEMPLATE_KEY = "sim_debt_tmpl";
+  /* ==================== STORAGE KEYS ==================== */
+  var SIMS_KEY = "sim_subs_v5";
+  var DEBTS_KEY = "sim_debts_v5";
+  var INV_KEY = "sim_inventory_v5";
+  var TMPL_KEY = "sim_sms_tmpl";
+  var DEBT_TMPL_KEY = "sim_debt_tmpl";
   var THEME_KEY = "sim_theme";
 
+  /* ==================== CONSTANTS ==================== */
   var STATUS = { active: "مفعل", suspended: "معلق", disconnected: "مفصول" };
   var ORDER = ["active", "suspended", "disconnected"];
-
   var COMPANIES = ["سلكوم", "هوت موبايل", "بلفون", "بارتنر", "رامي ليفي", "019", "ألوها", "أخرى"];
+  var ACTIVATIONS = ["ألوها", "كويك لاين", "أرين", "سكاي", "توب أب", "مسار", "أخرى"];
 
-  var COLS = [
-    ["phone", "رقم الهاتف"], ["name", "اسم الزبون"], ["company", "شركة الاتصالات"],
+  var SIM_COLS = [
+    ["phone", "رقم الهاتف"], ["name", "الاسم"], ["company", "الشركة"],
     ["sim", "رقم الشريحة"], ["activation", "مكان التفعيل"], ["status", "الحالة"],
-    ["simState", "نوع الشريحة"], ["cutDate", "موعد الفصل"], ["notes", "ملاحظات"]
+    ["simState", "النوع"], ["cutDate", "موعد الفصل"], ["debtAmount", "الدين"],
+    ["reminderDate", "تذكير الدفع"], ["notes", "ملاحظات"]
   ];
-
   var DEBT_COLS = [
-    ["name", "اسم الزبون"], ["amount", "المبلغ (شيكل)"],
-    ["whatsapp", "رقم واتساب"], ["contact", "رقم التواصل"], ["notes", "ملاحظات"]
+    ["name", "الاسم"], ["amount", "المبلغ"], ["whatsapp", "واتساب"],
+    ["contact", "تواصل"], ["dueDate", "الاستحقاق"], ["paid", "مسدد"], ["notes", "ملاحظات"]
+  ];
+  var INV_COLS = [
+    ["sim", "رقم الشريحة"], ["company", "الشركة"], ["type", "النوع"],
+    ["activation", "مكان التفعيل"], ["qty", "الكمية"], ["notes", "ملاحظات"]
   ];
 
-  var docs = new Map();
-  var debts = new Map();
+  /* ==================== STATE ==================== */
+  var docs = new Map();       // subscriptions
+  var debts = new Map();      // debts
+  var inventory = new Map();  // inventory SIMs
+
   var filter = "all";
   var query = "";
   var sortMode = "smart";
   var editingId = null;
   var delArmed = false;
-  var lastDeleted = null;
+  var lastDeletedSim = null;
 
   var debtQuery = "";
   var debtSort = "amount";
+  var debtFilterChip = "all";
   var editingDebtId = null;
   var debtDelArmed = false;
   var lastDeletedDebt = null;
 
+  var invQuery = "";
+  var invFilterChip = "all";
+  var invTypeFilter = "all";
+  var editingInvId = null;
+  var invDelArmed = false;
+  var lastDeletedInv = null;
+
+  var activeSidePanel = "overview";
+  var activeInvTab = "all";
+
   var defaultSMSTemplate = "مرحباً {name}، نذكّرك بأن موعد فصل الشريحة {phone} هو {date}. للتجديد يرجى التواصل معنا. شكراً.";
   var defaultDebtTemplate = "مرحباً {name}، نود تذكيركم بوجود مبلغ دين بقيمة {amount} شيكل. يرجى التواصل معنا للتسوية. شكراً.";
 
-  var smsTemplate = localStorage.getItem(TEMPLATE_KEY) || defaultSMSTemplate;
-  var debtTemplate = localStorage.getItem(DEBT_TEMPLATE_KEY) || defaultDebtTemplate;
+  var smsTemplate = localStorage.getItem(TMPL_KEY) || defaultSMSTemplate;
+  var debtTemplate = localStorage.getItem(DEBT_TMPL_KEY) || defaultDebtTemplate;
 
+  /* ==================== UTILS ==================== */
   function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  }); }
+  function uid(p) { return (p || "id_") + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7); }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function todayISO() { var t = new Date(); return t.getFullYear() + "-" + pad(t.getMonth() + 1) + "-" + pad(t.getDate()); }
+  function digitsOnly(s) { return String(s || "").replace(/\D/g, ""); }
+  function telNumber(p) { return String(p || "").replace(/[^\d+*#]/g, ""); }
+  function waNumber(p) {
+    var d = digitsOnly(p);
+    if (d.indexOf("0") === 0) d = "972" + d.slice(1);
+    return d;
+  }
+  function fmtDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+    return m ? m[3] + "/" + m[2] + "/" + m[1] : "—";
+  }
+  function fmtMoney(n) {
+    var v = Number(n) || 0;
+    var s = v.toLocaleString("en-US", { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
+    return "₪" + s;
+  }
+  function daysFrom(iso) {
+    if (!iso) return null;
+    var t = new Date();
+    var nowUTC = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
+    var p = String(iso).split("-").map(Number);
+    if (p.length < 3 || !p[0] || !p[1] || !p[2]) return null;
+    return Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - nowUTC) / 86400000);
+  }
 
-  /* ============================================================
-     UTILITIES
-     ============================================================ */
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
-  function uid(prefix) {
-    return (prefix || "id_") + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
-  }
   function toast(msg, actionLabel, actionFn) {
     var t = document.createElement("div");
     t.className = "toast";
-    var span = document.createElement("span");
-    span.textContent = msg;
+    var span = document.createElement("span"); span.textContent = msg;
     t.appendChild(span);
     if (actionLabel && actionFn) {
       var b = document.createElement("button");
-      b.type = "button";
-      b.className = "toast-action";
-      b.textContent = actionLabel;
+      b.type = "button"; b.className = "toast-action"; b.textContent = actionLabel;
       b.addEventListener("click", function () { actionFn(); dismiss(); });
       t.appendChild(b);
     }
@@ -725,6 +1201,7 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       setTimeout(function () { t.remove(); }, 300);
     }
   }
+
   function copyText(text) {
     text = String(text || "");
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -734,133 +1211,107 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   }
   function fallbackCopy(text) {
     try {
-      var ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
+      var ta = document.createElement("textarea"); ta.value = text;
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); ta.remove();
       toast("تم النسخ ✓");
     } catch (e) { toast("تعذر النسخ"); }
   }
-  function pad(n) { return n < 10 ? "0" + n : "" + n; }
-  function todayISO() {
-    var t = new Date();
-    return t.getFullYear() + "-" + pad(t.getMonth() + 1) + "-" + pad(t.getDate());
-  }
-  function daysFrom(iso) {
-    if (!iso) return null;
-    var t = new Date();
-    var nowUTC = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
-    var p = String(iso).split("-").map(Number);
-    if (p.length < 3 || !p[0] || !p[1] || !p[2]) return null;
-    return Math.round((Date.UTC(p[0], p[1] - 1, p[2]) - nowUTC) / 86400000);
-  }
-  function fmtDate(iso) {
-    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
-    return m ? m[3] + "/" + m[2] + "/" + m[1] : "—";
-  }
-  function fmtMoney(n) {
-    var v = Number(n) || 0;
-    var s = v.toLocaleString("en-US", { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
-    return "₪" + s;
-  }
-  function digitsOnly(s) { return String(s || "").replace(/\D/g, ""); }
-  function waNumber(phone) {
-    var d = digitsOnly(phone);
-    if (d.indexOf("0") === 0) d = "972" + d.slice(1);
-    return d;
-  }
-  function telNumber(phone) {
-    return String(phone || "").replace(/[^\d+*#]/g, "");
-  }
-  function formatDaysBadge(r) {
-    if (r.status === "disconnected") return '<span class="badge disconnected">مفصول</span>';
-    var d = daysFrom(r.cutDate);
-    if (d === null) return "";
-    if (d < 0) return '<span class="badge disconnected">متأخر ' + Math.abs(d) + " أيام</span>";
-    if (d === 0) return '<span class="badge days" style="background:var(--off-bg);color:var(--off);">ينتهي اليوم</span>';
-    if (d === 1) return '<span class="badge days" style="background:var(--hold-bg);color:var(--hold);">باقي يوم واحد</span>';
-    return '<span class="badge days">باقي ' + d + " أيام</span>";
-  }
 
-  /* ============================================================
-     STORAGE
-     ============================================================ */
+  /* ==================== LOAD / SAVE ==================== */
   function loadData() {
-    /* Sim cards */
+    /* SIMs */
     var raw = null;
-    try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) { raw = null; }
-
+    try { raw = localStorage.getItem(SIMS_KEY); } catch (e) {}
     if (raw) {
       try {
         var arr = JSON.parse(raw);
-        if (Array.isArray(arr)) {
-          arr.forEach(function (r) {
-            if (r && r._id) {
-              if (!r.createdAt) r.createdAt = Date.now();
-              if (!r.updatedAt) r.updatedAt = r.createdAt;
-              docs.set(r._id, r);
-            }
-          });
-        }
+        if (Array.isArray(arr)) arr.forEach(function (r) {
+          if (r && r._id) {
+            if (!r.createdAt) r.createdAt = Date.now();
+            if (!r.updatedAt) r.updatedAt = r.createdAt;
+            /* Ensure nested debt fields */
+            if (typeof r.debtAmount === "undefined") r.debtAmount = 0;
+            if (!r.debtNotes) r.debtNotes = "";
+            if (typeof r.hasReminder === "undefined") r.hasReminder = false;
+            docs.set(r._id, r);
+          }
+        });
       } catch (e) { docs = new Map(); }
-    }
-
-    if (docs.size === 0 && !raw) {
+    } else {
       var now = Date.now();
       var sample = [
-        { _id: "s1", phone: "0524392489", sim: "899700224989972020", name: "أحمد علي", company: "سلكوم", activation: "ألوها", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
-        { _id: "s2", phone: "0535673845", sim: "8997207105106265389", name: "ضبة هوت", company: "هوت موبايل", activation: "كويك لاين", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "" },
-        { _id: "s3", phone: "0507485352", sim: "8997250400047527708", name: "محمد خالد", company: "بلفون", activation: "سكاي", status: "active", simState: "used-sim", cutDate: "2026-10-19", notes: "" },
-        { _id: "s4", phone: "", sim: "899700224989970001", name: "شريحة نظيفة 1", company: "سلكوم", activation: "ألوها", status: "active", simState: "clear-sim", cutDate: "", notes: "متاحة للبيع" },
-        { _id: "s5", phone: "", sim: "899700224989970002", name: "شريحة نظيفة 2", company: "هوت موبايل", activation: "كويك لاين", status: "active", simState: "clear-sim", cutDate: "", notes: "" }
+        { _id: "s1", phone: "0524392489", sim: "899700224989972020", name: "أحمد علي", company: "سلكوم", activation: "ألوها", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "", debtAmount: 450, debtNotes: "دين شريحة", hasReminder: true, reminderDate: todayISO(), reminderNote: "تذكير بدفع 450 شيكل" },
+        { _id: "s2", phone: "0535673845", sim: "8997207105106265389", name: "ضبة هوت", company: "هوت موبايل", activation: "كويك لاين", status: "active", simState: "used-sim", cutDate: "2026-10-18", notes: "", debtAmount: 0, debtNotes: "" },
+        { _id: "s3", phone: "0507485352", sim: "8997250400047527708", name: "محمد خالد", company: "بلفون", activation: "سكاي", status: "active", simState: "used-sim", cutDate: "2026-10-19", notes: "", debtAmount: 1200, debtNotes: "متأخر أسبوع" }
       ];
       sample.forEach(function (r, i) { r.createdAt = now - i * 1000; r.updatedAt = r.createdAt; docs.set(r._id, r); });
-      saveData();
+      saveSims();
     }
 
     /* Debts */
-    var rawDebts = null;
-    try { rawDebts = localStorage.getItem(DEBTS_KEY); } catch (e) { rawDebts = null; }
-
-    if (rawDebts) {
+    var rd = null;
+    try { rd = localStorage.getItem(DEBTS_KEY); } catch (e) {}
+    if (rd) {
       try {
-        var dArr = JSON.parse(rawDebts);
-        if (Array.isArray(dArr)) {
-          dArr.forEach(function (d) {
-            if (d && d._id) {
-              if (!d.createdAt) d.createdAt = Date.now();
-              if (!d.updatedAt) d.updatedAt = d.createdAt;
-              debts.set(d._id, d);
-            }
-          });
-        }
+        var dArr = JSON.parse(rd);
+        if (Array.isArray(dArr)) dArr.forEach(function (d) {
+          if (d && d._id) {
+            if (!d.createdAt) d.createdAt = Date.now();
+            if (typeof d.paid === "undefined") d.paid = false;
+            debts.set(d._id, d);
+          }
+        });
       } catch (e) { debts = new Map(); }
+    } else {
+      var dnow = Date.now();
+      [
+        { _id: "d1", name: "سامي يوسف", amount: 450, whatsapp: "0524392489", contact: "0524392489", dueDate: todayISO(), paid: false, reminder: true, notes: "دين شريحة + رصيد" },
+        { _id: "d2", name: "ليلى إبراهيم", amount: 1200, whatsapp: "0535673845", contact: "0535673845", dueDate: "", paid: false, reminder: false, notes: "" },
+        { _id: "d3", name: "خالد منصور", amount: 300, whatsapp: "0507485352", contact: "0507485352", dueDate: "2026-11-01", paid: false, reminder: true, notes: "وعد بالدفع" }
+      ].forEach(function (d, i) { d.createdAt = dnow - i * 1000; d.updatedAt = d.createdAt; debts.set(d._id, d); });
+      saveDebts();
     }
 
-    if (debts.size === 0 && !rawDebts) {
-      var dnow = Date.now();
-      var dsample = [
-        { _id: "d1", name: "سامي يوسف", amount: 450, whatsapp: "0524392489", contact: "0524392489", notes: "دين شريحة + رصيد" },
-        { _id: "d2", name: "ليلى إبراهيم", amount: 1200, whatsapp: "0535673845", contact: "0535673845", notes: "" },
-        { _id: "d3", name: "خالد منصور", amount: 300, whatsapp: "0507485352", contact: "0507485352", notes: "وعد بالدفع نهاية الشهر" }
-      ];
-      dsample.forEach(function (d, i) { d.createdAt = dnow - i * 1000; d.updatedAt = d.createdAt; debts.set(d._id, d); });
-      saveDebts();
+    /* Inventory */
+    var ri = null;
+    try { ri = localStorage.getItem(INV_KEY); } catch (e) {}
+    if (ri) {
+      try {
+        var iArr = JSON.parse(ri);
+        if (Array.isArray(iArr)) iArr.forEach(function (s) {
+          if (s && s._id) {
+            if (!s.createdAt) s.createdAt = Date.now();
+            if (!s.qty) s.qty = 1;
+            inventory.set(s._id, s);
+          }
+        });
+      } catch (e) { inventory = new Map(); }
+    } else {
+      var inow = Date.now();
+      [
+        { _id: "i1", sim: "899700224989970001", company: "سلكوم", type: "clear", activation: "ألوها", qty: 5, notes: "متاحة للبيع" },
+        { _id: "i2", sim: "899700224989970002", company: "هوت موبايل", type: "clear", activation: "كويك لاين", qty: 3, notes: "" },
+        { _id: "i3", sim: "899700224989970003", company: "بلفون", type: "used", activation: "سكاي", qty: 2, notes: "مستعملة بحالة جيدة" }
+      ].forEach(function (s, i) { s.createdAt = inow - i * 1000; s.updatedAt = s.createdAt; inventory.set(s._id, s); });
+      saveInventory();
     }
 
     checkAutoDisconnect();
   }
-  function saveData() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(docs.values()))); }
+
+  function saveSims() {
+    try { localStorage.setItem(SIMS_KEY, JSON.stringify(Array.from(docs.values()))); }
     catch (e) { toast("تعذر الحفظ، مساحة التخزين ممتلئة!"); }
   }
   function saveDebts() {
     try { localStorage.setItem(DEBTS_KEY, JSON.stringify(Array.from(debts.values()))); }
-    catch (e) { toast("تعذر حفظ الديون، مساحة التخزين ممتلئة!"); }
+    catch (e) { toast("تعذر حفظ الديون!"); }
+  }
+  function saveInventory() {
+    try { localStorage.setItem(INV_KEY, JSON.stringify(Array.from(inventory.values()))); }
+    catch (e) { toast("تعذر حفظ المخزون!"); }
   }
   function checkAutoDisconnect() {
     var today = todayISO();
@@ -870,59 +1321,37 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
         r.status = "disconnected"; r.updatedAt = Date.now(); changed = true;
       }
     });
-    if (changed) saveData();
+    if (changed) saveSims();
   }
 
-  /* ============================================================
-     FILTERS / SORT
-     ============================================================ */
-  function matches(r) {
-    if (filter !== "all" && r.status !== filter) return false;
-    var q = query.trim().toLowerCase();
-    if (!q) return true;
-    return [r.name, r.phone, r.sim, r.company, r.activation, r.notes]
-      .join(" ").toLowerCase().indexOf(q) !== -1;
+  /* ==================== REMINDER HELPERS ==================== */
+  function isReminderDue(r) {
+    if (!r.hasReminder || !r.reminderDate) return false;
+    var d = daysFrom(r.reminderDate);
+    return d !== null && d <= 0;
   }
-  function sortRecords(arr) {
-    var copy = arr.slice();
-    if (sortMode === "name") copy.sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "ar"); });
-    else if (sortMode === "recent") copy.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
-    else if (sortMode === "status") copy.sort(function (a, b) {
-      var d = ORDER.indexOf(a.status) - ORDER.indexOf(b.status);
-      if (d) return d;
-      return (a.cutDate || "9999") < (b.cutDate || "9999") ? -1 : 1;
-    });
-    else if (sortMode === "date") copy.sort(function (a, b) {
-      var da = a.cutDate || "9999-99-99", db = b.cutDate || "9999-99-99";
-      return da < db ? -1 : (da > db ? 1 : 0);
-    });
-    else copy.sort(function (a, b) {
-      var d = ORDER.indexOf(a.status) - ORDER.indexOf(b.status);
-      if (d) return d;
-      var da = a.cutDate || "9999-99-99", db = b.cutDate || "9999-99-99";
-      return da < db ? -1 : (da > db ? 1 : 0);
-    });
-    return copy;
+  function isDebtDueSoon(d) {
+    if (!d.dueDate || d.paid) return false;
+    var dd = daysFrom(d.dueDate);
+    return dd !== null && dd <= 3;
   }
-  function filterDebts(q) {
-    q = String(q || "").trim().toLowerCase();
-    if (!q) return Array.from(debts.values());
-    return Array.from(debts.values()).filter(function (d) {
-      return [d.name, d.whatsapp, d.contact, d.notes].join(" ").toLowerCase().indexOf(q) !== -1;
-    });
-  }
-  function sortDebts(arr, mode) {
-    var copy = arr.slice();
-    if (mode === "name") copy.sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "ar"); });
-    else if (mode === "recent") copy.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
-    else if (mode === "oldest") copy.sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
-    else copy.sort(function (a, b) { return (Number(b.amount) || 0) - (Number(a.amount) || 0); });
-    return copy;
+  function isDebtOverdue(d) {
+    if (!d.dueDate || d.paid) return false;
+    var dd = daysFrom(d.dueDate);
+    return dd !== null && dd < 0;
   }
 
-  /* ============================================================
-     RENDER — TABS / SUMMARY
-     ============================================================ */
+  function countAlertItems() {
+    var count = 0;
+    docs.forEach(function (r) { if (isReminderDue(r)) count++; });
+    debts.forEach(function (d) {
+      if (!d.paid && isDebtOverdue(d)) count++;
+      else if (!d.paid && isDebtDueSoon(d)) count++;
+    });
+    return count;
+  }
+
+  /* ==================== RENDER — TABS / SUMMARY ==================== */
   function renderTabs(all) {
     var counts = { all: all.length, active: 0, suspended: 0, disconnected: 0 };
     all.forEach(function (r) { if (counts[r.status] !== undefined) counts[r.status]++; });
@@ -945,15 +1374,41 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       else if (d <= 3) dueSoon++;
     });
     var totalDebt = 0;
-    debts.forEach(function (d) { totalDebt += Number(d.amount) || 0; });
+    debts.forEach(function (d) { if (!d.paid) totalDebt += Number(d.amount) || 0; });
     var debtInfo = debts.size ? " · ديون: " + fmtMoney(totalDebt) : "";
     $("summary").textContent = "إجمالي " + all.length + " شريحة · مستحقة قريباً: " + dueSoon + " · متأخرة: " + overdue + debtInfo;
   }
 
-  /* ============================================================
-     RENDER — SIDEBAR STATS & MINI LISTS
-     ============================================================ */
-  function renderStats(all) {
+  /* ==================== RENDER — ALERT BANNER ==================== */
+  function renderAlertBanner() {
+    var items = [];
+    docs.forEach(function (r) { if (isReminderDue(r)) items.push("تذكير: " + (r.name || r.phone)); });
+    debts.forEach(function (d) {
+      if (d.paid) return;
+      if (isDebtOverdue(d)) items.push("متأخر: " + (d.name || "") + " (" + fmtMoney(d.amount) + ")");
+      else if (isDebtDueSoon(d)) items.push("مستحق قريباً: " + (d.name || ""));
+    });
+
+    var banner = $("alertBanner");
+    var dot = $("menuDot");
+    if (!items.length) {
+      banner.classList.remove("show");
+      dot.style.display = "none";
+      return;
+    }
+    banner.classList.add("show");
+    $("alertTitle").textContent = "🔔 لديك " + items.length + " تنبيه" + (items.length > 1 ? "ات" : "");
+    $("alertDesc").textContent = items.slice(0, 2).join(" · ") + (items.length > 2 ? " وأكثر" : "");
+    dot.style.display = "flex";
+    dot.textContent = items.length > 9 ? "9+" : items.length;
+  }
+  $("alertBtn").addEventListener("click", function () {
+    openDrawer();
+    switchSidePanel("debts");
+  });
+
+  /* ==================== RENDER — SIDEBAR ==================== */
+  function renderSideStats(all) {
     var clean = 0, used = 0, active = 0, suspended = 0, disconnected = 0;
     all.forEach(function (r) {
       if (r.simState === "clear-sim") clean++; else used++;
@@ -961,122 +1416,209 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       else if (r.status === "suspended") suspended++;
       else if (r.status === "disconnected") disconnected++;
     });
-
-    var totalDebt = 0;
-    debts.forEach(function (d) { totalDebt += Number(d.amount) || 0; });
-
     var stats = [
       { cls: "acc", num: all.length, lbl: "إجمالي الشرائح" },
       { cls: "on", num: active, lbl: "مفعلة حالياً" },
       { cls: "hold", num: suspended, lbl: "معلّقة" },
       { cls: "off", num: disconnected, lbl: "مفصولة" },
       { cls: "acc", num: clean, lbl: "شرائح نظيفة" },
-      { cls: "", num: used, lbl: "شرائح مستعملة" }
+      { cls: "purple", num: used, lbl: "شرائح مستعملة" }
     ];
-
     $("statGrid").innerHTML = stats.map(function (s) {
       return '<div class="stat ' + s.cls + '"><div class="num">' + s.num + '</div><div class="lbl">' + s.lbl + "</div></div>";
     }).join("");
-
-    $("debtTotalValue").textContent = fmtMoney(totalDebt);
-    var cnt = debts.size;
-    $("debtTotalCount").textContent = cnt === 0 ? "لا توجد ديون" : (cnt + (cnt === 1 ? " دين مسجل" : " ديون مسجلة"));
   }
 
   function miniSimHTML(r) {
     var tag = r.company || (r.simState === "clear-sim" ? "نظيفة" : "مستعملة");
+    var badge = "";
+    if (r.hasReminder && isReminderDue(r)) badge = '<span style="color:var(--danger);font-weight:700;">🔔</span>';
+    else if (r.debtAmount > 0) badge = '<span style="color:var(--gold);font-weight:700;">' + fmtMoney(r.debtAmount) + '</span>';
     return '<button type="button" class="mini-item" data-id="' + esc(r._id) + '">' +
       '<span class="mi-phone">' + esc(r.phone || r.sim || "—") + "</span>" +
-      '<span class="mi-meta"><span>' + esc(r.name || "بدون اسم") + "</span><span>" + esc(tag) + "</span></span>" +
+      '<span class="mi-meta"><span>' + esc(r.name || "بدون اسم") + '</span><span>' + badge + '</span></span>' +
       "</button>";
   }
   function miniDebtHTML(d) {
-    return '<button type="button" class="debt-mini" data-id="' + esc(d._id) + '">' +
+    var cls = "debt-mini" + (d.paid ? " paid" : "");
+    var badge = "";
+    if (d.paid) badge = '<span class="dm-paid-mark">✓ مسدد</span>';
+    else if (isDebtOverdue(d)) badge = '<span class="dm-due">متأخر ' + Math.abs(daysFrom(d.dueDate)) + ' أيام</span>';
+    else if (isDebtDueSoon(d)) badge = '<span class="dm-due">مستحق قريباً</span>';
+    return '<button type="button" class="' + cls + '" data-id="' + esc(d._id) + '">' +
+      badge +
       '<span class="dm-top">' +
         '<span class="dm-name">' + esc(d.name || "بدون اسم") + "</span>" +
         '<span class="dm-amount">' + fmtMoney(d.amount) + "</span>" +
       "</span>" +
-      (d.whatsapp || d.contact
-        ? '<span class="dm-phone">' + esc(d.whatsapp || d.contact) + "</span>"
-        : "") +
+      (d.whatsapp || d.contact ? '<span class="dm-phone">' + esc(d.whatsapp || d.contact) + "</span>" : "") +
+      "</button>";
+  }
+  function miniInvHTML(s) {
+    var cls = "sim-inv-item " + s.type;
+    var tagLabel = s.type === "clear" ? "نظيفة" : "مستعملة";
+    return '<button type="button" class="' + cls + '" data-id="' + esc(s._id) + '">' +
+      '<span class="sii-sim">' + esc(s.sim) + '</span>' +
+      '<span class="sii-meta"><span>' + esc(s.company || "—") + '</span><span class="sii-tag ' + s.type + '">' + tagLabel + '</span></span>' +
       "</button>";
   }
 
   function renderSidebar(all) {
-    /* Debt mini list */
+    /* Stats */
+    renderSideStats(all);
+
+    /* Debts summary */
+    var totalRemaining = 0, totalPaid = 0;
+    debts.forEach(function (d) {
+      var amt = Number(d.amount) || 0;
+      if (d.paid) totalPaid += amt; else totalRemaining += amt;
+    });
+    $("debtTotalValue").textContent = fmtMoney(totalRemaining);
+    $("debtTotalCount").textContent = debts.size + (debts.size === 1 ? " دين" : " ديون");
+    $("debtPaidInfo").textContent = totalPaid > 0 ? "مسدد سابقاً: " + fmtMoney(totalPaid) : "";
+    $("snDebtsBadge").textContent = debts.size;
+
+    /* Due debts list */
+    var dueDebts = Array.from(debts.values()).filter(function (d) {
+      return !d.paid && (isDebtOverdue(d) || isDebtDueSoon(d) || d.reminder);
+    }).sort(function (a, b) {
+      var da = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+      var db = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+      return da - db;
+    }).slice(0, 12);
+    $("debtDueCount").textContent = dueDebts.length;
+    $("debtDueList").innerHTML = dueDebts.length
+      ? dueDebts.map(miniDebtHTML).join("")
+      : '<div class="mini-empty">لا توجد تنبيهات دفع حالياً</div>';
+
+    /* Recent debts */
     var recentDebts = Array.from(debts.values())
       .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); })
-      .slice(0, 8);
+      .slice(0, 12);
     $("debtsMiniCount").textContent = debts.size;
     $("debtsMiniList").innerHTML = recentDebts.length
       ? recentDebts.map(miniDebtHTML).join("")
-      : '<div class="mini-empty">لا توجد ديون مسجلة حالياً</div>';
+      : '<div class="mini-empty">لا توجد ديون</div>';
 
     /* Clean SIMs */
     var clean = all.filter(function (r) { return r.simState === "clear-sim"; })
       .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); })
-      .slice(0, 30);
+      .slice(0, 20);
     $("cleanCount").textContent = clean.length;
-    $("cleanList").innerHTML = clean.length
-      ? clean.map(miniSimHTML).join("")
-      : '<div class="mini-empty">لا توجد شرائح نظيفة حالياً</div>';
+    $("cleanList").innerHTML = clean.length ? clean.map(miniSimHTML).join("")
+      : '<div class="mini-empty">لا توجد شرائح نظيفة</div>';
 
-    /* Recent used SIMs */
+    /* Recent used */
     var recent = all.filter(function (r) { return r.simState === "used-sim"; })
       .sort(function (a, b) { return (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0); })
-      .slice(0, 30);
+      .slice(0, 20);
     $("recentCount").textContent = recent.length;
-    $("recentList").innerHTML = recent.length
-      ? recent.map(miniSimHTML).join("")
-      : '<div class="mini-empty">لا توجد شرائح مستعملة بعد</div>';
+    $("recentList").innerHTML = recent.length ? recent.map(miniSimHTML).join("")
+      : '<div class="mini-empty">لا توجد شرائح مستعملة</div>';
+
+    /* Inventory stats */
+    var invClean = 0, invUsed = 0, totalQty = 0;
+    inventory.forEach(function (s) {
+      var q = Number(s.qty) || 1;
+      totalQty += q;
+      if (s.type === "clear") invClean += q;
+      else invUsed += q;
+    });
+    $("invCleanStat").textContent = invClean;
+    $("invUsedStat").textContent = invUsed;
+    $("invTotalBadge").textContent = totalQty;
+    $("itAll").textContent = totalQty;
+    $("itClear").textContent = invClean;
+    $("itUsed").textContent = invUsed;
+    $("snInvBadge").textContent = totalQty;
+
+    /* Inventory mini list */
+    var invList = Array.from(inventory.values());
+    if (activeInvTab !== "all") invList = invList.filter(function (s) { return s.type === activeInvTab; });
+    invList.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    $("invList").innerHTML = invList.length ? invList.slice(0, 30).map(miniInvHTML).join("")
+      : '<div class="mini-empty">لا توجد شرائح في المخزون</div>';
   }
 
-  /* ============================================================
-     RENDER — SIM CARDS
-     ============================================================ */
+  /* ==================== RENDER — SIM CARDS ==================== */
   function buildSmsBody(r) {
-    return smsTemplate
-      .replace(/\{name\}/g, r.name || "العزيز")
+    return smsTemplate.replace(/\{name\}/g, r.name || "العزيز")
       .replace(/\{phone\}/g, r.phone || "")
       .replace(/\{date\}/g, fmtDate(r.cutDate));
   }
   function buildDebtSmsBody(d) {
-    return debtTemplate
-      .replace(/\{name\}/g, d.name || "العزيز")
+    return debtTemplate.replace(/\{name\}/g, d.name || "العزيز")
       .replace(/\{amount\}/g, (Number(d.amount) || 0).toFixed(2).replace(/\.00$/, ""));
   }
 
   function cardHTML(r) {
     var d = daysFrom(r.cutDate);
     var isDue = d !== null && d <= 1 && r.status === "active";
+    var hasDebt = (Number(r.debtAmount) || 0) > 0;
+    var reminderDue = isReminderDue(r);
     var cleanLabel = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
-    var subInfo = [r.company, r.activation ? "التفعيل: " + r.activation : "", cleanLabel]
-      .filter(Boolean).join(" · ");
+    var subInfo = [r.company, r.activation ? "التفعيل: " + r.activation : "", cleanLabel].filter(Boolean).join(" · ");
     var smsBody = encodeURIComponent(buildSmsBody(r));
     var tel = telNumber(r.phone);
     var wa = waNumber(r.phone);
     var hasPhone = !!r.phone;
 
-    return '<div class="card' + (isDue ? " due" : "") + '">' +
+    var cardCls = "card";
+    if (reminderDue) cardCls += " reminder-due";
+    else if (isDue) cardCls += " due";
+    else if (hasDebt) cardCls += " has-debt";
+
+    /* Debt strip */
+    var debtStrip = "";
+    if (hasDebt || reminderDue) {
+      var stripCls = "debt-strip" + (reminderDue ? " warn" : "");
+      var reminderLine = "";
+      if (r.hasReminder && r.reminderDate) {
+        var rd = daysFrom(r.reminderDate);
+        var reminderText = rd < 0 ? "متأخر " + Math.abs(rd) + " أيام" : (rd === 0 ? "اليوم!" : "بعد " + rd + " أيام");
+        reminderLine = '<div class="ds-reminder">🔔 تذكير: <strong>' + reminderText + "</strong>" +
+          (r.reminderNote ? " · " + esc(r.reminderNote) : "") + "</div>";
+      }
+      debtStrip = '<div class="' + stripCls + '">' +
+        '<div class="ds-left">' +
+          '<span class="ds-icon">' + (reminderDue ? "🔔" : "💰") + "</span>" +
+          "<div>" +
+            '<div class="ds-label">' + (reminderDue ? "تذكير دفع مستحق" : "دين متبقٍ") + "</div>" +
+            (hasDebt ? '<div class="ds-amount">' + fmtMoney(r.debtAmount) + "</div>" : "") +
+            reminderLine +
+          "</div>" +
+        "</div>" +
+      "</div>";
+    }
+
+    return '<div class="' + cardCls + '">' +
       '<div class="card-header">' +
         '<div class="phone-wrap">' +
           '<div class="phone-lg">' + esc(r.phone || "—") + "</div>" +
-          (hasPhone ? '<button class="copy-btn" type="button" data-copy="' + esc(r.phone) + '" aria-label="نسخ الرقم">⧉</button>' : "") +
+          (hasPhone ? '<button class="copy-btn" type="button" data-copy="' + esc(r.phone) + '">⧉</button>' : "") +
         "</div>" +
-        '<div class="badge-tags">' + formatDaysBadge(r) + "</div>" +
+        '<div class="badge-tags">' +
+          (hasDebt ? '<span class="badge debt">' + fmtMoney(r.debtAmount) + "</span>" : "") +
+          (reminderDue ? '<span class="badge reminder">🔔 تذكير</span>' : "") +
+          (isDue ? '<span class="badge days" style="background:var(--hold-bg);color:var(--hold);">قرب الفصل</span>' : "") +
+        "</div>" +
       "</div>" +
+
       '<div class="card-body">' +
-        '<div class="name-row"><span>' + esc(r.name || "بدون اسم") + "</span></div>" +
-        (r.sim
-          ? '<div class="sim-row"><button class="copy-btn" type="button" data-copy="' + esc(r.sim) + '" aria-label="نسخ الشريحة">⧉</button><span>💳 ' + esc(r.sim) + "</span></div>"
-          : "") +
+        '<div class="name-row"><span>' + esc(r.name || "بدون اسم") + "</span>" +
+          '<span class="badge ' + esc(r.status) + '">' + (STATUS[r.status] || r.status) + "</span>" +
+        "</div>" +
+        (r.sim ? '<div class="sim-row"><button class="copy-btn" type="button" data-copy="' + esc(r.sim) + '">⧉</button><span>💳 ' + esc(r.sim) + "</span></div>" : "") +
         '<div class="meta-row"><span>🏢 ' + esc(subInfo) + "</span></div>" +
         (r.notes ? '<div class="notes-box">📝 ' + esc(r.notes) + "</div>" : "") +
       "</div>" +
+
+      debtStrip +
+
       '<div class="date-row">' +
         '<span>موعد الفصل: <span class="date-val">' + fmtDate(r.cutDate) + "</span></span>" +
-        '<span class="badge ' + esc(r.status) + '">' + (STATUS[r.status] || r.status) + "</span>" +
       "</div>" +
+
       '<div class="card-actions">' +
         (hasPhone
           ? '<a class="action-btn sms" href="sms:' + esc(tel) + "?body=" + smsBody + '">رسالة</a>'
@@ -1092,25 +1634,85 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     "</div>";
   }
 
+  function sortRecords(arr) {
+    var copy = arr.slice();
+    if (sortMode === "name") copy.sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "ar"); });
+    else if (sortMode === "recent") copy.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    else if (sortMode === "debt") copy.sort(function (a, b) { return (Number(b.debtAmount) || 0) - (Number(a.debtAmount) || 0); });
+    else if (sortMode === "reminder") {
+      copy.sort(function (a, b) {
+        var ra = a.hasReminder && a.reminderDate ? (daysFrom(a.reminderDate) || 9999) : 9999;
+        var rb = b.hasReminder && b.reminderDate ? (daysFrom(b.reminderDate) || 9999) : 9999;
+        return ra - rb;
+      });
+    } else if (sortMode === "date") {
+      copy.sort(function (a, b) {
+        var da = a.cutDate || "9999-99-99", db = b.cutDate || "9999-99-99";
+        return da < db ? -1 : (da > db ? 1 : 0);
+      });
+    } else {
+      copy.sort(function (a, b) {
+        var d = ORDER.indexOf(a.status) - ORDER.indexOf(b.status);
+        if (d) return d;
+        var da = a.cutDate || "9999-99-99", db = b.cutDate || "9999-99-99";
+        return da < db ? -1 : (da > db ? 1 : 0);
+      });
+    }
+    return copy;
+  }
+  function matches(r) {
+    if (filter !== "all" && r.status !== filter) return false;
+    var q = query.trim().toLowerCase();
+    if (!q) return true;
+    return [r.name, r.phone, r.sim, r.company, r.activation, r.notes, r.debtNotes].join(" ").toLowerCase().indexOf(q) !== -1;
+  }
+
   function render() {
     checkAutoDisconnect();
     var all = Array.from(docs.values());
     renderTabs(all);
     renderSummary(all);
-    renderStats(all);
     renderSidebar(all);
+    renderAlertBanner();
 
     var filtered = sortRecords(all.filter(matches));
     if (!filtered.length) {
-      $("list").innerHTML = '<div class="empty"><span class="big">📭</span>لا توجد سجلات مطابقة للبحث أو التصفية الحالية.</div>';
+      $("list").innerHTML = '<div class="empty"><span class="big">📭</span>لا توجد سجلات مطابقة.</div>';
       return;
     }
     $("list").innerHTML = filtered.map(cardHTML).join("");
   }
 
-  /* ============================================================
-     DEBTS — RENDER
-     ============================================================ */
+  /* ==================== DEBTS MANAGER RENDER ==================== */
+  function matchesDebtFilter(d) {
+    if (debtFilterChip === "pending") return !d.paid;
+    if (debtFilterChip === "paid") return d.paid;
+    if (debtFilterChip === "overdue") return isDebtOverdue(d);
+    if (debtFilterChip === "dueSoon") return !d.paid && isDebtDueSoon(d) && !isDebtOverdue(d);
+    return true;
+  }
+  function filterDebts() {
+    var q = debtQuery.trim().toLowerCase();
+    return Array.from(debts.values()).filter(function (d) {
+      if (!matchesDebtFilter(d)) return false;
+      if (!q) return true;
+      return [d.name, d.whatsapp, d.contact, d.notes].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  function sortDebts(arr) {
+    var copy = arr.slice();
+    if (debtSort === "name") copy.sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "ar"); });
+    else if (debtSort === "recent") copy.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+    else if (debtSort === "due") {
+      copy.sort(function (a, b) {
+        var da = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+        var db = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+        return da - db;
+      });
+    } else copy.sort(function (a, b) { return (Number(b.amount) || 0) - (Number(a.amount) || 0); });
+    return copy;
+  }
+
   function debtCardHTML(d) {
     var amount = Number(d.amount) || 0;
     var wa = waNumber(d.whatsapp || d.contact);
@@ -1119,37 +1721,42 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     var hasWa = !!(d.whatsapp || d.contact);
     var hasTel = !!(d.contact || d.whatsapp);
 
+    var cls = "debt-card";
+    if (d.paid) cls += " paid";
+    else if (isDebtOverdue(d)) cls += " overdue";
+
+    var metaPills = [];
+    if (d.paid) metaPills.push('<span class="debt-meta-pill good">✓ مسدد</span>');
+    else {
+      if (d.dueDate) {
+        var dd = daysFrom(d.dueDate);
+        if (dd < 0) metaPills.push('<span class="debt-meta-pill danger">متأخر ' + Math.abs(dd) + ' أيام</span>');
+        else if (dd === 0) metaPills.push('<span class="debt-meta-pill danger">يستحق اليوم</span>');
+        else if (dd <= 3) metaPills.push('<span class="debt-meta-pill danger">باقي ' + dd + ' أيام</span>');
+        else metaPills.push('<span class="debt-meta-pill">📅 ' + fmtDate(d.dueDate) + '</span>');
+      }
+      if (d.reminder) metaPills.push('<span class="debt-meta-pill">🔔 تذكير مفعل</span>');
+    }
+
     var waRow = d.whatsapp
-      ? '<div class="debt-contact">' +
-          '<span class="dc-icon">💬</span>' +
-          '<span class="dc-label">واتساب</span>' +
-          '<span class="dc-value">' + esc(d.whatsapp) + "</span>" +
-          '<button class="dc-copy" type="button" data-copy="' + esc(d.whatsapp) + '" aria-label="نسخ">⧉</button>' +
-        "</div>"
+      ? '<div class="debt-contact"><span class="dc-icon">💬</span><span class="dc-label">واتساب</span><span class="dc-value">' + esc(d.whatsapp) + '</span><button class="dc-copy" type="button" data-copy="' + esc(d.whatsapp) + '">⧉</button></div>'
       : "";
     var telRow = d.contact
-      ? '<div class="debt-contact">' +
-          '<span class="dc-icon">📞</span>' +
-          '<span class="dc-label">تواصل</span>' +
-          '<span class="dc-value">' + esc(d.contact) + "</span>" +
-          '<button class="dc-copy" type="button" data-copy="' + esc(d.contact) + '" aria-label="نسخ">⧉</button>' +
-        "</div>"
+      ? '<div class="debt-contact"><span class="dc-icon">📞</span><span class="dc-label">تواصل</span><span class="dc-value">' + esc(d.contact) + '</span><button class="dc-copy" type="button" data-copy="' + esc(d.contact) + '">⧉</button></div>'
       : "";
 
-    return '<div class="debt-card" data-id="' + esc(d._id) + '">' +
+    return '<div class="' + cls + '" data-id="' + esc(d._id) + '">' +
       '<div class="debt-card-head">' +
         '<div class="debt-card-name">' + esc(d.name || "بدون اسم") + "</div>" +
-        '<div class="debt-card-amount">' + fmtMoney(amount).replace("₪", '<span class="cur">₪</span>') + "</div>" +
+        '<div class="debt-card-amount">' + fmtMoney(amount) + "</div>" +
       "</div>" +
+      (metaPills.length ? '<div class="debt-card-meta">' + metaPills.join("") + "</div>" : "") +
       ((waRow || telRow) ? '<div class="debt-contacts">' + waRow + telRow + "</div>" : "") +
       (d.notes ? '<div class="debt-notes">📝 ' + esc(d.notes) + "</div>" : "") +
       '<div class="debt-actions">' +
-        (hasWa
-          ? '<a class="action-btn wa" href="https://wa.me/' + esc(wa) + "?text=" + smsBody + '" target="_blank" rel="noopener">واتساب</a>'
-          : '<span class="action-btn" style="opacity:.4;pointer-events:none;">واتساب</span>') +
-        (hasTel
-          ? '<a class="action-btn call" href="tel:' + esc(tel) + '">اتصال</a>'
-          : '<span class="action-btn" style="opacity:.4;pointer-events:none;">اتصال</span>') +
+        (hasWa ? '<a class="action-btn wa" href="https://wa.me/' + esc(wa) + "?text=" + smsBody + '" target="_blank" rel="noopener">واتساب</a>' : '<span class="action-btn" style="opacity:.4;pointer-events:none;">واتساب</span>') +
+        (hasTel ? '<a class="action-btn call" href="tel:' + esc(tel) + '">اتصال</a>' : '<span class="action-btn" style="opacity:.4;pointer-events:none;">اتصال</span>') +
+        '<button class="action-btn paid ' + (d.paid ? 'active' : '') + ' debt-paid-btn" type="button" data-id="' + esc(d._id) + '">' + (d.paid ? "✓ مسدد" : "تسديد") + '</button>' +
         '<button class="action-btn debt-edit-btn" type="button" data-id="' + esc(d._id) + '">تعديل</button>' +
         '<button class="action-btn del debt-del-btn" type="button" data-id="' + esc(d._id) + '">حذف</button>' +
       "</div>" +
@@ -1157,32 +1764,75 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   }
 
   function renderDebtsManager() {
-    var list = sortDebts(filterDebts(debtQuery), debtSort);
-    var total = 0;
-    Array.from(debts.values()).forEach(function (d) { total += Number(d.amount) || 0; });
-
+    var list = sortDebts(filterDebts());
+    var total = 0, paid = 0;
+    Array.from(debts.values()).forEach(function (d) {
+      var amt = Number(d.amount) || 0;
+      if (d.paid) paid += amt; else total += amt;
+    });
     $("dmTotal").textContent = fmtMoney(total);
-    $("dmCount").textContent = debts.size + (debts.size === 1 ? " دين" : " ديون");
+    $("dmSub").textContent = "مسدد: " + fmtMoney(paid) + " · عدد: " + debts.size;
 
     if (!list.length) {
       $("dmList").innerHTML = '<div class="empty"><span class="big">💸</span>' +
-        (debts.size === 0 ? "لا توجد ديون مسجلة بعد. اضغط «إضافة دين» للبدء." : "لا نتائج مطابقة للبحث.") +
-        "</div>";
+        (debts.size === 0 ? "لا توجد ديون. اضغط «إضافة دين» للبدء." : "لا نتائج مطابقة.") + "</div>";
       return;
     }
     $("dmList").innerHTML = list.map(debtCardHTML).join("");
   }
 
-  /* ============================================================
-     SIM — ADD / EDIT
-     ============================================================ */
+  /* ==================== INVENTORY MANAGER RENDER ==================== */
+  function filterInv() {
+    var q = invQuery.trim().toLowerCase();
+    return Array.from(inventory.values()).filter(function (s) {
+      if (invFilterChip !== "all" && s.type !== invFilterChip) return false;
+      if (!q) return true;
+      return [s.sim, s.company, s.notes, s.activation].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+  }
+  function invCardHTML(s) {
+    var tagLabel = s.type === "clear" ? "نظيفة" : "مستعملة";
+    return '<div class="inv-card ' + s.type + '">' +
+      '<div class="ic-head">' +
+        '<span class="ic-sim">' + esc(s.sim) + "</span>" +
+        '<span class="ic-badge ' + s.type + '">' + tagLabel + "</span>" +
+      "</div>" +
+      '<div class="ic-meta">🏢 ' + esc(s.company || "—") + (s.activation ? " · 📍 " + esc(s.activation) : "") + "</div>" +
+      '<div class="ic-meta">📦 الكمية: ' + (Number(s.qty) || 1) + "</div>" +
+      (s.notes ? '<div class="ic-meta">📝 ' + esc(s.notes) + "</div>" : "") +
+      '<div class="ic-actions">' +
+        '<button class="action-btn assign inv-assign-btn" type="button" data-id="' + esc(s._id) + '">ربط برقم</button>' +
+        '<button class="action-btn inv-edit-btn" type="button" data-id="' + esc(s._id) + '">تعديل</button>' +
+        '<button class="action-btn del inv-del-btn" type="button" data-id="' + esc(s._id) + '" style="grid-column:span 2;">حذف</button>' +
+      "</div>" +
+    "</div>";
+  }
+  function renderInventoryManager() {
+    var list = filterInv();
+    var cleanQty = 0, usedQty = 0;
+    inventory.forEach(function (s) {
+      var q = Number(s.qty) || 1;
+      if (s.type === "clear") cleanQty += q; else usedQty += q;
+    });
+    $("invMgrCleanNum").textContent = cleanQty;
+    $("invMgrUsedNum").textContent = usedQty;
+
+    if (!list.length) {
+      $("invMgrList").innerHTML = '<div class="empty" style="grid-column:1/-1;"><span class="big">📦</span>' +
+        (inventory.size === 0 ? "المخزون فارغ. اضغط «إضافة شريحة» للبدء." : "لا نتائج مطابقة.") + "</div>";
+      return;
+    }
+    $("invMgrList").innerHTML = list.map(invCardHTML).join("");
+  }
+
+  /* ==================== SIM ADD/EDIT MODAL ==================== */
   function openDlg(id) {
     editingId = id || null;
     delArmed = false;
     var r = editingId ? docs.get(editingId) : null;
     if (editingId && !r) editingId = null;
 
-    $("dlgTitle").textContent = r ? "تعديل الشريحة" : "إضافة شريحة جديدة";
+    $("dlgTitle").textContent = r ? "تعديل الشريحة" : "إضافة شريحة";
     $("f-name").value = r ? (r.name || "") : "";
     $("f-phone").value = r ? (r.phone || "") : "";
     $("f-company").value = r ? (r.company || "") : "";
@@ -1192,14 +1842,65 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     $("f-simstate").value = r ? (r.simState || "used-sim") : "used-sim";
     $("f-date").value = r ? (r.cutDate || "") : "";
     $("f-notes").value = r ? (r.notes || "") : "";
+
+    /* Debt fields */
+    var hasDebt = r && (Number(r.debtAmount) || 0) > 0;
+    $("f-hasdebt").checked = hasDebt;
+    $("f-debtamount").value = r && r.debtAmount ? r.debtAmount : "";
+    $("f-debtnotes").value = r ? (r.debtNotes || "") : "";
+    toggleDebtFields();
+
+    /* Reminder fields */
+    var hasReminder = r && r.hasReminder;
+    $("f-hasreminder").checked = !!hasReminder;
+    $("f-reminderdate").value = r ? (r.reminderDate || "") : "";
+    $("f-remindernote").value = r ? (r.reminderNote || "") : "";
+    toggleReminderFields();
+
+    /* Expand sections if they have data */
+    var debtSec = $("debtSection");
+    var remSec = $("reminderSection");
+    if (hasDebt) debtSec.classList.add("open"); else debtSec.classList.remove("open");
+    if (hasReminder) remSec.classList.add("open"); else remSec.classList.remove("open");
+
     $("err").textContent = "";
     var db = $("delBtn");
     db.hidden = !r;
     db.textContent = "حذف";
+    $("quickReminderBtn").style.display = r ? "" : "none";
+
     $("overlay").hidden = false;
     setTimeout(function () { $("f-name").focus(); }, 60);
   }
   function closeDlg() { $("overlay").hidden = true; editingId = null; delArmed = false; }
+  function toggleDebtFields() {
+    var on = $("f-hasdebt").checked;
+    $("debtFields").style.display = on ? "grid" : "none";
+  }
+  function toggleReminderFields() {
+    var on = $("f-hasreminder").checked;
+    $("reminderFields").style.display = on ? "grid" : "none";
+    if (on && !$("f-reminderdate").value) $("f-reminderdate").value = todayISO();
+  }
+  $("f-hasdebt").addEventListener("change", toggleDebtFields);
+  $("f-hasreminder").addEventListener("change", toggleReminderFields);
+
+  $("quickReminderBtn").addEventListener("click", function () {
+    if (!editingId) return;
+    var r = docs.get(editingId);
+    if (!r) return;
+    var d = new Date(); d.setDate(d.getDate() + 7);
+    r.hasReminder = true;
+    r.reminderDate = d.toISOString().slice(0, 10);
+    r.reminderNote = "تذكير بدفع " + fmtMoney(r.debtAmount || 0);
+    r.updatedAt = Date.now();
+    saveSims(); render();
+    $("f-hasreminder").checked = true;
+    $("f-reminderdate").value = r.reminderDate;
+    $("f-remindernote").value = r.reminderNote;
+    toggleReminderFields();
+    toast("تم تعيين تذكير بعد 7 أيام ✓");
+  });
 
   function isDuplicate(field, value, exceptId) {
     if (!value) return false;
@@ -1219,10 +1920,14 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     var sim = $("f-sim").value.trim();
     var name = $("f-name").value.trim();
 
-    if (!phone && !sim) { errEl.textContent = "الرجاء إدخال رقم الهاتف أو رقم الشريحة على الأقل."; $("f-phone").focus(); return; }
+    if (!phone && !sim) { errEl.textContent = "أدخل رقم الهاتف أو رقم الشريحة."; $("f-phone").focus(); return; }
     if (phone && !/^[0-9+\s-]{5,20}$/.test(phone)) { errEl.textContent = "رقم الهاتف غير صالح."; $("f-phone").focus(); return; }
-    if (phone && isDuplicate("phone", phone, editingId)) { errEl.textContent = "رقم الهاتف مُسجَّل مسبقاً."; $("f-phone").focus(); return; }
-    if (sim && isDuplicate("sim", sim, editingId)) { errEl.textContent = "رقم الشريحة مُسجَّل مسبقاً."; $("f-sim").focus(); return; }
+    if (phone && isDuplicate("phone", phone, editingId)) { errEl.textContent = "الرقم مسجل مسبقاً."; $("f-phone").focus(); return; }
+    if (sim && isDuplicate("sim", sim, editingId)) { errEl.textContent = "الشريحة مسجلة مسبقاً."; $("f-sim").focus(); return; }
+
+    var hasDebt = $("f-hasdebt").checked;
+    var debtAmt = hasDebt ? (parseFloat($("f-debtamount").value) || 0) : 0;
+    var hasReminder = $("f-hasreminder").checked;
 
     var now = Date.now();
     var isEdit = !!editingId;
@@ -1235,12 +1940,18 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       activation: $("f-activation").value,
       status: $("f-status").value, simState: $("f-simstate").value,
       cutDate: $("f-date").value, notes: $("f-notes").value.trim(),
-      createdAt: prev ? (prev.createdAt || now) : now, updatedAt: now
+      debtAmount: debtAmt,
+      debtNotes: hasDebt ? $("f-debtnotes").value.trim() : "",
+      hasReminder: hasReminder,
+      reminderDate: hasReminder ? $("f-reminderdate").value : "",
+      reminderNote: hasReminder ? $("f-remindernote").value.trim() : "",
+      createdAt: prev ? (prev.createdAt || now) : now,
+      updatedAt: now
     });
-    saveData();
+    saveSims();
     closeDlg();
     render();
-    toast(isEdit ? "تم تحديث البيانات ✓" : "تمت إضافة الشريحة ✓");
+    toast(isEdit ? "تم التحديث ✓" : "تمت الإضافة ✓");
   }
 
   function handleDelete() {
@@ -1248,45 +1959,42 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     if (!delArmed) { delArmed = true; $("delBtn").textContent = "تأكيد الحذف؟"; return; }
     var rec = docs.get(editingId);
     if (!rec) return;
-    lastDeleted = { rec: rec };
+    lastDeletedSim = rec;
     docs.delete(editingId);
-    saveData();
+    saveSims();
     closeDlg();
     render();
     toast("تم حذف السجل", "تراجع", function () {
-      if (lastDeleted && lastDeleted.rec) {
-        docs.set(lastDeleted.rec._id, lastDeleted.rec);
-        saveData(); render();
-        toast("تم التراجع عن الحذف");
+      if (lastDeletedSim) {
+        docs.set(lastDeletedSim._id, lastDeletedSim);
+        saveSims(); render();
+        toast("تم التراجع");
       }
     });
   }
 
-  /* ============================================================
-     SIM — BULK
-     ============================================================ */
-  function companyOptions(selected) {
-    var out = '<option value="">الشركة</option>';
-    COMPANIES.forEach(function (c) { out += '<option' + (c === selected ? " selected" : "") + ">" + esc(c) + "</option>"; });
-    return out;
+  /* ==================== BULK SIM ==================== */
+  function companyOpts(sel) {
+    var o = '<option value="">الشركة</option>';
+    COMPANIES.forEach(function (c) { o += '<option' + (c === sel ? " selected" : "") + ">" + esc(c) + "</option>"; });
+    return o;
   }
-  function statusOptions(selected) {
-    return ORDER.map(function (k) {
-      return '<option value="' + k + '"' + (k === selected ? " selected" : "") + ">" + STATUS[k] + "</option>";
-    }).join("");
+  function statusOpts(sel) {
+    return ORDER.map(function (k) { return '<option value="' + k + '"' + (k === sel ? " selected" : "") + ">" + STATUS[k] + "</option>"; }).join("");
   }
   function addBulkRow(data) {
     data = data || {};
     var row = document.createElement("div");
     row.className = "bulk-row";
+    row.style.cssText = "display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr auto; gap:6px; align-items:center; background:var(--surface-card); border:1px solid var(--line); border-radius:10px; padding:6px;";
     row.innerHTML =
-      '<input data-k="phone" class="ltr" placeholder="رقم الهاتف *" value="' + esc(data.phone || "") + '">' +
-      '<input data-k="name" placeholder="اسم الزبون" value="' + esc(data.name || "") + '">' +
-      '<input data-k="sim" class="ltr" placeholder="رقم الشريحة" value="' + esc(data.sim || "") + '">' +
-      '<select data-k="company">' + companyOptions(data.company || "") + "</select>" +
-      '<input data-k="cutDate" type="date" value="' + esc(data.cutDate || "") + '">' +
-      '<select data-k="status">' + statusOptions(data.status || "active") + "</select>" +
-      '<button type="button" class="row-del" aria-label="حذف الصف">✕</button>';
+      '<input data-k="phone" class="ltr" placeholder="هاتف" value="' + esc(data.phone || "") + '" style="padding:7px 9px; border:1px solid var(--line); background:var(--bg); border-radius:8px; font-size:.82rem; direction:ltr; text-align:right; font-family:var(--mono); min-width:0;">' +
+      '<input data-k="name" placeholder="الاسم" value="' + esc(data.name || "") + '" style="padding:7px 9px; border:1px solid var(--line); background:var(--bg); border-radius:8px; font-size:.82rem; min-width:0;">' +
+      '<input data-k="sim" class="ltr" placeholder="شريحة" value="' + esc(data.sim || "") + '" style="padding:7px 9px; border:1px solid var(--line); background:var(--bg); border-radius:8px; font-size:.82rem; direction:ltr; font-family:var(--mono); min-width:0;">' +
+      '<select data-k="company" style="padding:7px 9px; border:1px solid var(--line); background:var(--bg); border-radius:8px; font-size:.82rem;">' + companyOpts(data.company || "") + "</select>" +
+      '<input data-k="cutDate" type="date" value="' + esc(data.cutDate || "") + '" style="padding:7px 9px; border:1px solid var(--line); background:var(--bg); border-radius:8px; font-size:.82rem;">' +
+      '<select data-k="status" style="padding:7px 9px; border:1px solid var(--line); background:var(--bg); border-radius:8px; font-size:.82rem;">' + statusOpts(data.status || "active") + "</select>" +
+      '<button type="button" class="row-del" style="width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:var(--surface); color:var(--danger); cursor:pointer;">✕</button>';
     row.querySelector(".row-del").addEventListener("click", function () {
       var c = $("bulkRows");
       if (c.children.length > 1) row.remove();
@@ -1305,8 +2013,7 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   function closeBulk() { $("bulkOverlay").hidden = true; }
   function bulkSave() {
     var rows = Array.from($("bulkRows").children);
-    var now = Date.now();
-    var added = 0, dupes = 0;
+    var now = Date.now(), added = 0, dupes = 0;
     rows.forEach(function (row) {
       var get = function (k) { var el = row.querySelector('[data-k="' + k + '"]'); return el ? el.value.trim() : ""; };
       var phone = get("phone"), sim = get("sim"), name = get("name");
@@ -1314,24 +2021,23 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       if (!phone && !sim) return;
       if (phone && isDuplicate("phone", phone, null)) { dupes++; return; }
       if (sim && isDuplicate("sim", sim, null)) { dupes++; return; }
-      if (phone && !/^[0-9+\s-]{5,20}$/.test(phone)) return;
       var id = uid("s_");
       docs.set(id, {
         _id: id, name: name, phone: phone, company: get("company"), sim: sim,
         activation: "", status: get("status") || "active",
         simState: phone ? "used-sim" : "clear-sim",
-        cutDate: get("cutDate"), notes: "", createdAt: now + added, updatedAt: now + added
+        cutDate: get("cutDate"), notes: "",
+        debtAmount: 0, debtNotes: "", hasReminder: false, reminderDate: "", reminderNote: "",
+        createdAt: now + added, updatedAt: now + added
       });
       added++;
     });
-    if (added === 0 && dupes === 0) { $("bulkErr").textContent = "لم يتم إدخال أي بيانات صالحة."; return; }
-    saveData(); render(); closeBulk();
-    var msg = "تمت إضافة " + added + " شريحة";
-    if (dupes) msg += " · تم تجاهل " + dupes + " مكررة";
-    toast(msg + " ✓");
+    if (!added && !dupes) { $("bulkErr").textContent = "لا بيانات صالحة."; return; }
+    saveSims(); render(); closeBulk();
+    toast("تمت إضافة " + added + " شريحة" + (dupes ? " · تجاهل " + dupes : ""));
   }
   function bulkPaste() {
-    var raw = prompt("الصق قائمة أرقام (كل رقم في سطر، أو مفصولة بفاصلة/مسافة):");
+    var raw = prompt("الصق قائمة أرقام (كل رقم بسطر أو مفصولة بفاصلة):");
     if (!raw) return;
     var nums = raw.split(/[\s,;،\n\r]+/).map(function (s) { return s.trim(); }).filter(Boolean);
     if (!nums.length) { toast("لم يتم العثور على أرقام"); return; }
@@ -1340,21 +2046,22 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     toast("تم لصق " + nums.length + " رقم");
   }
 
-  /* ============================================================
-     DEBTS — ADD / EDIT / DELETE
-     ============================================================ */
+  /* ==================== DEBT ADD/EDIT ==================== */
   function openDebtDlg(id) {
     editingDebtId = id || null;
     debtDelArmed = false;
     var d = editingDebtId ? debts.get(editingDebtId) : null;
     if (editingDebtId && !d) editingDebtId = null;
 
-    $("debtDlgTitle").textContent = d ? "تعديل الدين" : "إضافة دين جديد";
+    $("debtDlgTitle").textContent = d ? "تعديل الدين" : "إضافة دين";
     $("d-name").value = d ? (d.name || "") : "";
-    $("d-amount").value = d ? (d.amount != null ? d.amount : "") : "";
+    $("d-amount").value = d && d.amount != null ? d.amount : "";
     $("d-wa").value = d ? (d.whatsapp || "") : "";
     $("d-contact").value = d ? (d.contact || "") : "";
+    $("d-duedate").value = d ? (d.dueDate || "") : "";
+    $("d-reminder").value = d && d.reminder ? "on" : "off";
     $("d-notes").value = d ? (d.notes || "") : "";
+    $("d-paid").checked = d ? !!d.paid : false;
     $("debtErr").textContent = "";
     var db = $("debtDelBtn");
     db.hidden = !d;
@@ -1362,20 +2069,14 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     $("debtDlgOverlay").hidden = false;
     setTimeout(function () { $("d-name").focus(); }, 60);
   }
-  function closeDebtDlg() {
-    $("debtDlgOverlay").hidden = true;
-    editingDebtId = null;
-    debtDelArmed = false;
-  }
+  function closeDebtDlg() { $("debtDlgOverlay").hidden = true; editingDebtId = null; debtDelArmed = false; }
   function handleDebtSubmit(e) {
     e.preventDefault();
     var errEl = $("debtErr");
     var name = $("d-name").value.trim();
-    var amountRaw = $("d-amount").value.trim();
-    var amount = parseFloat(amountRaw);
-
-    if (!name) { errEl.textContent = "الرجاء إدخال اسم الزبون."; $("d-name").focus(); return; }
-    if (amountRaw === "" || isNaN(amount) || amount < 0) { errEl.textContent = "الرجاء إدخال مبلغ صحيح بالشيكل."; $("d-amount").focus(); return; }
+    var amt = parseFloat($("d-amount").value);
+    if (!name) { errEl.textContent = "أدخل اسم الزبون."; $("d-name").focus(); return; }
+    if (isNaN(amt) || amt < 0) { errEl.textContent = "أدخل مبلغاً صحيحاً."; $("d-amount").focus(); return; }
 
     var now = Date.now();
     var isEdit = !!editingDebtId;
@@ -1383,17 +2084,17 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     var prev = editingDebtId ? debts.get(editingDebtId) : null;
 
     debts.set(id, {
-      _id: id, name: name, amount: amount,
+      _id: id, name: name, amount: amt,
       whatsapp: $("d-wa").value.trim(),
       contact: $("d-contact").value.trim(),
+      dueDate: $("d-duedate").value,
+      reminder: $("d-reminder").value === "on",
       notes: $("d-notes").value.trim(),
+      paid: $("d-paid").checked,
       createdAt: prev ? (prev.createdAt || now) : now,
       updatedAt: now
     });
-    saveDebts();
-    closeDebtDlg();
-    render();
-    renderDebtsManager();
+    saveDebts(); closeDebtDlg(); render(); renderDebtsManager();
     toast(isEdit ? "تم تحديث الدين ✓" : "تمت إضافة الدين ✓");
   }
   function handleDebtDelete() {
@@ -1401,40 +2102,122 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     if (!debtDelArmed) { debtDelArmed = true; $("debtDelBtn").textContent = "تأكيد الحذف؟"; return; }
     var rec = debts.get(editingDebtId);
     if (!rec) return;
-    lastDeletedDebt = { rec: rec };
+    lastDeletedDebt = rec;
     debts.delete(editingDebtId);
-    saveDebts();
-    closeDebtDlg();
-    render();
-    renderDebtsManager();
+    saveDebts(); closeDebtDlg(); render(); renderDebtsManager();
     toast("تم حذف الدين", "تراجع", function () {
-      if (lastDeletedDebt && lastDeletedDebt.rec) {
-        debts.set(lastDeletedDebt.rec._id, lastDeletedDebt.rec);
-        saveDebts(); render(); renderDebtsManager();
-        toast("تم التراجع عن الحذف");
-      }
+      if (lastDeletedDebt) { debts.set(lastDeletedDebt._id, lastDeletedDebt); saveDebts(); render(); renderDebtsManager(); }
     });
+  }
+  function toggleDebtPaid(id) {
+    var d = debts.get(id);
+    if (!d) return;
+    d.paid = !d.paid;
+    d.updatedAt = Date.now();
+    saveDebts(); render(); renderDebtsManager();
+    toast(d.paid ? "تم تعليم الدين كمسدد ✓" : "تم إرجاع الدين إلى غير مسدد");
   }
   function quickDeleteDebt(id) {
     var rec = debts.get(id);
     if (!rec) return;
-    lastDeletedDebt = { rec: rec };
+    lastDeletedDebt = rec;
     debts.delete(id);
-    saveDebts();
-    render();
-    renderDebtsManager();
+    saveDebts(); render(); renderDebtsManager();
     toast("تم حذف دين " + (rec.name || ""), "تراجع", function () {
-      if (lastDeletedDebt && lastDeletedDebt.rec) {
-        debts.set(lastDeletedDebt.rec._id, lastDeletedDebt.rec);
-        saveDebts(); render(); renderDebtsManager();
-        toast("تم التراجع عن الحذف");
-      }
+      if (lastDeletedDebt) { debts.set(lastDeletedDebt._id, lastDeletedDebt); saveDebts(); render(); renderDebtsManager(); }
     });
   }
 
-  /* ============================================================
-     DRAWER
-     ============================================================ */
+  /* ==================== INVENTORY ADD/EDIT ==================== */
+  function openInvDlg(id) {
+    editingInvId = id || null;
+    invDelArmed = false;
+    var s = editingInvId ? inventory.get(editingInvId) : null;
+    if (editingInvId && !s) editingInvId = null;
+
+    $("invDlgTitle").textContent = s ? "تعديل شريحة المخزون" : "إضافة شريحة للمخزون";
+    $("i-sim").value = s ? (s.sim || "") : "";
+    $("i-company").value = s ? (s.company || "") : "";
+    $("i-type").value = s ? (s.type || "clear") : "clear";
+    $("i-activation").value = s ? (s.activation || "") : "";
+    $("i-qty").value = s ? (s.qty || 1) : 1;
+    $("i-notes").value = s ? (s.notes || "") : "";
+    $("invErr").textContent = "";
+    var db = $("invDelBtn");
+    db.hidden = !s;
+    db.textContent = "حذف";
+    $("invDlgOverlay").hidden = false;
+    setTimeout(function () { $("i-sim").focus(); }, 60);
+  }
+  function closeInvDlg() { $("invDlgOverlay").hidden = true; editingInvId = null; invDelArmed = false; }
+  function handleInvSubmit(e) {
+    e.preventDefault();
+    var errEl = $("invErr");
+    var sim = $("i-sim").value.trim();
+    if (!sim) { errEl.textContent = "أدخل رقم الشريحة."; $("i-sim").focus(); return; }
+
+    var now = Date.now();
+    var isEdit = !!editingInvId;
+    var id = editingInvId || uid("i_");
+    var prev = editingInvId ? inventory.get(editingInvId) : null;
+
+    var dup = false;
+    inventory.forEach(function (s) {
+      if (s._id !== editingInvId && s.sim === sim) dup = true;
+    });
+    if (dup) { errEl.textContent = "رقم الشريحة موجود في المخزون."; return; }
+
+    inventory.set(id, {
+      _id: id, sim: sim,
+      company: $("i-company").value,
+      type: $("i-type").value,
+      activation: $("i-activation").value,
+      qty: Math.max(1, parseInt($("i-qty").value, 10) || 1),
+      notes: $("i-notes").value.trim(),
+      createdAt: prev ? (prev.createdAt || now) : now,
+      updatedAt: now
+    });
+    saveInventory(); closeInvDlg(); render(); renderInventoryManager();
+    toast(isEdit ? "تم التحديث ✓" : "تمت الإضافة ✓");
+  }
+  function handleInvDelete() {
+    if (!editingInvId) return;
+    if (!invDelArmed) { invDelArmed = true; $("invDelBtn").textContent = "تأكيد الحذف؟"; return; }
+    var rec = inventory.get(editingInvId);
+    if (!rec) return;
+    lastDeletedInv = rec;
+    inventory.delete(editingInvId);
+    saveInventory(); closeInvDlg(); render(); renderInventoryManager();
+    toast("تم الحذف", "تراجع", function () {
+      if (lastDeletedInv) { inventory.set(lastDeletedInv._id, lastDeletedInv); saveInventory(); render(); renderInventoryManager(); }
+    });
+  }
+  function quickDeleteInv(id) {
+    var rec = inventory.get(id);
+    if (!rec) return;
+    lastDeletedInv = rec;
+    inventory.delete(id);
+    saveInventory(); render(); renderInventoryManager();
+    toast("تم حذف الشريحة", "تراجع", function () {
+      if (lastDeletedInv) { inventory.set(lastDeletedInv._id, lastDeletedInv); saveInventory(); render(); renderInventoryManager(); }
+    });
+  }
+  function assignInvToSim(id) {
+    var s = inventory.get(id);
+    if (!s) return;
+    closeInvManager();
+    openDlg(null);
+    setTimeout(function () {
+      $("f-sim").value = s.sim;
+      $("f-company").value = s.company || "";
+      $("f-activation").value = s.activation || "";
+      $("f-simstate").value = s.type === "clear" ? "clear-sim" : "used-sim";
+      $("f-name").focus();
+      toast("تم تعبئة بيانات الشريحة");
+    }, 100);
+  }
+
+  /* ==================== DRAWER + PANELS ==================== */
   function openDrawer() {
     $("drawer").classList.add("open");
     $("drawer").setAttribute("aria-hidden", "false");
@@ -1445,65 +2228,95 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     $("drawer").setAttribute("aria-hidden", "true");
     $("drawerScrim").classList.remove("open");
   }
-
-  /* ============================================================
-     THEME
-     ============================================================ */
-  function applyTheme(theme) {
-    if (theme === "light") {
-      document.documentElement.setAttribute("data-theme", "light");
-      $("themeBtn").textContent = "☀️";
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-      $("themeBtn").textContent = "🌙";
-    }
-    try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+  function switchSidePanel(name) {
+    activeSidePanel = name;
+    document.querySelectorAll(".side-nav-btn").forEach(function (b) {
+      b.classList.toggle("active", b.dataset.panel === name);
+    });
+    document.querySelectorAll(".side-panel").forEach(function (p) {
+      p.classList.toggle("active", p.id === "panel-" + name);
+    });
   }
 
-  /* ============================================================
-     EXPORT / IMPORT
-     ============================================================ */
+  /* ==================== DEBTS/INVENTORY MANAGERS OPEN ==================== */
+  function openDebtsManager() {
+    debtQuery = ""; $("dmSearch").value = "";
+    $("debtsOverlay").hidden = false;
+    renderDebtsManager();
+  }
+  function closeDebtsManager() { $("debtsOverlay").hidden = true; }
+  function openInvManager() {
+    invQuery = ""; $("invSearch").value = "";
+    $("invOverlay").hidden = false;
+    renderInventoryManager();
+  }
+  function closeInvManager() { $("invOverlay").hidden = true; }
+
+  /* ==================== THEME ==================== */
+  function applyTheme(t) {
+    if (t === "light") { document.documentElement.setAttribute("data-theme", "light"); $("themeBtn").textContent = "☀️"; }
+    else { document.documentElement.removeAttribute("data-theme"); $("themeBtn").textContent = "🌙"; }
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  }
+
+  /* ==================== EXPORT / IMPORT ==================== */
   function download(content, filename, mime) {
     var blob = new Blob([content], { type: mime });
     var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url; a.download = filename;
+    var a = document.createElement("a"); a.href = url; a.download = filename;
     document.body.appendChild(a); a.click();
     setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 800);
   }
   function stamp() { return new Date().toISOString().slice(0, 10); }
   function csvCell(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
 
-  function exportCSV() {
-    var rows = [COLS.map(function (c) { return csvCell(c[1]); }).join(",")];
+  function exportSimsCSV() {
+    var rows = [SIM_COLS.map(function (c) { return csvCell(c[1]); }).join(",")];
     Array.from(docs.values()).forEach(function (r) {
-      rows.push(COLS.map(function (c) {
+      rows.push(SIM_COLS.map(function (c) {
         var v = r[c[0]];
         if (c[0] === "status") v = STATUS[r.status] || r.status || "";
         if (c[0] === "simState") v = r.simState === "clear-sim" ? "نظيفة" : "مستعملة";
         return csvCell(v);
       }).join(","));
     });
-    download("\uFEFF" + rows.join("\r\n"), "subscriptions-" + stamp() + ".csv", "text/csv;charset=utf-8");
-    toast("تم تصدير ملف الشرائح ✓");
+    download("\uFEFF" + rows.join("\r\n"), "sims-" + stamp() + ".csv", "text/csv;charset=utf-8");
+    toast("تم التصدير ✓");
   }
   function exportDebtsCSV() {
     var rows = [DEBT_COLS.map(function (c) { return csvCell(c[1]); }).join(",")];
     Array.from(debts.values()).forEach(function (d) {
-      rows.push(DEBT_COLS.map(function (c) { return csvCell(d[c[0]]); }).join(","));
+      rows.push(DEBT_COLS.map(function (c) {
+        var v = d[c[0]];
+        if (c[0] === "paid") v = d.paid ? "نعم" : "لا";
+        return csvCell(v);
+      }).join(","));
     });
     download("\uFEFF" + rows.join("\r\n"), "debts-" + stamp() + ".csv", "text/csv;charset=utf-8");
-    toast("تم تصدير ملف الديون ✓");
+    toast("تم تصدير الديون ✓");
+  }
+  function exportInvCSV() {
+    var rows = [INV_COLS.map(function (c) { return csvCell(c[1]); }).join(",")];
+    Array.from(inventory.values()).forEach(function (s) {
+      rows.push(INV_COLS.map(function (c) {
+        var v = s[c[0]];
+        if (c[0] === "type") v = s.type === "clear" ? "نظيفة" : "مستعملة";
+        return csvCell(v);
+      }).join(","));
+    });
+    download("\uFEFF" + rows.join("\r\n"), "inventory-" + stamp() + ".csv", "text/csv;charset=utf-8");
+    toast("تم تصدير المخزون ✓");
   }
   function exportJSON() {
     var payload = {
       version: 5,
       exportedAt: new Date().toISOString(),
       sims: { count: docs.size, data: Array.from(docs.values()) },
-      debts: { count: debts.size, data: Array.from(debts.values()) }
+      debts: { count: debts.size, data: Array.from(debts.values()) },
+      inventory: { count: inventory.size, data: Array.from(inventory.values()) }
     };
-    download(JSON.stringify(payload, null, 2), "sim-backup-" + stamp() + ".json", "application/json");
-    toast("تم تصدير النسخة الاحتياطية ✓");
+    download(JSON.stringify(payload, null, 2), "backup-" + stamp() + ".json", "application/json");
+    toast("تم التصدير ✓");
   }
 
   function parseCSV(text) {
@@ -1524,127 +2337,109 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     if (cur !== "" || row.length) { row.push(cur); rows.push(row); }
     return rows.filter(function (r) { return r.some(function (c) { return String(c).trim() !== ""; }); });
   }
-  function reverseStatus(label) { for (var k in STATUS) if (STATUS[k] === label) return k; return null; }
-  function findExistingSim(rec) {
-    var found = null;
+  function reverseStatus(l) { for (var k in STATUS) if (STATUS[k] === l) return k; return null; }
+  function findSim(rec) {
+    var f = null;
     docs.forEach(function (r) {
-      if (found) return;
-      if (rec.sim && r.sim && rec.sim === r.sim) { found = r; return; }
-      if (rec.phone && r.phone && rec.phone === r.phone) found = r;
+      if (f) return;
+      if (rec.sim && r.sim && rec.sim === r.sim) { f = r; return; }
+      if (rec.phone && r.phone && rec.phone === r.phone) f = r;
     });
-    return found;
+    return f;
   }
-  function findExistingDebt(rec) {
-    var found = null;
+  function findDebt(rec) {
+    var f = null;
     debts.forEach(function (d) {
-      if (found) return;
-      if (rec.name && d.name && rec.name === d.name && Number(rec.amount) === Number(d.amount)) found = d;
+      if (f) return;
+      if (rec.name && d.name && rec.name === d.name && Number(rec.amount) === Number(d.amount)) f = d;
     });
-    return found;
+    return f;
   }
 
-  function importCSV(text, target) {
+  function importCSVGeneric(text, target) {
     var rows = parseCSV(text);
     if (rows.length < 2) return 0;
     var header = rows[0].map(function (h) { return String(h).trim(); });
-    var cols = target === "debts" ? DEBT_COLS : COLS;
+    var cols = target === "debts" ? DEBT_COLS : (target === "inventory" ? INV_COLS : SIM_COLS);
     var index = {};
     header.forEach(function (h, i) {
       cols.forEach(function (c) {
         if (index[c[0]] === undefined && (h === c[0] || h === c[1])) index[c[0]] = i;
       });
     });
-
     var now = Date.now(), added = 0;
+
     rows.slice(1).forEach(function (cells) {
-      var get = function (key) {
-        var i = index[key];
+      var get = function (k) {
+        var i = index[k];
         return i === undefined ? "" : String(cells[i] == null ? "" : cells[i]).trim();
       };
-
       if (target === "debts") {
-        var dName = get("name");
-        if (!dName) return;
-        var rec = {
-          _id: uid("d_"),
-          name: dName,
-          amount: parseFloat(get("amount")) || 0,
-          whatsapp: get("whatsapp"),
-          contact: get("contact"),
-          notes: get("notes"),
-          createdAt: now + added, updatedAt: now + added
-        };
-        var ex = findExistingDebt(rec);
-        if (ex) { rec._id = ex._id; rec.createdAt = ex.createdAt || now; debts.set(ex._id, rec); }
-        else { debts.set(rec._id, rec); added++; }
+        var dn = get("name"); if (!dn) return;
+        var dr = { _id: uid("d_"), name: dn, amount: parseFloat(get("amount")) || 0, whatsapp: get("whatsapp"), contact: get("contact"), dueDate: get("dueDate"), paid: get("paid") === "نعم", reminder: false, notes: get("notes"), createdAt: now + added, updatedAt: now + added };
+        var dx = findDebt(dr);
+        if (dx) { dr._id = dx._id; debts.set(dx._id, dr); } else { debts.set(dr._id, dr); added++; }
+      } else if (target === "inventory") {
+        var si = get("sim"); if (!si) return;
+        var ir = { _id: uid("i_"), sim: si, company: get("company"), type: get("type") === "نظيفة" ? "clear" : "used", activation: get("activation"), qty: parseInt(get("qty"), 10) || 1, notes: get("notes"), createdAt: now + added, updatedAt: now + added };
+        inventory.set(ir._id, ir); added++;
       } else {
-        var phone = get("phone"), name = get("name"), sim = get("sim");
-        if (!phone && !name && !sim) return;
-        var srec = {
-          _id: uid("s_"),
-          name: name, phone: phone, company: get("company"), sim: sim,
-          activation: get("activation"),
-          status: reverseStatus(get("status")) || "active",
-          simState: get("simState") === "نظيفة" ? "clear-sim" : "used-sim",
-          cutDate: get("cutDate"), notes: get("notes"),
-          createdAt: now + added, updatedAt: now + added
-        };
-        var sx = findExistingSim(srec);
-        if (sx) { srec._id = sx._id; srec.createdAt = sx.createdAt || now; docs.set(sx._id, srec); }
-        else { docs.set(srec._id, srec); added++; }
+        var p = get("phone"), n = get("name"), s = get("sim");
+        if (!p && !n && !s) return;
+        var sr = { _id: uid("s_"), name: n, phone: p, company: get("company"), sim: s, activation: get("activation"), status: reverseStatus(get("status")) || "active", simState: get("simState") === "نظيفة" ? "clear-sim" : "used-sim", cutDate: get("cutDate"), debtAmount: parseFloat(get("debtAmount")) || 0, debtNotes: "", hasReminder: false, reminderDate: "", reminderNote: "", notes: get("notes"), createdAt: now + added, updatedAt: now + added };
+        var sx = findSim(sr);
+        if (sx) { sr._id = sx._id; docs.set(sx._id, sr); } else { docs.set(sr._id, sr); added++; }
       }
     });
     return added;
   }
-
-  function importJSON(text) {
+  function importJSONFull(text) {
     var parsed = JSON.parse(text);
-    var simArr = null, debtArr = null;
-
-    if (Array.isArray(parsed)) simArr = parsed;
-    else if (parsed && parsed.sims && Array.isArray(parsed.sims.data)) {
-      simArr = parsed.sims.data;
-      debtArr = parsed.debts && Array.isArray(parsed.debts.data) ? parsed.debts.data : null;
-    } else if (parsed && Array.isArray(parsed.data)) simArr = parsed.data;
-    else if (parsed && parsed.debts && Array.isArray(parsed.debts.data)) debtArr = parsed.debts.data;
-
-    if (!simArr && !debtArr) throw new Error("bad");
-    var now = Date.now(), added = 0;
-
-    if (simArr) {
-      simArr.forEach(function (r) {
+    var added = 0;
+    var now = Date.now();
+    function addSims(arr) {
+      arr.forEach(function (r) {
         if (!r || typeof r !== "object") return;
         var rec = {
-          _id: r._id || uid("s_"),
-          name: r.name || "", phone: r.phone || "", company: r.company || "",
+          _id: r._id || uid("s_"), name: r.name || "", phone: r.phone || "", company: r.company || "",
           sim: r.sim || "", activation: r.activation || "",
           status: STATUS[r.status] ? r.status : "active",
           simState: r.simState === "clear-sim" ? "clear-sim" : "used-sim",
           cutDate: r.cutDate || "", notes: r.notes || "",
+          debtAmount: Number(r.debtAmount) || 0, debtNotes: r.debtNotes || "",
+          hasReminder: !!r.hasReminder, reminderDate: r.reminderDate || "", reminderNote: r.reminderNote || "",
           createdAt: r.createdAt || (now + added), updatedAt: r.updatedAt || (now + added)
         };
-        var ex = docs.get(rec._id) || findExistingSim(rec);
-        if (ex) { rec._id = ex._id; docs.set(ex._id, rec); }
-        else { docs.set(rec._id, rec); added++; }
+        var ex = docs.get(rec._id) || findSim(rec);
+        if (ex) { rec._id = ex._id; docs.set(ex._id, rec); } else { docs.set(rec._id, rec); added++; }
       });
     }
-    if (debtArr) {
-      debtArr.forEach(function (d) {
+    function addDebts(arr) {
+      arr.forEach(function (d) {
         if (!d || typeof d !== "object") return;
-        var rec = {
-          _id: d._id || uid("d_"),
-          name: d.name || "", amount: Number(d.amount) || 0,
-          whatsapp: d.whatsapp || "", contact: d.contact || "", notes: d.notes || "",
-          createdAt: d.createdAt || (now + added), updatedAt: d.updatedAt || (now + added)
-        };
-        var ex = debts.get(rec._id) || findExistingDebt(rec);
-        if (ex) { rec._id = ex._id; debts.set(ex._id, rec); }
-        else { debts.set(rec._id, rec); added++; }
+        var rec = { _id: d._id || uid("d_"), name: d.name || "", amount: Number(d.amount) || 0, whatsapp: d.whatsapp || "", contact: d.contact || "", dueDate: d.dueDate || "", reminder: !!d.reminder, paid: !!d.paid, notes: d.notes || "", createdAt: d.createdAt || (now + added), updatedAt: d.updatedAt || (now + added) };
+        var ex = debts.get(rec._id) || findDebt(rec);
+        if (ex) { rec._id = ex._id; debts.set(ex._id, rec); } else { debts.set(rec._id, rec); added++; }
       });
+    }
+    function addInv(arr) {
+      arr.forEach(function (s) {
+        if (!s || typeof s !== "object") return;
+        var rec = { _id: s._id || uid("i_"), sim: s.sim || "", company: s.company || "", type: s.type === "used" ? "used" : "clear", activation: s.activation || "", qty: Number(s.qty) || 1, notes: s.notes || "", createdAt: s.createdAt || (now + added), updatedAt: s.updatedAt || (now + added) };
+        inventory.set(rec._id, rec); added++;
+      });
+    }
+    if (Array.isArray(parsed)) addSims(parsed);
+    else {
+      if (parsed.sims && Array.isArray(parsed.sims.data)) addSims(parsed.sims.data);
+      else if (Array.isArray(parsed.sims)) addSims(parsed.sims);
+      if (parsed.debts && Array.isArray(parsed.debts.data)) addDebts(parsed.debts.data);
+      else if (Array.isArray(parsed.debts)) addDebts(parsed.debts);
+      if (parsed.inventory && Array.isArray(parsed.inventory.data)) addInv(parsed.inventory.data);
+      else if (Array.isArray(parsed.inventory)) addInv(parsed.inventory);
     }
     return added;
   }
-
   function handleImportFile(file) {
     if (!file) return;
     var reader = new FileReader();
@@ -1652,24 +2447,22 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       var text = String(reader.result || "");
       var n = 0;
       try {
-        if (/\.json$/i.test(file.name)) n = importJSON(text);
+        if (/\.json$/i.test(file.name)) n = importJSONFull(text);
         else {
-          /* CSV: detect by header — if first line contains "المبلغ" or "amount" treat as debts */
-          var firstLine = text.split(/\r?\n/)[0] || "";
-          var isDebt = /amount|المبلغ|whatsapp|واتساب|contact|تواصل/i.test(firstLine) && !/sim|شريحة|company|شركة/i.test(firstLine);
-          n = importCSV(text, isDebt ? "debts" : "sims");
+          var firstLine = (text.split(/\r?\n/)[0] || "").toLowerCase();
+          if (/inventory|qty|الكمية|مخزون/i.test(firstLine)) n = importCSVGeneric(text, "inventory");
+          else if (/amount|المبلغ|whatsapp|واتساب/i.test(firstLine) && !/cutdate|cutDate|شركة/i.test(firstLine)) n = importCSVGeneric(text, "debts");
+          else n = importCSVGeneric(text, "sims");
         }
-      } catch (e) { toast("تعذر قراءة الملف، تأكد من الصيغة."); return; }
-      saveData(); saveDebts(); render(); renderDebtsManager();
-      toast(n > 0 ? ("تم استيراد " + n + " سجل جديد ✓") : "تم الدمج، لا سجلات جديدة");
+      } catch (e) { toast("ملف غير صالح."); return; }
+      saveSims(); saveDebts(); saveInventory();
+      render(); renderDebtsManager(); renderInventoryManager();
+      toast(n > 0 ? ("تم استيراد " + n + " سجل ✓") : "لا سجلات جديدة");
     };
-    reader.onerror = function () { toast("حدث خطأ أثناء قراءة الملف."); };
     reader.readAsText(file, "utf-8");
   }
 
-  /* ============================================================
-     SETTINGS
-     ============================================================ */
+  /* ==================== SETTINGS ==================== */
   function openSettings() {
     $("s-template").value = smsTemplate;
     $("s-debt-template").value = debtTemplate;
@@ -1678,48 +2471,67 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   function closeSettings() {
     smsTemplate = $("s-template").value || defaultSMSTemplate;
     debtTemplate = $("s-debt-template").value || defaultDebtTemplate;
-    try {
-      localStorage.setItem(TEMPLATE_KEY, smsTemplate);
-      localStorage.setItem(DEBT_TEMPLATE_KEY, debtTemplate);
-    } catch (e) {}
+    try { localStorage.setItem(TMPL_KEY, smsTemplate); localStorage.setItem(DEBT_TMPL_KEY, debtTemplate); } catch (e) {}
     $("setOverlay").hidden = true;
-    render();
-    renderDebtsManager();
-    toast("تم حفظ الإعدادات ✓");
+    render(); renderDebtsManager();
+    toast("تم الحفظ ✓");
   }
   function wipeAll() {
-    if (!confirm("هل أنت متأكد من حذف جميع البيانات (الشرائح والديون) نهائياً؟")) return;
-    if (!confirm("تأكيد أخير: سيتم حذف " + docs.size + " شريحة و " + debts.size + " دين نهائياً.")) return;
-    docs = new Map();
-    debts = new Map();
-    saveData(); saveDebts();
-    render(); renderDebtsManager();
+    if (!confirm("حذف جميع البيانات (شرائح + ديون + مخزون)؟")) return;
+    if (!confirm("تأكيد أخير نهائي.")) return;
+    docs = new Map(); debts = new Map(); inventory = new Map();
+    saveSims(); saveDebts(); saveInventory();
+    render(); renderDebtsManager(); renderInventoryManager();
     closeSettings();
-    toast("تم حذف جميع البيانات");
+    toast("تم الحذف");
   }
   function wipeDebts() {
-    if (!confirm("هل تريد حذف جميع الديون (" + debts.size + ")؟ لا يمكن التراجع.")) return;
+    if (!confirm("حذف جميع الديون (" + debts.size + ")؟")) return;
     debts = new Map();
     saveDebts(); render(); renderDebtsManager();
-    toast("تم حذف جميع الديون");
+    toast("تم حذف الديون");
+  }
+  function wipeInv() {
+    if (!confirm("حذف كامل المخزون (" + inventory.size + ")؟")) return;
+    inventory = new Map();
+    saveInventory(); render(); renderInventoryManager();
+    toast("تم حذف المخزون");
   }
 
-  /* ============================================================
-     EVENTS
-     ============================================================ */
+  /* ==================== EVENT BINDINGS ==================== */
   /* Drawer */
   $("menuBtn").addEventListener("click", openDrawer);
   $("drawerClose").addEventListener("click", closeDrawer);
   $("drawerScrim").addEventListener("click", closeDrawer);
+
+  /* Side nav */
+  document.querySelectorAll(".side-nav-btn").forEach(function (b) {
+    b.addEventListener("click", function () { switchSidePanel(b.dataset.panel); });
+  });
+
+  /* Side panel actions */
+  $("openDebtsBtn").addEventListener("click", function () { closeDrawer(); openDebtsManager(); });
+  $("sideAddDebt").addEventListener("click", function () { closeDrawer(); setTimeout(function () { openDebtDlg(null); }, 200); });
+  $("sideExpDebts").addEventListener("click", exportDebtsCSV);
+  $("sideAddInv").addEventListener("click", function () { closeDrawer(); setTimeout(function () { openInvDlg(null); }, 200); });
+  $("openInvBtn").addEventListener("click", function () { closeDrawer(); openInvManager(); });
+
+  /* Inventory tabs in sidebar */
+  document.querySelectorAll(".inv-tab").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll(".inv-tab").forEach(function (x) { x.classList.remove("active"); });
+      b.classList.add("active");
+      activeInvTab = b.dataset.inv;
+      renderSidebar(Array.from(docs.values()));
+    });
+  });
+
+  /* Drawer bottom actions */
   $("dSetBtn").addEventListener("click", function () { closeDrawer(); openSettings(); });
-  $("dBulkBtn").addEventListener("click", function () { closeDrawer(); openBulk(); });
-  $("dExpCSV").addEventListener("click", exportCSV);
-  $("dExpDebts").addEventListener("click", exportDebtsCSV);
   $("dExpJSON").addEventListener("click", exportJSON);
   $("dImpBtn").addEventListener("click", function () { $("impFile").click(); });
-  $("openDebtsBtn").addEventListener("click", function () { closeDrawer(); openDebtsManager(); });
 
-  /* Sim modals */
+  /* SIM modal */
   $("addBtn").addEventListener("click", function () { openDlg(null); });
   $("bulkBtn").addEventListener("click", openBulk);
   $("closeDlg").addEventListener("click", closeDlg);
@@ -1728,38 +2540,76 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   $("form").addEventListener("submit", handleSubmit);
   $("delBtn").addEventListener("click", handleDelete);
   $("bulkAddRow").addEventListener("click", function () {
-    var row = addBulkRow({ status: "active", cutDate: todayISO() });
-    var inp = row.querySelector("input"); if (inp) inp.focus();
+    var r = addBulkRow({ status: "active", cutDate: todayISO() });
+    var i = r.querySelector("input"); if (i) i.focus();
   });
   $("bulkPasteBtn").addEventListener("click", bulkPaste);
   $("bulkSave").addEventListener("click", bulkSave);
 
+  /* Form sections collapsible */
+  document.querySelectorAll("[data-toggle]").forEach(function (h) {
+    h.addEventListener("click", function () {
+      h.parentElement.classList.toggle("open");
+    });
+  });
+
   /* Debts manager */
   $("debtsClose").addEventListener("click", closeDebtsManager);
   $("dmAddBtn").addEventListener("click", function () { openDebtDlg(null); });
-  $("dmSearch").addEventListener("input", function (e) {
-    debtQuery = e.target.value; renderDebtsManager();
-  });
-  $("dmSort").addEventListener("change", function (e) {
-    debtSort = e.target.value; renderDebtsManager();
-  });
+  $("dmSearch").addEventListener("input", function (e) { debtQuery = e.target.value; renderDebtsManager(); });
+  $("dmSort").addEventListener("change", function (e) { debtSort = e.target.value; renderDebtsManager(); });
   $("dmExpCSV").addEventListener("click", exportDebtsCSV);
   $("dmWipeAll").addEventListener("click", wipeDebts);
-
-  /* Debt list delegation */
+  document.querySelectorAll("[data-dfilter]").forEach(function (c) {
+    c.addEventListener("click", function () {
+      document.querySelectorAll("[data-dfilter]").forEach(function (x) { x.classList.remove("active"); });
+      c.classList.add("active");
+      debtFilterChip = c.dataset.dfilter;
+      renderDebtsManager();
+    });
+  });
   $("dmList").addEventListener("click", function (e) {
-    var editBtn = e.target.closest(".debt-edit-btn");
-    if (editBtn) { openDebtDlg(editBtn.dataset.id); return; }
-    var delBtn = e.target.closest(".debt-del-btn");
-    if (delBtn) { quickDeleteDebt(delBtn.dataset.id); return; }
-    var copyBtn = e.target.closest("[data-copy]");
-    if (copyBtn) { copyText(copyBtn.dataset.copy); return; }
+    var eb = e.target.closest(".debt-edit-btn");
+    if (eb) { openDebtDlg(eb.dataset.id); return; }
+    var db = e.target.closest(".debt-del-btn");
+    if (db) { quickDeleteDebt(db.dataset.id); return; }
+    var pb = e.target.closest(".debt-paid-btn");
+    if (pb) { toggleDebtPaid(pb.dataset.id); return; }
+    var cb = e.target.closest("[data-copy]");
+    if (cb) { copyText(cb.dataset.copy); return; }
   });
 
   /* Debt add/edit form */
   $("debtClose").addEventListener("click", closeDebtDlg);
   $("debtForm").addEventListener("submit", handleDebtSubmit);
   $("debtDelBtn").addEventListener("click", handleDebtDelete);
+
+  /* Inventory manager */
+  $("invClose").addEventListener("click", closeInvManager);
+  $("invMgrAdd").addEventListener("click", function () { openInvDlg(null); });
+  $("invSearch").addEventListener("input", function (e) { invQuery = e.target.value; renderInventoryManager(); });
+  $("invWipeAll").addEventListener("click", wipeInv);
+  document.querySelectorAll("[data-ifilter]").forEach(function (c) {
+    c.addEventListener("click", function () {
+      document.querySelectorAll("[data-ifilter]").forEach(function (x) { x.classList.remove("active"); });
+      c.classList.add("active");
+      invFilterChip = c.dataset.ifilter;
+      renderInventoryManager();
+    });
+  });
+  $("invMgrList").addEventListener("click", function (e) {
+    var eb = e.target.closest(".inv-edit-btn");
+    if (eb) { openInvDlg(eb.dataset.id); return; }
+    var db = e.target.closest(".inv-del-btn");
+    if (db) { quickDeleteInv(db.dataset.id); return; }
+    var ab = e.target.closest(".inv-assign-btn");
+    if (ab) { assignInvToSim(ab.dataset.id); return; }
+  });
+
+  /* Inventory add/edit form */
+  $("invDlgClose").addEventListener("click", closeInvDlg);
+  $("invForm").addEventListener("submit", handleInvSubmit);
+  $("invDelBtn").addEventListener("click", handleInvDelete);
 
   /* Theme */
   $("themeBtn").addEventListener("click", function () {
@@ -1782,29 +2632,32 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     filter = b.dataset.f; render();
   });
   $("list").addEventListener("click", function (e) {
-    var editBtn = e.target.closest(".edit-btn");
-    if (editBtn) { openDlg(editBtn.dataset.id); return; }
-    var copyBtn = e.target.closest("[data-copy]");
-    if (copyBtn) { copyText(copyBtn.dataset.copy); return; }
+    var eb = e.target.closest(".edit-btn");
+    if (eb) { openDlg(eb.dataset.id); return; }
+    var cb = e.target.closest("[data-copy]");
+    if (cb) { copyText(cb.dataset.copy); return; }
   });
 
-  /* Sidebar item clicks */
+  /* Sidebar mini item clicks */
   document.querySelector(".drawer-body").addEventListener("click", function (e) {
-    var sim = e.target.closest(".mini-item");
-    if (sim) { closeDrawer(); setTimeout(function () { openDlg(sim.dataset.id); }, 180); return; }
-    var debt = e.target.closest(".debt-mini");
-    if (debt) { closeDrawer(); setTimeout(function () { openDebtDlg(debt.dataset.id); }, 180); return; }
+    var s = e.target.closest(".mini-item");
+    if (s) { closeDrawer(); setTimeout(function () { openDlg(s.dataset.id); }, 200); return; }
+    var d = e.target.closest(".debt-mini");
+    if (d) { closeDrawer(); setTimeout(function () { openDebtDlg(d.dataset.id); }, 200); return; }
+    var i = e.target.closest(".sim-inv-item");
+    if (i) { closeDrawer(); setTimeout(function () { openInvDlg(i.dataset.id); }, 200); return; }
   });
 
-  /* Import file input (shared) */
+  /* Import shared */
   $("impFile").addEventListener("change", function (e) {
     handleImportFile(e.target.files && e.target.files[0]);
     e.target.value = "";
   });
 
   /* Settings actions */
-  $("expCSV").addEventListener("click", exportCSV);
+  $("expCSV").addEventListener("click", exportSimsCSV);
   $("expDebts").addEventListener("click", exportDebtsCSV);
+  $("expInv").addEventListener("click", exportInvCSV);
   $("expJSON").addEventListener("click", exportJSON);
   $("impBtn2").addEventListener("click", function () { $("impFile").click(); });
   $("wipeBtn").addEventListener("click", wipeAll);
@@ -1816,6 +2669,8 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       else if (!$("bulkOverlay").hidden) closeBulk();
       else if (!$("debtDlgOverlay").hidden) closeDebtDlg();
       else if (!$("debtsOverlay").hidden) closeDebtsManager();
+      else if (!$("invDlgOverlay").hidden) closeInvDlg();
+      else if (!$("invOverlay").hidden) closeInvManager();
       else if (!$("setOverlay").hidden) closeSettings();
       else if ($("drawer").classList.contains("open")) closeDrawer();
     }
@@ -1824,7 +2679,7 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d") { e.preventDefault(); openDebtDlg(null); }
   });
 
-  ["overlay", "bulkOverlay", "setOverlay", "debtDlgOverlay", "debtsOverlay"].forEach(function (id) {
+  ["overlay", "bulkOverlay", "setOverlay", "debtDlgOverlay", "debtsOverlay", "invOverlay", "invDlgOverlay"].forEach(function (id) {
     $(id).addEventListener("click", function (e) {
       if (e.target !== $(id)) return;
       if (id === "overlay") closeDlg();
@@ -1832,22 +2687,12 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
       else if (id === "setOverlay") closeSettings();
       else if (id === "debtDlgOverlay") closeDebtDlg();
       else if (id === "debtsOverlay") closeDebtsManager();
+      else if (id === "invOverlay") closeInvManager();
+      else if (id === "invDlgOverlay") closeInvDlg();
     });
   });
 
-  /* ============================================================
-     DEBTS MANAGER OPEN/CLOSE
-     ============================================================ */
-  function openDebtsManager() {
-    debtQuery = ""; $("dmSearch").value = "";
-    $("debtsOverlay").hidden = false;
-    renderDebtsManager();
-  }
-  function closeDebtsManager() { $("debtsOverlay").hidden = true; }
-
-  /* ============================================================
-     INIT
-     ============================================================ */
+  /* ==================== INIT ==================== */
   try {
     var savedTheme = localStorage.getItem(THEME_KEY);
     if (savedTheme === "light") applyTheme("light");
@@ -1858,12 +2703,9 @@ h1 { margin: 0; font-size: 1.32rem; font-weight: 700; }
   loadData();
   render();
 
-  /* Auto-refresh day badges every minute */
+  /* Refresh badges every minute */
   setInterval(function () {
-    var before = JSON.stringify(Array.from(docs.values()).map(function (r) { return r.status; }));
-    checkAutoDisconnect();
-    var after = JSON.stringify(Array.from(docs.values()).map(function (r) { return r.status; }));
-    if (before !== after) render();
+    renderAlertBanner();
   }, 60000);
 
 })();
